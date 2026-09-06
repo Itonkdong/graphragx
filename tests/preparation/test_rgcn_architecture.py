@@ -580,6 +580,7 @@ def test_batched_rgcn_training_smoke_saves_vocabulary_and_model(tmp_path) -> Non
     assert epoch_events == [
         {
             "epoch": 1,
+            "gnn_architecture": "rgcn",
             "average_loss": outcome.final_loss,
         }
     ]
@@ -761,6 +762,97 @@ def test_rgcn_evaluation_preparation_loads_only_entity_embeddings(tmp_path) -> N
     assert prepared.relation_embeddings is None
     assert prepared.question_embeddings is None
     assert prepared.instances[0].edge_type.tolist() == [0, 1]
+
+
+def test_rgcn_evaluation_preparation_filters_empty_graph_before_edge_metadata(
+    tmp_path,
+) -> None:
+    vocabulary = {"parent": 0, "reverse__parent": 1}
+    valid = WebQSPProcessedInstance(
+        question="Who is the parent?",
+        q_entity=["A"],
+        a_entity=["B"],
+        nodes=["A", "B"],
+        node2id={"A": 0, "B": 1},
+        edge_index=torch.tensor([[0, 1], [1, 0]]),
+        edge_relations=["parent", "reverse__parent"],
+        node_labels=torch.tensor([0.0, 1.0]),
+    )
+    empty = WebQSPProcessedInstance(
+        question="Empty graph",
+        q_entity=["missing-seed"],
+        a_entity=["missing-answer"],
+        nodes=[],
+        node2id={},
+        edge_index=torch.empty((2, 0), dtype=torch.long),
+        edge_relations=[],
+        node_labels=torch.empty(0),
+    )
+    service = GnnEvaluationDataPreparationService(
+        embedding_cache_service=_EmbeddingService(),
+        embedding_tensor_cache_service=_TensorCacheService(),
+    )
+
+    prepared = service.prepare(
+        torch=torch,
+        test_instances=[valid, empty],
+        cache_root=tmp_path,
+        dataset_id="WebQSP",
+        entity_embedding_model="text-embedding-3-small",
+        relation_embedding_model="text-embedding-3-small",
+        question_embedding_model="text-embedding-3-small",
+        selected_device="cpu",
+        evaluation_config=GnnAnswerRetrieverEvaluationConfig(
+            embedding_cache_device="cpu",
+            embedding_cache_dtype="float32",
+        ),
+        gnn_architecture="rgcn",
+        relation_vocabulary=vocabulary,
+    )
+
+    assert [item.source_instance_index for item in prepared.instances] == [0]
+    assert prepared.skipped_missing_gold_in_graph_count == 1
+
+
+def test_rgcn_evaluation_keeps_empty_graph_as_explicit_miss_when_filter_disabled(
+    tmp_path,
+) -> None:
+    empty = WebQSPProcessedInstance(
+        question="Empty graph",
+        q_entity=["missing-seed"],
+        a_entity=["missing-answer"],
+        nodes=[],
+        node2id={},
+        edge_index=torch.empty((2, 0), dtype=torch.long),
+        edge_relations=[],
+        node_labels=torch.empty(0),
+    )
+    service = GnnEvaluationDataPreparationService(
+        embedding_cache_service=_EmbeddingService(),
+        embedding_tensor_cache_service=_TensorCacheService(),
+    )
+
+    prepared = service.prepare(
+        torch=torch,
+        test_instances=[empty],
+        cache_root=tmp_path,
+        dataset_id="WebQSP",
+        entity_embedding_model="text-embedding-3-small",
+        relation_embedding_model="text-embedding-3-small",
+        question_embedding_model="text-embedding-3-small",
+        selected_device="cpu",
+        evaluation_config=GnnAnswerRetrieverEvaluationConfig(
+            embedding_cache_device="cpu",
+            embedding_cache_dtype="float32",
+            skip_missing_gold_in_graph=False,
+        ),
+        gnn_architecture="rgcn",
+        relation_vocabulary={"parent": 0, "reverse__parent": 1},
+    )
+
+    assert len(prepared.instances) == 1
+    assert prepared.instances[0].skip_reason == "empty_graph"
+    assert prepared.instances[0].edge_type is None
 
 
 def test_rgcn_model_artifact_round_trip_uses_saved_relation_context(tmp_path) -> None:

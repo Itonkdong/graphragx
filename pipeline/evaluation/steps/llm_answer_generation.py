@@ -35,7 +35,7 @@ class GenerateFinalAnswerStep(
                 "Final answer generation requires extracted reasoning paths."
             )
 
-        answer, prompt = self.answer_generation_service.generate_answer(
+        answers, prompt = self.answer_generation_service.generate_answer(
             question=extracted_paths.sample.question,
             reasoning_paths_text=extracted_paths.reasoning_paths_text,
             model_id=self.model_id,
@@ -44,5 +44,5 @@ class GenerateFinalAnswerStep(
             extracted_paths=extracted_paths,
             model_id=self.model_id,
             prompt=prompt,
-            answer=answer,
+            answers=answers,
         )

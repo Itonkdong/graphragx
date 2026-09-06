@@ -18,6 +18,7 @@ from pipeline import (
     GenerateAndSaveFinalAnswersBatchesStep,
     GnnAnswerRetrieverEvaluationResult,
     LogFinalResultsToWandbStep,
+    LogEvidenceToWandbStep,
     LogRetrieverToWandbStep,
     LogTrainingToWandbStep,
     LogInferenceToWandbStep,
@@ -26,6 +27,7 @@ from pipeline import (
     PrepareGnnTrainingDataStep,
     PreparedGnnTrainingData,
     PreparedWebQSPGraphDataset,
+    SaveEvidenceSubgraphsStep,
     SelectedDataset,
     StepContext,
     TrainGnnAnswerRetrieverStep,
@@ -172,6 +174,18 @@ class FakeEvaluateGnnAnswerRetrieverStep(EvaluateGnnAnswerRetrieverStep):
 
 
 class MainEntrypointTests(unittest.TestCase):
+    def test_seed_defaults_and_accepts_non_negative_override(self) -> None:
+        parser = main.build_parser()
+
+        self.assertEqual(parser.parse_args([]).random_seed, 42)
+        self.assertEqual(parser.parse_args(["--seed", "7"]).random_seed, 7)
+        with self.assertRaises(SystemExit):
+            parser.parse_args(["--seed", "-1"])
+
+    def test_candidate_top_k_must_be_at_least_ten(self) -> None:
+        with self.assertRaisesRegex(ValueError, "greater than or equal to 10"):
+            main.PipelineRuntimeConfig(candidate_top_k=9)
+
     @staticmethod
     def _patch_dataset_loading_step():
         return patch(
@@ -738,6 +752,7 @@ class MainEntrypointTests(unittest.TestCase):
             "retriever-only": (True, True),
             "evaluation-only": (False, True),
             "inference-only": (False, True),
+            "evidence-only": (False, True),
         }
         saved_config = SavedGnnAnswerRetrieverConfig(dataset_id="WebQSP")
         with patch.object(
@@ -759,7 +774,9 @@ class MainEntrypointTests(unittest.TestCase):
                                 1 if run_mode == "evaluation-only" else None
                             ),
                             retriever_run_number=(
-                                1 if run_mode == "inference-only" else None
+                                1
+                                if run_mode in {"inference-only", "evidence-only"}
+                                else None
                             ),
                         ),
                     )
@@ -1191,6 +1208,112 @@ class MainEntrypointTests(unittest.TestCase):
         retriever_wandb_step = pipeline.evaluation_steps[1]
         self.assertIsInstance(retriever_wandb_step, LogRetrieverToWandbStep)
         self.assertTrue(retriever_wandb_step.copy_to_new_experiment)
+
+    def test_evidence_only_requires_retriever_selector(self) -> None:
+        with self.assertRaisesRegex(main.PipelineException, "requires --retriever-run"):
+            main.run_pipeline(
+                config=main.PipelineRuntimeConfig(run_mode="evidence-only")
+            )
+
+    def test_evidence_only_composes_without_llm_or_final_results(self) -> None:
+        saved_config = SavedGnnAnswerRetrieverConfig(dataset_id="WebQSP")
+        with patch.object(
+            main.GnnRetrieverResultsService,
+            "load_model_config",
+            return_value=saved_config,
+        ):
+            pipeline = main.build_pipeline(
+                config=main.PipelineRuntimeConfig(
+                    run_mode="evidence-only",
+                    retriever_run_number=7,
+                    no_wandb=True,
+                    use_default_config_values=True,
+                )
+            )
+
+        self.assertEqual(
+            [type(step) for step in pipeline.evaluation_steps],
+            [
+                LoadGnnAnswerRetrieverRunStep,
+                BuildReasoningSamplesFromGnnEvaluationStep,
+                ExtractShortestPathsBatchStep,
+                SaveEvidenceSubgraphsStep,
+            ],
+        )
+        self.assertFalse(
+            any(
+                isinstance(step, GenerateAndSaveFinalAnswersBatchesStep)
+                for step in pipeline.evaluation_steps
+            )
+        )
+        self.assertFalse(
+            any(
+                isinstance(step, ComputeFinalResultsStep)
+                for step in pipeline.evaluation_steps
+            )
+        )
+
+    def test_evidence_only_creates_new_wandb_run_and_logs_evidence(self) -> None:
+        saved_config = SavedGnnAnswerRetrieverConfig(dataset_id="WebQSP")
+        with patch.object(
+            main.GnnRetrieverResultsService,
+            "load_model_config",
+            return_value=saved_config,
+        ):
+            pipeline = main.build_pipeline(
+                config=main.PipelineRuntimeConfig(
+                    run_mode="evidence-only",
+                    retriever_run_number=7,
+                    use_default_config_values=True,
+                )
+            )
+
+        self.assertIsInstance(pipeline.evaluation_steps[1], LogRetrieverToWandbStep)
+        self.assertTrue(pipeline.evaluation_steps[1].copy_to_new_experiment)
+        self.assertIsInstance(pipeline.evaluation_steps[-1], LogEvidenceToWandbStep)
+
+    def test_evidence_only_rejects_llm_and_inference_run_options(self) -> None:
+        for updates in (
+            {"main_llm_model": "gpt-5.6-luna"},
+            {"llm_provider": "openai"},
+            {"reasoning_effort": "low"},
+            {"generate_explanation": True},
+            {"inference_run_name": "not-evidence"},
+        ):
+            with self.subTest(updates=updates), self.assertRaisesRegex(
+                main.PipelineException,
+                "Evidence-only mode does not accept",
+            ):
+                main.build_pipeline(
+                    config=main.PipelineRuntimeConfig(
+                        run_mode="evidence-only",
+                        retriever_run_number=7,
+                        **updates,
+                    )
+                )
+
+    def test_evidence_run_name_is_restricted_to_evidence_only(self) -> None:
+        with self.assertRaisesRegex(main.PipelineException, "only valid"):
+            main.build_pipeline(
+                config=main.PipelineRuntimeConfig(
+                    evidence_run_name="evidence-label"
+                )
+            )
+
+    def test_evidence_only_cli_flags_parse(self) -> None:
+        args = main.build_parser().parse_args(
+            [
+                "--evidence-only",
+                "--retriever-run-number",
+                "7",
+                "--evidence-run-name",
+                "pcst-comparison",
+            ]
+        )
+
+        self.assertEqual(args.run_mode, "evidence-only")
+        self.assertEqual(args.retriever_run_number, 7)
+        self.assertEqual(args.evidence_run_name, "pcst-comparison")
 
 
 class PcstCliTests(unittest.TestCase):

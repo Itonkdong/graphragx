@@ -14,6 +14,7 @@ from helpers.constants import (
     DEFAULT_TRAINING_LOG_EVERY,
     DEFAULT_TRAINING_BATCH_SIZE,
     DEFAULT_TRAINING_PROFILE,
+    DEFAULT_RANDOM_SEED,
     DEFAULT_TRAINING_WEIGHT_DECAY,
 )
 from helpers.logging_config import get_logger
@@ -156,6 +157,7 @@ class TrainGnnAnswerRetrieverStep(
         training_batch_size: int = DEFAULT_TRAINING_BATCH_SIZE,
         training_device: str = DEFAULT_TRAINING_DEVICE,
         training_profile: bool = DEFAULT_TRAINING_PROFILE,
+        random_seed: int = DEFAULT_RANDOM_SEED,
         training_run_name: str | None = None,
         continue_training_model_run_name: str | None = None,
         continue_training_model_run_number: int | None = None,
@@ -174,6 +176,7 @@ class TrainGnnAnswerRetrieverStep(
             batch_size=training_batch_size,
             device=training_device,
             profile=training_profile,
+            random_seed=random_seed,
             run_name=training_run_name,
             continue_from_model_run_name=continue_training_model_run_name,
             continue_from_model_run_number=continue_training_model_run_number,

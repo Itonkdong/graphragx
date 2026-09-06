@@ -94,6 +94,7 @@ class WandbExperimentCoordinator:
         self._config_payload: dict[str, Any] = {}
         self._tags: list[str] = ["graphragx"]
         self._logged_training_epochs: set[int] = set()
+        self._logged_aggregate_metrics: dict[str, float | int | str] = {}
 
     @property
     def metadata(self) -> WandbTrackingMetadata:
@@ -319,6 +320,46 @@ class WandbExperimentCoordinator:
         except Exception as error:
             self._record_failure("WandB metric logging failed", error)
 
+    def log_aggregate_metrics(
+        self,
+        payload: dict[str, float | int | str],
+        *,
+        source_config_path: Path | None = None,
+        architecture_name: str | None = None,
+    ) -> None:
+        """History-log each aggregate scalar once so W&B creates bar panels."""
+        self.ensure_run(
+            source_config_path=source_config_path,
+            architecture_name=architecture_name,
+        )
+        if self._run is None:
+            return
+        updated_payload = {
+            key: value
+            for key, value in payload.items()
+            if key in self._logged_aggregate_metrics
+            and self._logged_aggregate_metrics[key] != value
+        }
+        new_payload = {
+            key: value
+            for key, value in payload.items()
+            if key not in self._logged_aggregate_metrics
+        }
+        if not new_payload and not updated_payload:
+            return
+        try:
+            if new_payload:
+                self._run.log(new_payload)
+                self._logged_aggregate_metrics.update(new_payload)
+            if updated_payload:
+                summary = getattr(self._run, "summary", None)
+                if summary is None or not hasattr(summary, "update"):
+                    raise TypeError("Active W&B run has no mutable summary.")
+                summary.update(updated_payload)
+                self._logged_aggregate_metrics.update(updated_payload)
+        except Exception as error:
+            self._record_failure("WandB aggregate metric logging failed", error)
+
     def log_training_progress(self, payload: dict[str, float | int | str]) -> None:
         """Log one live training progress event using optimizer progress as step."""
         global_step = int(payload["global_step"])
@@ -490,23 +531,19 @@ class WandbExperimentCoordinator:
             if trained_instances is not None:
                 tags.append(f"trained_instances:{trained_instances}")
 
-        inference_config = (
-            configs.get("inference", {}) if isinstance(configs, dict) else {}
-        )
-        if isinstance(inference_config, dict):
-            evidence = inference_config.get("evidence_subgraph", {})
-            if isinstance(evidence, dict):
-                algorithm = evidence.get("algorithm")
-                if algorithm:
-                    tags.append(str(algorithm))
-                pcst = evidence.get("pcst", {})
-                if algorithm == "pcst" and isinstance(pcst, dict):
-                    strategy = pcst.get("edge_cost_strategy")
-                    if strategy:
-                        tags.append(f"pcst-{strategy}")
-                    embedding_model = pcst.get("semantic_embedding_model")
-                    if embedding_model:
-                        tags.append(str(embedding_model))
+        evidence = configs.get("evidence", {}) if isinstance(configs, dict) else {}
+        if isinstance(evidence, dict):
+            algorithm = evidence.get("algorithm")
+            if algorithm:
+                tags.append(str(algorithm))
+            pcst = evidence.get("pcst", {})
+            if algorithm == "pcst" and isinstance(pcst, dict):
+                strategy = pcst.get("edge_cost_strategy")
+                if strategy:
+                    tags.append(f"pcst-{strategy}")
+                embedding_model = pcst.get("semantic_embedding_model")
+                if embedding_model:
+                    tags.append(str(embedding_model))
 
         runs = config.get("runs", {})
         if isinstance(runs, dict):

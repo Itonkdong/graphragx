@@ -16,6 +16,7 @@ from pipeline.preparation.steps.configuration_building import BuildPipelineConfi
 from pipeline.preparation.steps.dataset_selection import SelectedDataset
 from pipeline.preparation.models.rearev_answer_retriever import (
     ReaRevAnswerRetriever,
+    ReaRevQueryReform,
     graph_softmax,
 )
 from pipeline.preparation.services.gnn_architecture_runtime import (
@@ -68,8 +69,47 @@ def _forward_inputs():
         "initialization_relation_index": torch.tensor([0]),
         "node_graph_index": torch.zeros(3, dtype=torch.long),
         "seed_distribution": torch.tensor([1.0, 0.0, 0.0]),
+        "seed_mask": torch.tensor([True, False, False]),
         "graph_count": 1,
     }
+
+
+def test_rearev_query_reform_uses_four_way_interaction_and_gru_update_gate():
+    reform = ReaRevQueryReform(2)
+    with torch.no_grad():
+        reform.candidate_projection.weight.zero_()
+        reform.candidate_projection.bias.zero_()
+        # Select the element-wise interaction i * h_e from the fourth block.
+        reform.candidate_projection.weight[0, 6] = 1.0
+        reform.candidate_projection.weight[1, 7] = 1.0
+        reform.gate_input_projection.weight.zero_()
+        reform.gate_input_projection.bias.zero_()
+        reform.gate_hidden_projection.weight.zero_()
+    instruction = torch.tensor([[2.0, 3.0]])
+    seed_state = torch.tensor([[4.0, 5.0]])
+    expected_candidate = torch.tensor([[8.0, 15.0]])
+    expected = 0.5 * instruction + 0.5 * expected_candidate
+    assert torch.allclose(reform(instruction, seed_state), expected)
+
+
+def test_rearev_revision_sums_multiple_seed_states_instead_of_averaging():
+    model = _model(hidden_dimension=2, num_instructions=1)
+    captured: dict[str, torch.Tensor] = {}
+
+    class CaptureReform(nn.Module):
+        def forward(self, instruction, seed_state):
+            captured["seed_state"] = seed_state.detach().clone()
+            return instruction
+
+    model.query_reform_layers[0] = CaptureReform()
+    model._revise_instructions(
+        [torch.zeros((1, 2))],
+        torch.tensor([[1.0, 2.0], [3.0, 4.0], [100.0, 200.0]]),
+        torch.tensor([True, True, False]),
+        torch.zeros(3, dtype=torch.long),
+        1,
+    )
+    assert torch.equal(captured["seed_state"], torch.tensor([[4.0, 6.0]]))
 
 
 def test_rearev_registry_defaults_and_requirements():
@@ -247,6 +287,7 @@ def test_rearev_preparation_skips_zero_node_graphs_and_preserves_source_index(ca
         nodes=[],
         node2id={},
         q_entity=[],
+        a_entity=[],
         question="empty",
         edge_index=torch.empty((2, 0), dtype=torch.long),
         edge_relations=[],
@@ -256,6 +297,7 @@ def test_rearev_preparation_skips_zero_node_graphs_and_preserves_source_index(ca
         nodes=["m.entity"],
         node2id={"m.entity": 0},
         q_entity=["m.entity"],
+        a_entity=["m.entity"],
         question="valid",
         edge_index=torch.empty((2, 0), dtype=torch.long),
         edge_relations=[],

@@ -163,8 +163,26 @@ class EvaluateGnnAnswerRetrieverStep(AbstractStep[GnnAnswerRetrieverEvaluationRe
             hits_at_10_count=outcome.hits_at_10_count,
             hits_at_candidate_limit=outcome.hits_at_candidate_limit,
             hits_at_candidate_limit_count=outcome.hits_at_candidate_limit_count,
+            ndcg_at_1=outcome.ndcg_at_1,
+            ndcg_at_5=outcome.ndcg_at_5,
+            ndcg_at_10=outcome.ndcg_at_10,
+            ndcg_at_candidate_limit=outcome.ndcg_at_candidate_limit,
+            conditioned_evaluated_instances=(
+                outcome.conditioned_evaluated_instances
+            ),
+            retrieval_gold_coverage=outcome.retrieval_gold_coverage,
+            retrieval_full_gold_coverage_count=(
+                outcome.retrieval_full_gold_coverage_count
+            ),
+            retrieval_full_gold_coverage_rate=(
+                outcome.retrieval_full_gold_coverage_rate
+            ),
+            retrieved_gold_answer_count=outcome.retrieved_gold_answer_count,
             average_candidate_count=outcome.average_candidate_count,
             missing_gold_in_graph_count=outcome.missing_gold_in_graph_count,
+            skipped_missing_gold_in_graph_count=(
+                outcome.skipped_missing_gold_in_graph_count
+            ),
             predictions_path=outcome.storage_result.predictions_path,
             evaluation_config_path=outcome.storage_result.evaluation_config_path,
             retrieval_metrics_path=outcome.storage_result.retrieval_metrics_path,

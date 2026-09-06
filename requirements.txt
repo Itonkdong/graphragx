@@ -3,7 +3,7 @@ pydantic
 datasets
 torch
 transformers>=4.57,<5
-langchain-openai
+langchain-openai>=1,<2
 numpy>=1.26,<2
 openai
 pcst-fast==1.0.10

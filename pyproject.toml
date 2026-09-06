@@ -6,12 +6,11 @@ readme = "README.md"
 requires-python = ">=3.11,<3.14"
 license = "MIT"
 authors = [
-    { name = "Andrea Stevanoska" },
     { name = "Viktor Kostadinoski" },
 ]
 dependencies = [
     "datasets",
-    "langchain-openai",
+    "langchain-openai>=1,<2",
     "numpy>=1.26,<2",
     "openai",
     "pcst-fast==1.0.10",
@@ -23,11 +22,28 @@ dependencies = [
     "wandb",
 ]
 
+[project.scripts]
+graphragx = "main:main"
+graphragx-experiments = "scripts.experiments.run_experiments:main"
+
+[build-system]
+requires = ["setuptools>=77,<85"]
+build-backend = "setuptools.build_meta"
+
 [dependency-groups]
 dev = [
+    "matplotlib",
     "pytest",
+    "reportlab",
     "torch-geometric",
 ]
 
 [tool.uv]
-package = false
+package = true
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["helpers*", "pipeline*", "scripts*"]

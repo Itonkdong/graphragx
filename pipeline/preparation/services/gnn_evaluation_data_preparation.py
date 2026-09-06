@@ -234,8 +234,8 @@ class GnnEvaluationDataPreparationService(AbstractService):
         prepared_instances: list[PreparedGnnEvaluationInstance] = []
         for instance_index, instance in enumerate(test_instances):
             seed_node_indices = None
-            skip_reason = None
-            if requirements.uses_seed_distributions:
+            skip_reason = "empty_graph" if not instance.nodes else None
+            if requirements.uses_seed_distributions and skip_reason is None:
                 seed_ids = sorted(
                     {
                         instance.node2id[entity]
@@ -243,25 +243,23 @@ class GnnEvaluationDataPreparationService(AbstractService):
                         if entity in instance.node2id
                     }
                 )
-                if not instance.nodes:
-                    skip_reason = "empty_graph"
-                elif not seed_ids:
+                if not seed_ids:
                     skip_reason = "missing_question_entity"
                 else:
                     seed_node_indices = torch.tensor(seed_ids, dtype=torch.long)
-                if skip_reason is not None:
-                    logger.warning(
-                        f"{GNN_ARCHITECTURES[gnn_architecture].display_name} evaluation "
-                        "graph will be counted as a retrieval miss: "
-                        f"instance_index={instance_index} reason={skip_reason}"
-                    )
+            if skip_reason is not None:
+                logger.warning(
+                    f"{GNN_ARCHITECTURES[gnn_architecture].display_name} evaluation "
+                    "graph cannot be scored: "
+                    f"instance_index={instance_index} reason={skip_reason}"
+                )
             edge_index = instance.edge_index
             edge_type = None
             edge_norm = None
             active_relation_ids = None
             edge_relation_index = None
             active_relation_offsets = None
-            if requirements.uses_relation_types:
+            if requirements.uses_relation_types and skip_reason is None:
                 if relation_vocabulary is None:
                     raise GnnAnswerRetrieverEvaluationException(
                         "Categorical-relation evaluation requires the saved relation "
@@ -346,13 +344,16 @@ class GnnEvaluationDataPreparationService(AbstractService):
         kept_instances = [
             prepared_instance
             for prepared_instance in prepared_data.instances
-            if float(prepared_instance.instance.node_labels.sum().item()) > 0
+            if bool(set(prepared_instance.instance.a_entity))
+            and set(prepared_instance.instance.a_entity).issubset(
+                prepared_instance.instance.node2id
+            )
         ]
         skipped_count = len(prepared_data.instances) - len(kept_instances)
         if skipped_count:
             logger.warning(
-                f"Skipped {skipped_count} evaluation graphs because none of their "
-                "gold answer entities are present in the graph."
+                f"Skipped {skipped_count} evaluation graphs because at least one "
+                "gold answer entity is absent from the graph."
             )
         return prepared_data.model_copy(
             update={

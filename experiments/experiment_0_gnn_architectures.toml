@@ -1,0 +1,275 @@
+# Experiment 0: select the strongest GNN retriever architecture.
+#
+# Fixed controls:
+# - WebQSP full training and test splits
+# - 10 epochs, batch size 1
+# - answer threshold 0.7, minimum top-k 10, candidate limit 15
+# - architecture-specific choices explicitly pinned in every run
+# - missing/incomplete-gold graphs skipped (the pipeline default)
+# - W&B enabled and retriever weight upload disabled (pipeline defaults)
+# - three repeated seeds: 42, 1337, 2026
+
+version = 1
+
+[defaults]
+args = [
+  "--retriever-only",
+  "--dataset", "WebQSP",
+  "--default",
+  "--training-epochs", "10",
+  "--training-start-instance", "0",
+  "--training-batch-size", "1",
+  "--training-device", "cuda",
+  "--training-log-every", "50",
+  "--wandb-training-log-every", "50",
+  "--evaluation-log-every", "50",
+  "--answer-threshold", "0.7",
+  "--candidate-top-k", "10",
+  "--candidate-limit", "15",
+]
+
+[[runs]]
+id = "exp0_graphsage_seed42"
+args = [
+  "--gnn-architecture", "graphsage",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--node-classifier", "mlp",
+  "--dropout", "0.1",
+  "--seed", "42",
+  "--training-run-name", "exp0_graphsage_seed42_model",
+  "--evaluation-run-name", "exp0_graphsage_seed42_retriever",
+]
+
+[[runs]]
+id = "exp0_graphsage_seed1337"
+args = [
+  "--gnn-architecture", "graphsage",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--node-classifier", "mlp",
+  "--dropout", "0.1",
+  "--seed", "1337",
+  "--training-run-name", "exp0_graphsage_seed1337_model",
+  "--evaluation-run-name", "exp0_graphsage_seed1337_retriever",
+]
+
+[[runs]]
+id = "exp0_graphsage_seed2026"
+args = [
+  "--gnn-architecture", "graphsage",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--node-classifier", "mlp",
+  "--dropout", "0.1",
+  "--seed", "2026",
+  "--training-run-name", "exp0_graphsage_seed2026_model",
+  "--evaluation-run-name", "exp0_graphsage_seed2026_retriever",
+]
+
+[[runs]]
+id = "exp0_aa_graphsage_seed42"
+args = [
+  "--gnn-architecture", "aa-graphsage",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--node-classifier", "mlp",
+  "--dropout", "0.1",
+  "--use-edge-mlp",
+  "--use-reverse-edges",
+  "--question-aware-classifier",
+  "--add-layer-normalization",
+  "--edge-mlp-hidden-dim", "256",
+  "--seed", "42",
+  "--training-run-name", "exp0_aa_graphsage_seed42_model",
+  "--evaluation-run-name", "exp0_aa_graphsage_seed42_retriever",
+]
+
+[[runs]]
+id = "exp0_aa_graphsage_seed1337"
+args = [
+  "--gnn-architecture", "aa-graphsage",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--node-classifier", "mlp",
+  "--dropout", "0.1",
+  "--use-edge-mlp",
+  "--use-reverse-edges",
+  "--question-aware-classifier",
+  "--add-layer-normalization",
+  "--edge-mlp-hidden-dim", "256",
+  "--seed", "1337",
+  "--training-run-name", "exp0_aa_graphsage_seed1337_model",
+  "--evaluation-run-name", "exp0_aa_graphsage_seed1337_retriever",
+]
+
+[[runs]]
+id = "exp0_aa_graphsage_seed2026"
+args = [
+  "--gnn-architecture", "aa-graphsage",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--node-classifier", "mlp",
+  "--dropout", "0.1",
+  "--use-edge-mlp",
+  "--use-reverse-edges",
+  "--question-aware-classifier",
+  "--add-layer-normalization",
+  "--edge-mlp-hidden-dim", "256",
+  "--seed", "2026",
+  "--training-run-name", "exp0_aa_graphsage_seed2026_model",
+  "--evaluation-run-name", "exp0_aa_graphsage_seed2026_retriever",
+]
+
+[[runs]]
+id = "exp0_rgcn_seed42"
+args = [
+  "--gnn-architecture", "rgcn",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--dropout", "0.1",
+  "--num-bases", "30",
+  "--seed", "42",
+  "--training-run-name", "exp0_rgcn_seed42_model",
+  "--evaluation-run-name", "exp0_rgcn_seed42_retriever",
+]
+
+[[runs]]
+id = "exp0_rgcn_seed1337"
+args = [
+  "--gnn-architecture", "rgcn",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--dropout", "0.1",
+  "--num-bases", "30",
+  "--seed", "1337",
+  "--training-run-name", "exp0_rgcn_seed1337_model",
+  "--evaluation-run-name", "exp0_rgcn_seed1337_retriever",
+]
+
+[[runs]]
+id = "exp0_rgcn_seed2026"
+args = [
+  "--gnn-architecture", "rgcn",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--dropout", "0.1",
+  "--num-bases", "30",
+  "--seed", "2026",
+  "--training-run-name", "exp0_rgcn_seed2026_model",
+  "--evaluation-run-name", "exp0_rgcn_seed2026_retriever",
+]
+
+[[runs]]
+id = "exp0_hgt_seed42"
+args = [
+  "--gnn-architecture", "hgt",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "128",
+  "--dropout", "0.1",
+  "--attention-heads", "8",
+  "--seed", "42",
+  "--training-run-name", "exp0_hgt_seed42_model",
+  "--evaluation-run-name", "exp0_hgt_seed42_retriever",
+]
+
+[[runs]]
+id = "exp0_hgt_seed1337"
+args = [
+  "--gnn-architecture", "hgt",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "128",
+  "--dropout", "0.1",
+  "--attention-heads", "8",
+  "--seed", "1337",
+  "--training-run-name", "exp0_hgt_seed1337_model",
+  "--evaluation-run-name", "exp0_hgt_seed1337_retriever",
+]
+
+[[runs]]
+id = "exp0_hgt_seed2026"
+args = [
+  "--gnn-architecture", "hgt",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "128",
+  "--dropout", "0.1",
+  "--attention-heads", "8",
+  "--seed", "2026",
+  "--training-run-name", "exp0_hgt_seed2026_model",
+  "--evaluation-run-name", "exp0_hgt_seed2026_retriever",
+]
+
+[[runs]]
+id = "exp0_rearev_seed42"
+args = [
+  "--gnn-architecture", "rearev",
+  "--gnn-hidden-dim", "50",
+  "--dropout", "0.1",
+  "--num-instructions", "3",
+  "--reasoning-steps", "3",
+  "--adaptive-iterations", "3",
+  "--seed", "42",
+  "--training-run-name", "exp0_rearev_seed42_model",
+  "--evaluation-run-name", "exp0_rearev_seed42_retriever",
+]
+
+[[runs]]
+id = "exp0_rearev_seed1337"
+args = [
+  "--gnn-architecture", "rearev",
+  "--gnn-hidden-dim", "50",
+  "--dropout", "0.1",
+  "--num-instructions", "3",
+  "--reasoning-steps", "3",
+  "--adaptive-iterations", "3",
+  "--seed", "1337",
+  "--training-run-name", "exp0_rearev_seed1337_model",
+  "--evaluation-run-name", "exp0_rearev_seed1337_retriever",
+]
+
+[[runs]]
+id = "exp0_rearev_seed2026"
+args = [
+  "--gnn-architecture", "rearev",
+  "--gnn-hidden-dim", "50",
+  "--dropout", "0.1",
+  "--num-instructions", "3",
+  "--reasoning-steps", "3",
+  "--adaptive-iterations", "3",
+  "--seed", "2026",
+  "--training-run-name", "exp0_rearev_seed2026_model",
+  "--evaluation-run-name", "exp0_rearev_seed2026_retriever",
+]
+
+[[runs]]
+id = "exp0_nbfnet_seed42"
+args = [
+  "--gnn-architecture", "nbfnet",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "32",
+  "--seed", "42",
+  "--training-run-name", "exp0_nbfnet_seed42_model",
+  "--evaluation-run-name", "exp0_nbfnet_seed42_retriever",
+]
+
+[[runs]]
+id = "exp0_nbfnet_seed1337"
+args = [
+  "--gnn-architecture", "nbfnet",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "32",
+  "--seed", "1337",
+  "--training-run-name", "exp0_nbfnet_seed1337_model",
+  "--evaluation-run-name", "exp0_nbfnet_seed1337_retriever",
+]
+
+[[runs]]
+id = "exp0_nbfnet_seed2026"
+args = [
+  "--gnn-architecture", "nbfnet",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "32",
+  "--seed", "2026",
+  "--training-run-name", "exp0_nbfnet_seed2026_model",
+  "--evaluation-run-name", "exp0_nbfnet_seed2026_retriever",
+]

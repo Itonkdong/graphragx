@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import math
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -126,6 +125,12 @@ class FinalResultsEvaluationService(AbstractService):
             model_run_number=gnn_evaluation_result.model_run_number,
             predictions=predictions,
             candidate_limit=candidate_limit,
+            missing_gold_in_graph_count=(
+                gnn_evaluation_result.missing_gold_in_graph_count
+            ),
+            skipped_missing_gold_in_graph_count=(
+                gnn_evaluation_result.skipped_missing_gold_in_graph_count
+            ),
             evaluation_run_name=gnn_evaluation_result.evaluation_run_name,
             evaluation_run_number=gnn_evaluation_result.evaluation_run_number,
         ).model_dump(mode="json")
@@ -133,6 +138,7 @@ class FinalResultsEvaluationService(AbstractService):
             gnn_evaluation_result=gnn_evaluation_result,
             llm_inference_run=llm_inference_run,
             per_instance_results=per_instance_results,
+            retrieval_metrics=retrieval_metrics,
             candidate_limit=candidate_limit,
         )
         model_config_path = (
@@ -251,6 +257,7 @@ class FinalResultsEvaluationService(AbstractService):
             explanation=str(answer_row.get("explanation", "")),
             reasoning_row=reasoning_row,
         )
+        answer_failed = answer_row.get("error_message") is not None
         return PerInstanceFinalResult(
             instance_index=instance_index,
             question=str(answer_row.get("question", "")),
@@ -259,7 +266,7 @@ class FinalResultsEvaluationService(AbstractService):
             predicted_answers=predicted_answers,
             normalized_gold_answers=normalized_gold_answers,
             normalized_predicted_answers=normalized_predicted_answers,
-            exact_match=gold_set == predicted_set,
+            exact_match=not answer_failed and gold_set == predicted_set,
             hit=true_positive_count > 0,
             hits_at_1=(
                 bool(normalized_predicted_answers)
@@ -276,10 +283,13 @@ class FinalResultsEvaluationService(AbstractService):
             grounded_mentioned_triple_count=grounding["grounded_mentioned_triple_count"],
             grounded_explanation=grounding["grounded_explanation"],
             fully_grounded_explanation=grounding["fully_grounded_explanation"],
-            ndcg_at_1=self._ndcg_at_k(prediction, 1),
-            ndcg_at_5=self._ndcg_at_k(prediction, 5),
-            ndcg_at_10=self._ndcg_at_k(prediction, 10),
-            ndcg_at_candidate_limit=self._ndcg_at_k(prediction, candidate_limit),
+            ndcg_at_1=self.retriever_results_service.ndcg_at_k(prediction, 1),
+            ndcg_at_5=self.retriever_results_service.ndcg_at_k(prediction, 5),
+            ndcg_at_10=self.retriever_results_service.ndcg_at_k(prediction, 10),
+            ndcg_at_candidate_limit=self.retriever_results_service.ndcg_at_k(
+                prediction,
+                candidate_limit,
+            ),
             retrieved_gold_answers=sorted(retrieved_gold_set),
             context_visible_gold_answers=sorted(context_visible_gold_set),
             retrieval_gold_coverage=retrieval_gold_coverage,
@@ -299,36 +309,35 @@ class FinalResultsEvaluationService(AbstractService):
         gnn_evaluation_result: GnnAnswerRetrieverEvaluationResult,
         llm_inference_run: SavedLlmInferenceRun,
         per_instance_results: list[PerInstanceFinalResult],
+        retrieval_metrics: dict[str, Any],
         candidate_limit: int,
     ) -> FinalReasoningMetrics:
-        successful_results = [
-            item for item in per_instance_results if item.answer_error_message is None
-        ]
         evaluated_instances = len(per_instance_results)
-        successful_instance_count = len(successful_results)
-        exact_match_count = sum(1 for item in successful_results if item.exact_match)
-        hit_count = sum(1 for item in successful_results if item.hit)
-        hits_at_1_count = sum(1 for item in successful_results if item.hits_at_1)
+        exact_match_count = sum(1 for item in per_instance_results if item.exact_match)
+        hit_count = sum(1 for item in per_instance_results if item.hit)
+        hits_at_1_count = sum(1 for item in per_instance_results if item.hits_at_1)
         true_positive_count = sum(
-            item.true_positive_count for item in successful_results
+            item.true_positive_count for item in per_instance_results
         )
         false_positive_count = sum(
-            item.false_positive_count for item in successful_results
+            item.false_positive_count for item in per_instance_results
         )
         false_negative_count = sum(
-            item.false_negative_count for item in successful_results
+            item.false_negative_count for item in per_instance_results
         )
         precision = self._safe_divide(true_positive_count, true_positive_count + false_positive_count)
         recall = self._safe_divide(true_positive_count, true_positive_count + false_negative_count)
-        grounded_count = sum(1 for item in successful_results if item.grounded_explanation)
+        grounded_count = sum(
+            1 for item in per_instance_results if item.grounded_explanation
+        )
         fully_grounded_count = sum(
-            1 for item in successful_results if item.fully_grounded_explanation
+            1 for item in per_instance_results if item.fully_grounded_explanation
         )
         mentioned_triple_count = sum(
-            item.mentioned_triple_count for item in successful_results
+            item.mentioned_triple_count for item in per_instance_results
         )
         grounded_mentioned_triple_count = sum(
-            item.grounded_mentioned_triple_count for item in successful_results
+            item.grounded_mentioned_triple_count for item in per_instance_results
         )
         return FinalReasoningMetrics(
             dataset_id=llm_inference_run.dataset_id,
@@ -346,13 +355,13 @@ class FinalResultsEvaluationService(AbstractService):
                     1 for item in per_instance_results if item.answer_error_message is not None
                 ),
                 exact_match_count=exact_match_count,
-                accuracy=self._safe_divide(exact_match_count, successful_instance_count),
+                accuracy=self._safe_divide(exact_match_count, evaluated_instances),
                 hit_count=hit_count,
-                hit_rate=self._safe_divide(hit_count, successful_instance_count),
+                hit_rate=self._safe_divide(hit_count, evaluated_instances),
                 hits_at_1_count=hits_at_1_count,
                 hits_at_1=self._safe_divide(
                     hits_at_1_count,
-                    successful_instance_count,
+                    evaluated_instances,
                 ),
                 true_positive_count=true_positive_count,
                 false_positive_count=false_positive_count,
@@ -366,21 +375,21 @@ class FinalResultsEvaluationService(AbstractService):
                 fully_grounded_explanation_count=fully_grounded_count,
                 grounded_explanation_rate=self._safe_divide(
                     grounded_count,
-                    successful_instance_count,
+                    evaluated_instances,
                 ),
                 fully_grounded_explanation_rate=self._safe_divide(
                     fully_grounded_count,
-                    successful_instance_count,
+                    evaluated_instances,
                 ),
                 mentioned_triple_count=mentioned_triple_count,
                 grounded_mentioned_triple_count=grounded_mentioned_triple_count,
             ),
             ranking_metrics=RankingMetrics(
-                ndcg_at_1=self._mean([item.ndcg_at_1 for item in per_instance_results]),
-                ndcg_at_5=self._mean([item.ndcg_at_5 for item in per_instance_results]),
-                ndcg_at_10=self._mean([item.ndcg_at_10 for item in per_instance_results]),
-                ndcg_at_candidate_limit=self._mean(
-                    [item.ndcg_at_candidate_limit for item in per_instance_results]
+                ndcg_at_1=float(retrieval_metrics["ndcg_at_1"]),
+                ndcg_at_5=float(retrieval_metrics["ndcg_at_5"]),
+                ndcg_at_10=float(retrieval_metrics["ndcg_at_10"]),
+                ndcg_at_candidate_limit=float(
+                    retrieval_metrics["ndcg_at_candidate_limit"]
                 ),
                 candidate_limit=candidate_limit,
             ),
@@ -744,17 +753,21 @@ class FinalResultsEvaluationService(AbstractService):
         return " ".join(triple)
 
     def _prediction_answers(self, answer_row: dict[str, Any]) -> list[str]:
+        structured_answers = answer_row.get("answers")
+        if not isinstance(structured_answers, list) or any(
+            not isinstance(item, str) for item in structured_answers
+        ):
+            raise FinalResultsEvaluationException(
+                "Inference answer row must contain an 'answers' array of strings. "
+                "Rerun inference for artifacts created with the old string format."
+            )
         if answer_row.get("error_message") is not None:
             return []
-
-        raw_answer = str(answer_row.get("answer", ""))
-        if self._normalize_text(raw_answer) in self.unknown_answer_values:
-            return []
-
+        answers = [item.strip() for item in structured_answers if item.strip()]
         return [
-            item.strip()
-            for item in raw_answer.split(",")
-            if item.strip()
+            answer
+            for answer in answers
+            if self._normalize_text(answer) not in self.unknown_answer_values
         ]
 
     def _normalize_answer_set(self, answers: list[str]) -> list[str]:
@@ -763,22 +776,13 @@ class FinalResultsEvaluationService(AbstractService):
     def _normalize_answer_list(self, answers: list[str]) -> list[str]:
         normalized_answers: list[str] = []
         seen_answers: set[str] = set()
-        for answer in self._split_answer_values(answers):
+        for answer in answers:
             normalized_answer = self._normalize_answer(answer)
             if not normalized_answer or normalized_answer in seen_answers:
                 continue
             normalized_answers.append(normalized_answer)
             seen_answers.add(normalized_answer)
         return normalized_answers
-
-    @staticmethod
-    def _split_answer_values(answers: list[str]) -> list[str]:
-        return [
-            part.strip()
-            for answer in answers
-            for part in answer.split(",")
-            if part.strip()
-        ]
 
     def _normalize_answer(self, answer: str) -> str:
         normalized = answer.lower().strip()
@@ -796,31 +800,7 @@ class FinalResultsEvaluationService(AbstractService):
         prediction: EvaluatedAnswerRetrievalInstance,
         k: int,
     ) -> float:
-        if k <= 0 or not prediction.answer_candidates:
-            return 0.0
-
-        candidates = sorted(
-            prediction.answer_candidates,
-            key=lambda candidate: candidate.probability,
-            reverse=True,
-        )[:k]
-        relevances = [1.0 if candidate.is_gold_answer else 0.0 for candidate in candidates]
-        dcg = sum(
-            relevance / math.log2(rank + 2)
-            for rank, relevance in enumerate(relevances)
-        )
-        ideal_relevant_count = min(
-            sum(1 for candidate in prediction.answer_candidates if candidate.is_gold_answer),
-            k,
-        )
-        if ideal_relevant_count <= 0:
-            return 0.0
-
-        idcg = sum(
-            1.0 / math.log2(rank + 2)
-            for rank in range(ideal_relevant_count)
-        )
-        return dcg / idcg
+        return GnnRetrieverResultsService.ndcg_at_k(prediction, k)
 
     @staticmethod
     def _safe_divide(numerator: int | float, denominator: int | float) -> float:

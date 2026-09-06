@@ -3,6 +3,8 @@
 import unittest
 from unittest.mock import patch
 
+from pipeline.evaluation.exceptions import LlmAnswerGenerationException
+from pipeline.evaluation.exceptions import InsufficientLlmCreditsException
 from pipeline.evaluation.services.llm_answer_generation import (
     LangChainOpenAiAnswerGenerationService,
 )
@@ -15,6 +17,20 @@ class FakeResponse:
 
 class FakeRateLimitError(Exception):
     response = FakeResponse()
+
+
+class FakeInsufficientCreditResponse:
+    status_code = 402
+    headers = {}
+
+
+class FakeInsufficientCreditError(Exception):
+    response = FakeInsufficientCreditResponse()
+
+
+class FakeInsufficientCreditChatModel:
+    def invoke(self, messages):
+        raise FakeInsufficientCreditError("Insufficient Balance")
 
 
 class FakeChatModel:
@@ -45,7 +61,7 @@ class CapturingChatOpenAI:
             "LangChainResponse",
             (),
             {
-                "content": '{"answer":"A","explanation":"B"}',
+                "content": '{"answers":["A"],"explanation":"B"}',
                 "usage_metadata": {
                     "input_tokens": 12,
                     "output_tokens": 8,
@@ -63,7 +79,7 @@ class AnswerOnlyCapturingChatOpenAI(CapturingChatOpenAI):
             "LangChainResponse",
             (),
             {
-                "content": '{"answer":"A"}',
+                "content": '{"answers":["A"]}',
                 "usage_metadata": {
                     "input_tokens": 10,
                     "output_tokens": 3,
@@ -73,12 +89,21 @@ class AnswerOnlyCapturingChatOpenAI(CapturingChatOpenAI):
         )()
 
 
+class InternallyBrokenChatOpenAI:
+    calls = 0
+
+    def __init__(self, **kwargs):
+        self.__class__.calls += 1
+        raise TypeError("internal constructor bug")
+
+
 class LlmAnswerGenerationRateLimitTests(unittest.TestCase):
     def setUp(self) -> None:
         CapturingChatOpenAI.captured_kwargs = None
         CapturingChatOpenAI.instance_count = 0
         CapturingChatOpenAI.invoke_count = 0
         CapturingChatOpenAI.captured_messages = None
+        InternallyBrokenChatOpenAI.calls = 0
 
     def test_rate_limit_is_logged_and_retried(self) -> None:
         service = LangChainOpenAiAnswerGenerationService()
@@ -104,6 +129,36 @@ class LlmAnswerGenerationRateLimitTests(unittest.TestCase):
                 and "operation=llm_answer_generation" in message
                 and "\033[91m" in message
                 for message in logs.output
+            )
+        )
+
+    def test_insufficient_credit_error_fails_without_rate_limit_retry(self) -> None:
+        service = LangChainOpenAiAnswerGenerationService()
+        chat_model = FakeInsufficientCreditChatModel()
+
+        with patch("time.sleep") as sleep, self.assertRaisesRegex(
+            InsufficientLlmCreditsException,
+            "insufficient credits",
+        ):
+            service._invoke_with_visible_rate_limit_retries(
+                chat_model=chat_model,
+                messages=[],
+                model_id="deepseek-v4-flash",
+                prompt="question",
+            )
+
+        sleep.assert_not_called()
+
+    def test_insufficient_credit_marker_is_recognized_inside_wrapped_error(self) -> None:
+        cause = RuntimeError(
+            "Error code: 429 - {'error': {'code': 'insufficient_quota'}}"
+        )
+        wrapped = LlmAnswerGenerationException("request failed")
+        wrapped.__cause__ = cause
+
+        self.assertTrue(
+            LangChainOpenAiAnswerGenerationService.is_insufficient_credit_error(
+                wrapped
             )
         )
 
@@ -161,6 +216,18 @@ class LlmAnswerGenerationRateLimitTests(unittest.TestCase):
             "low",
         )
 
+    def test_chat_model_constructor_type_error_is_not_hidden_by_fallbacks(self) -> None:
+        service = LangChainOpenAiAnswerGenerationService()
+
+        with self.assertRaisesRegex(TypeError, "internal constructor bug"):
+            service._create_chat_model(
+                chat_openai_type=InternallyBrokenChatOpenAI,
+                model_id="gpt-5-mini",
+                api_key="openai-key",
+            )
+
+        self.assertEqual(InternallyBrokenChatOpenAI.calls, 1)
+
     def test_deepseek_missing_api_key_mentions_deepseek_env_name(self) -> None:
         service = LangChainOpenAiAnswerGenerationService()
 
@@ -197,7 +264,7 @@ class LlmAnswerGenerationRateLimitTests(unittest.TestCase):
                 reasoning_effort="none",
             )
 
-        self.assertEqual(result["answer"], "A")
+        self.assertEqual(result["answers"], ["A"])
         self.assertEqual(result["total_tokens"], 20)
         self.assertEqual(result["estimated_cost_usd"], 0.0)
         self.assertEqual(
@@ -257,14 +324,28 @@ class LlmAnswerGenerationRateLimitTests(unittest.TestCase):
                 generate_explanation=False,
             )
 
-        self.assertEqual(result["answer"], "A")
+        self.assertEqual(result["answers"], ["A"])
         self.assertEqual(result["explanation"], "")
         self.assertNotIn('"explanation"', result["prompt"])
-        self.assertIn('"answer": "..."', result["prompt"])
+        self.assertIn('"answers": ["complete entity name"]', result["prompt"])
         self.assertIn(
             "Do not generate an explanation",
             AnswerOnlyCapturingChatOpenAI.captured_messages[0].content,
         )
+
+    def test_atomic_answer_array_preserves_commas_inside_entity_names(self) -> None:
+        result = LangChainOpenAiAnswerGenerationService.parse_json_response(
+            '{"answers":["Washington, D.C.","Paris, Texas"],'
+            '"explanation":"supported"}'
+        )
+
+        self.assertEqual(result["answers"], ["Washington, D.C.", "Paris, Texas"])
+
+    def test_singular_answer_response_is_rejected(self) -> None:
+        with self.assertRaisesRegex(LlmAnswerGenerationException, "answers"):
+            LangChainOpenAiAnswerGenerationService.parse_json_response(
+                '{"answer":"Alpha, Beta","explanation":"supported"}'
+            )
 
 
 if __name__ == "__main__":

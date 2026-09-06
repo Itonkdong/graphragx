@@ -122,8 +122,8 @@ class GnnAnswerRetrieverEvaluationServiceTests(unittest.TestCase):
         self.evaluation_config = GnnAnswerRetrieverEvaluationConfig(
             model_run_number=1,
             max_instances=2,
-            candidate_top_k=1,
-            candidate_limit=2,
+            candidate_top_k=10,
+            candidate_limit=10,
             embedding_cache_device="cpu",
             embedding_cache_dtype="float32",
             profile=True,

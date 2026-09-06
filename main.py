@@ -12,11 +12,13 @@ from helpers.constants import (
     DEFAULT_ANSWER_THRESHOLD,
     DEFAULT_CANDIDATE_LIMIT,
     DEFAULT_CANDIDATE_TOP_K,
+    MIN_CANDIDATE_TOP_K,
     DEFAULT_EVALUATION_EMBEDDING_CACHE_DEVICE,
     DEFAULT_EVALUATION_EMBEDDING_CACHE_DTYPE,
     DEFAULT_EVALUATION_GPU_CACHE_RESERVE_GB,
     DEFAULT_EVALUATION_LOG_EVERY,
     DEFAULT_EVALUATION_PROFILE,
+    DEFAULT_RANDOM_SEED,
     DEFAULT_TRAINING_DEVICE,
     DEFAULT_TRAINING_EPOCHS,
     DEFAULT_TRAINING_LEARNING_RATE,
@@ -30,6 +32,7 @@ from helpers.constants import (
     DEFAULT_WANDB_TRAINING_LOG_EVERY,
 )
 from helpers.logging_config import get_logger, setup_logger
+from helpers.reproducibility import configure_random_seed
 from pipeline import (
     BuildGnnAnswerRetrieverStep,
     BuildPipelineConfigurationStep,
@@ -51,7 +54,9 @@ from pipeline import (
     LogRetrieverToWandbStep,
     LogTrainingToWandbStep,
     LogInferenceToWandbStep,
+    LogEvidenceToWandbStep,
     LoadGnnAnswerRetrieverRunStep,
+    SaveEvidenceSubgraphsStep,
     GnnRetrieverResultsService,
     PipelineException,
 )
@@ -193,7 +198,9 @@ class PipelineRuntimeConfig(BaseModel):
         "retriever-only",
         "evaluation-only",
         "inference-only",
+        "evidence-only",
     ] = "full"
+    random_seed: int = Field(default=DEFAULT_RANDOM_SEED, ge=0)
     dataset: str | None = None
     local_graph_profile: bool = False
     llm_provider: str | None = None
@@ -242,7 +249,10 @@ class PipelineRuntimeConfig(BaseModel):
     evaluation_model_run_name: str | None = None
     evaluation_model_run_number: int | None = None
     answer_threshold: float = DEFAULT_ANSWER_THRESHOLD
-    candidate_top_k: int = DEFAULT_CANDIDATE_TOP_K
+    candidate_top_k: int = Field(
+        default=DEFAULT_CANDIDATE_TOP_K,
+        ge=MIN_CANDIDATE_TOP_K,
+    )
     candidate_limit: int = DEFAULT_CANDIDATE_LIMIT
     evaluation_run_name: str | None = None
     retriever_run_name: str | None = None
@@ -255,6 +265,7 @@ class PipelineRuntimeConfig(BaseModel):
     evaluation_gpu_cache_reserve_gb: float = DEFAULT_EVALUATION_GPU_CACHE_RESERVE_GB
     no_llm_inference: bool = False
     inference_run_name: str | None = None
+    evidence_run_name: str | None = None
     llm_inference_batch_size: int = 10
     llm_inference_parallel_calls: int = 1
     no_wandb: bool = False
@@ -380,13 +391,29 @@ def build_pipeline(config: PipelineRuntimeConfig) -> Pipeline:
             "--no-llm-inference is not valid with --inference-only."
         )
     if (
-        config.run_mode == "inference-only"
+        config.run_mode in {"inference-only", "evidence-only"}
         and config.retriever_run_name is None
         and config.retriever_run_number is None
     ):
         raise PipelineException(
-            "Inference-only mode requires --retriever-run-name or "
+            f"{config.run_mode} mode requires --retriever-run-name or "
             "--retriever-run-number."
+        )
+    if config.run_mode == "evidence-only" and (
+        config.llm_provider is not None
+        or config.main_llm_model is not None
+        or config.reasoning_effort is not None
+        or config.generate_explanation
+        or config.no_llm_inference
+        or config.inference_run_name is not None
+    ):
+        raise PipelineException(
+            "Evidence-only mode does not accept LLM provider/model, reasoning, "
+            "explanation, inference-run naming, or --no-llm-inference options."
+        )
+    if config.run_mode != "evidence-only" and config.evidence_run_name is not None:
+        raise PipelineException(
+            "--evidence-run-name is only valid with --evidence-only."
         )
     if config.retriever_run_name is not None and config.retriever_run_number is not None:
         raise PipelineException(
@@ -421,19 +448,19 @@ def build_pipeline(config: PipelineRuntimeConfig) -> Pipeline:
         raise PipelineException(
             "--llm-provider vezilka requires --main-llm-model when --default is used."
         )
-    if config.run_mode in {"evaluation-only", "inference-only"} and (
+    if config.run_mode in {"evaluation-only", "inference-only", "evidence-only"} and (
         config.continue_training_model_run_name is not None
         or config.continue_training_model_run_number is not None
     ):
         raise PipelineException(
             f"Training continuation flags are not valid in {config.run_mode} mode."
         )
-    if config.run_mode == "inference-only" and (
+    if config.run_mode in {"inference-only", "evidence-only"} and (
         config.evaluation_model_run_name is not None
         or config.evaluation_model_run_number is not None
     ):
         raise PipelineException(
-            "Evaluation model selectors are not valid in inference-only mode; "
+            f"Evaluation model selectors are not valid in {config.run_mode} mode; "
             "select the persisted retriever run instead."
         )
 
@@ -469,7 +496,7 @@ def build_pipeline(config: PipelineRuntimeConfig) -> Pipeline:
 
     saved_model_config: SavedGnnAnswerRetrieverConfig | None = None
     lineage_label: str | None = None
-    if resolved_config.run_mode == "inference-only":
+    if resolved_config.run_mode in {"inference-only", "evidence-only"}:
         saved_model_config = GnnRetrieverResultsService().load_model_config(
             evaluation_root=loader_definition.cache_root / "evaluations",
             run_name=resolved_config.retriever_run_name,
@@ -522,7 +549,7 @@ def build_pipeline(config: PipelineRuntimeConfig) -> Pipeline:
         mode=resolved_config.wandb_mode,
         enabled=not resolved_config.no_wandb,
         resume_from_lineage=resolved_config.run_mode
-        not in {"evaluation-only", "inference-only"},
+        not in {"evaluation-only", "inference-only", "evidence-only"},
         run_root=wandb_loader_definition.cache_root / "wandb_runs",
         architecture_name=resolved_config.gnn_architecture,
     )
@@ -600,6 +627,7 @@ def build_pipeline(config: PipelineRuntimeConfig) -> Pipeline:
             training_batch_size=resolved_config.training_batch_size,
             training_device=resolved_config.training_device,
             training_profile=resolved_config.training_profile,
+            random_seed=resolved_config.random_seed,
             training_run_name=resolved_config.training_run_name,
             continue_training_model_run_name=(
                 resolved_config.continue_training_model_run_name
@@ -676,6 +704,18 @@ def build_pipeline(config: PipelineRuntimeConfig) -> Pipeline:
         inference_steps.append(
             LogInferenceToWandbStep(coordinator=wandb_coordinator)
         )
+
+    evidence_only_steps = [
+        BuildReasoningSamplesFromGnnEvaluationStep(),
+        BuildEvidenceSubgraphsBatchStep(
+            pcst_debug_profile=resolved_config.pcst_debug_profile,
+        ),
+        SaveEvidenceSubgraphsStep(run_name=resolved_config.evidence_run_name),
+    ]
+    if not resolved_config.no_wandb:
+        evidence_only_steps.append(
+            LogEvidenceToWandbStep(coordinator=wandb_coordinator)
+        )
     inference_steps.append(ComputeFinalResultsStep())
     if not resolved_config.no_wandb:
         inference_steps.append(
@@ -717,6 +757,25 @@ def build_pipeline(config: PipelineRuntimeConfig) -> Pipeline:
             ),
             *inference_steps,
         ]
+    elif resolved_config.run_mode == "evidence-only":
+        preparation_steps = setup_steps
+        selected_evaluation_steps = [
+            LoadGnnAnswerRetrieverRunStep(
+                run_name=resolved_config.retriever_run_name,
+                run_number=resolved_config.retriever_run_number,
+            ),
+            *(
+                [
+                    LogRetrieverToWandbStep(
+                        coordinator=wandb_coordinator,
+                        copy_to_new_experiment=True,
+                    )
+                ]
+                if not resolved_config.no_wandb
+                else []
+            ),
+            *evidence_only_steps,
+        ]
     else:
         preparation_steps = [*setup_steps, *training_steps]
         selected_evaluation_steps = [*retriever_steps]
@@ -745,15 +804,16 @@ def run_pipeline(config: PipelineRuntimeConfig) -> PipelineExecutionResult:
             "--evaluation-model-run-number."
         )
     if (
-        config.run_mode == "inference-only"
+        config.run_mode in {"inference-only", "evidence-only"}
         and config.retriever_run_name is None
         and config.retriever_run_number is None
     ):
         raise PipelineException(
-            "Inference-only mode requires --retriever-run-name or "
+            f"{config.run_mode} mode requires --retriever-run-name or "
             "--retriever-run-number."
         )
 
+    configure_random_seed(config.random_seed)
     pipeline = build_pipeline(config=config)
     initial_context = StepContext(result=InitialStepResult())
     if config.run_mode == "train-only":
@@ -809,6 +869,7 @@ def _build_success_summary_lines(result: PipelineExecutionResult) -> list[str]:
         "subgraph_algorithm",
         "model_run_name",
         "evaluation_run_name",
+        "evidence_run_name",
         "inference_run_name",
         "results_run_name",
         "evaluated_instances",
@@ -897,6 +958,14 @@ def _add_gnn_architecture_option_arguments(parser: argparse.ArgumentParser) -> N
         parser.add_argument(option.cli_flag, **kwargs)
 
 
+def _non_negative_integer(value: str) -> int:
+    """Parse a non-negative integer for reproducible random seeds."""
+    parsed = int(value)
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("must be greater than or equal to zero")
+    return parsed
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the CLI parser for the framework entry point."""
     parser = argparse.ArgumentParser(description="Run graphragX.")
@@ -936,6 +1005,23 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_const",
         const="inference-only",
         help="Run LLM inference and final results from a saved retriever run.",
+    )
+    run_mode_group.add_argument(
+        "--evidence-only",
+        dest="run_mode",
+        action="store_const",
+        const="evidence-only",
+        help="Build and save evidence subgraphs from a saved retriever run.",
+    )
+    parser.add_argument(
+        "--seed",
+        dest="random_seed",
+        type=_non_negative_integer,
+        default=DEFAULT_RANDOM_SEED,
+        help=(
+            "Seed Python, NumPy, and PyTorch before model construction. "
+            f"Default: {DEFAULT_RANDOM_SEED}."
+        ),
     )
     parser.add_argument(
         "--dataset",
@@ -1160,7 +1246,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--candidate-top-k",
         type=int,
         default=DEFAULT_CANDIDATE_TOP_K,
-        help="Minimum selected candidate count when threshold selection is too small.",
+        help=(
+            "Minimum selected candidate count when threshold selection is too small "
+            f"(must be at least {MIN_CANDIDATE_TOP_K})."
+        ),
     )
     parser.add_argument(
         "--candidate-limit",
@@ -1199,8 +1288,8 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_false",
         default=True,
         help=(
-            "Include training/evaluation graphs that contain none of their gold "
-            "answer entities. By default these unusable graphs are skipped."
+            "Include training/evaluation graphs with one or more gold answer "
+            "entities absent. By default these incomplete graphs are skipped."
         ),
     )
     parser.add_argument(
@@ -1243,6 +1332,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--inference-run-name",
         default=None,
         help="Optional label for the versioned LLM inference run folder.",
+    )
+    parser.add_argument(
+        "--evidence-run-name",
+        default=None,
+        help="Optional label for the versioned evidence-only run folder.",
     )
     parser.add_argument(
         "--llm-inference-batch-size",
@@ -1310,6 +1404,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     runtime_config = PipelineRuntimeConfig(
         run_mode=args.run_mode,
+        random_seed=args.random_seed,
         dataset=args.dataset,
         local_graph_profile=args.local_graph_profile,
         llm_provider=args.llm_provider,
@@ -1378,6 +1473,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         evaluation_gpu_cache_reserve_gb=args.evaluation_gpu_cache_reserve_gb,
         no_llm_inference=args.no_llm_inference,
         inference_run_name=args.inference_run_name,
+        evidence_run_name=args.evidence_run_name,
         llm_inference_batch_size=args.llm_inference_batch_size,
         llm_inference_parallel_calls=args.llm_inference_parallel_calls,
         no_wandb=args.no_wandb,

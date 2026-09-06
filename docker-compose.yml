@@ -1,11 +1,47 @@
+name: graphragx
+
 services:
   qdrant:
     image: qdrant/qdrant:latest
+    restart: unless-stopped
     ports:
       - "6333:6333"
       - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
 
+  graphragx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: graphragx:local
+    depends_on:
+      - qdrant
+    user: "${GRAPHRAGX_UID:-1000}:${GRAPHRAGX_GID:-1000}"
+    environment:
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      DEEPSEEK_API_KEY: "${DEEPSEEK_API_KEY:-}"
+      DEEPSEEK_BASE_URL: "${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
+      VEZILKA_API_KEY: "${VEZILKA_API_KEY:-}"
+      QDRANT_URL: "http://qdrant:6333"
+      QDRANT_API_KEY: "${QDRANT_API_KEY:-}"
+      QDRANT_COLLECTION_PREFIX: "${QDRANT_COLLECTION_PREFIX:-graphragx_embeddings}"
+      WANDB_API_KEY: "${WANDB_API_KEY:-}"
+      WANDB_PROJECT: "${WANDB_PROJECT:-graphragx}"
+      WANDB_ENTITY: "${WANDB_ENTITY:-}"
+      WANDB_MODE: "${WANDB_MODE:-online}"
+      GRAPHRAGX_LOG_LEVEL: "${GRAPHRAGX_LOG_LEVEL:-INFO}"
+      GRAPHRAGX_LOG_COLOR: "${GRAPHRAGX_LOG_COLOR:-cyan}"
+      GRAPHRAGX_WAIT_FOR_QDRANT: "${GRAPHRAGX_WAIT_FOR_QDRANT:-1}"
+      GRAPHRAGX_QDRANT_WAIT_SECONDS: "${GRAPHRAGX_QDRANT_WAIT_SECONDS:-60}"
+    volumes:
+      - ./data:/app/data
+      - ./metadata:/app/metadata
+      - ./.experiment-runs:/app/.experiment-runs
+      - ./wandb:/app/wandb
+      - huggingface_cache:/cache/huggingface
+    command: ["graphragx-experiments", "experiments/example.toml"]
+
 volumes:
   qdrant_data:
+  huggingface_cache:

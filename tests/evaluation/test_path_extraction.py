@@ -38,6 +38,7 @@ from pipeline.evaluation.models import (
 from pipeline.evaluation.services.llm_inference_storage import (
     LlmInferenceStorageService,
 )
+from pipeline.evaluation.exceptions import InsufficientLlmCreditsException
 
 
 def make_sample() -> EvaluationSample:
@@ -503,7 +504,7 @@ class FakeAnswerGenerationService:
         question: str,
         reasoning_paths_text: str,
         model_id: str,
-    ) -> tuple[str, str]:
+    ) -> tuple[list[str], str]:
         self.calls.append((question, reasoning_paths_text, model_id))
         prompt = (
             "Question:\n"
@@ -512,24 +513,27 @@ class FakeAnswerGenerationService:
             f"{reasoning_paths_text}\n\n"
             "Answer the question using only the reasoning paths."
         )
-        return "Jaxon Bieber", prompt
+        return ["Jaxon Bieber"], prompt
 
     def generate_answer_with_explanation(
         self,
         question: str,
         reasoning_paths_text: str,
         model_id: str,
+        provider_id: str = "openai",
+        reasoning_effort: str | None = None,
+        generate_explanation: bool = True,
     ) -> dict[str, str]:
         self.calls.append((question, reasoning_paths_text, model_id))
         return {
-            "answer": "Jaxon Bieber",
+            "answers": ["Jaxon Bieber"],
             "explanation": (
                 "Used Justin Bieber -> people.person.sibling_s -> m.0gxnnwp "
                 "and m.0gxnnwp -> people.sibling_relationship.sibling -> Jaxon Bieber."
             ),
             "raw_response": json.dumps(
                 {
-                    "answer": "Jaxon Bieber",
+                    "answers": ["Jaxon Bieber"],
                     "explanation": (
                         "Used Justin Bieber -> people.person.sibling_s -> m.0gxnnwp "
                         "and m.0gxnnwp -> people.sibling_relationship.sibling -> Jaxon Bieber."
@@ -555,6 +559,7 @@ class ConcurrentFakeAnswerGenerationService:
         model_id: str,
         provider_id: str = "openai",
         reasoning_effort: str | None = None,
+        generate_explanation: bool = True,
     ) -> dict[str, str | int | float]:
         with self._lock:
             self.active_calls += 1
@@ -572,15 +577,32 @@ class ConcurrentFakeAnswerGenerationService:
             raise AssertionError("Expected concurrent LLM calls did not start.")
 
         return {
-            "answer": "Answer",
+            "answers": ["Answer"],
             "explanation": "Explanation",
-            "raw_response": '{"answer":"Answer","explanation":"Explanation"}',
+            "raw_response": '{"answers":["Answer"],"explanation":"Explanation"}',
             "prompt": question,
             "prompt_tokens": 1,
             "completion_tokens": 1,
             "total_tokens": 2,
             "estimated_cost_usd": 0.0,
         }
+
+
+class InternallyBrokenAnswerGenerationService:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def generate_answer_with_explanation(
+        self,
+        question: str,
+        reasoning_paths_text: str,
+        model_id: str,
+        provider_id: str = "openai",
+        reasoning_effort: str | None = None,
+        generate_explanation: bool = True,
+    ) -> dict[str, str]:
+        self.calls += 1
+        raise TypeError("internal reasoning_effort handling failed")
 
 
 class LlmAnswerGenerationStepTests(unittest.TestCase):
@@ -598,7 +620,7 @@ class LlmAnswerGenerationStepTests(unittest.TestCase):
 
         result = step.execute(StepContext(result=extracted_paths))
 
-        self.assertEqual(result.answer, "Jaxon Bieber")
+        self.assertEqual(result.answers, ["Jaxon Bieber"])
         self.assertEqual(result.model_id, "test-model")
         self.assertEqual(result.extracted_paths, extracted_paths)
         self.assertIn("Question:", result.prompt)
@@ -610,6 +632,75 @@ class LlmAnswerGenerationStepTests(unittest.TestCase):
 
 
 class LlmInferenceBatchStepTests(unittest.TestCase):
+    def test_insufficient_credits_are_not_recorded_as_an_ordinary_failed_answer(
+        self,
+    ) -> None:
+        class InsufficientCreditsService:
+            def generate_answer_with_explanation(self, **kwargs):
+                raise InsufficientLlmCreditsException("insufficient credits")
+
+        extracted_paths = ShortestPathExtractionService().extract_paths(
+            sample=make_sample(),
+            candidates=[CandidateNodeScore(node_id="Jaxon Bieber", score=1.0)],
+        )
+        prediction = EvaluatedAnswerRetrievalInstance(
+            instance_index=0,
+            question=make_sample().question,
+            q_entity=make_sample().q_entities,
+            a_entity=make_sample().a_entities,
+            answer_candidates=[],
+            gold_answer_scores=[],
+            hit_at_1=False,
+            missing_gold_in_graph=False,
+        )
+        item = ReasoningPathsForPrediction(
+            instance_index=0,
+            prediction=prediction,
+            extracted_paths=extracted_paths,
+        )
+
+        with self.assertRaises(InsufficientLlmCreditsException):
+            GenerateFinalAnswersBatchStep(
+                model_id="deepseek-v4-flash",
+                llm_provider="deepseek",
+                answer_generation_service=InsufficientCreditsService(),
+            )._generate_answer(item)
+
+    def test_internal_type_error_is_recorded_without_retrying_request(self) -> None:
+        extracted_paths = ShortestPathExtractionService().extract_paths(
+            sample=make_sample(),
+            candidates=[CandidateNodeScore(node_id="Jaxon Bieber", score=1.0)],
+        )
+        prediction = EvaluatedAnswerRetrievalInstance(
+            instance_index=0,
+            question=make_sample().question,
+            q_entity=make_sample().q_entities,
+            a_entity=make_sample().a_entities,
+            answer_candidates=[],
+            gold_answer_scores=[],
+            hit_at_1=False,
+            missing_gold_in_graph=False,
+        )
+        item = ReasoningPathsForPrediction(
+            instance_index=0,
+            prediction=prediction,
+            extracted_paths=extracted_paths,
+        )
+        fake_service = InternallyBrokenAnswerGenerationService()
+
+        generated = GenerateFinalAnswersBatchStep(
+            model_id="test-model",
+            reasoning_effort="low",
+            answer_generation_service=fake_service,
+        )._generate_answer(item)
+
+        self.assertEqual(fake_service.calls, 1)
+        self.assertEqual(generated.answers, [])
+        self.assertEqual(
+            generated.error_message,
+            "internal reasoning_effort handling failed",
+        )
+
     def test_candidate_reduction_percentage_uses_global_candidate_counts(self) -> None:
         answers = GeneratedFinalAnswersBatch(
             dataset_id="WebQSP",
@@ -887,6 +978,7 @@ class LlmInferenceBatchStepTests(unittest.TestCase):
             reasoning_rows = saved_run.reasoning_path.read_text(encoding="utf-8").splitlines()
             summary = json.loads(saved_run.inference_config_path.read_text(encoding="utf-8"))
             self.assertEqual(len(answer_lines), 2)
+            self.assertEqual(json.loads(answer_lines[0])["answers"], ["Jaxon Bieber"])
             self.assertEqual(len(reasoning_rows), 2)
             self.assertEqual(len(fake_service.calls), 2)
             self.assertEqual(saved_run.total_instances, 2)

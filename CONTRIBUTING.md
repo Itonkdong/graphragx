@@ -9,11 +9,15 @@ This project is an academic GraphRAG pipeline, so contributions should preserve 
 Read the main project documentation:
 
 - `README.md`
-- `metadata/`
-- `agents_metadata/guidlines/PROJECT_GUIDELINES.MD`
-- `agents_metadata/pipeline_overview/PIPELINE_OVERVIEW.md`
+- `docs/index.md`
+- `agents-metadata/guidlines/PROJECT_GUIDELINES.MD`
+- `agents-metadata/overview/pipeline_overview.md`
 
-The `metadata/` folder contains the human-facing project explanation, architecture material, and metric descriptions. The `agents_metadata/` folder contains instructions for AI coding agents and should be used as context when an agent contributes changes.
+The `docs/` folder contains the maintained software documentation. The
+`metadata/` folder contains generated figures, tables, provenance, and other
+research material.
+`agents-metadata/` contains instructions for AI coding agents and should be used
+as context when an agent contributes changes.
 
 ## Development Setup
 
@@ -49,12 +53,13 @@ Set the required API keys and optional W&B settings in `.env`.
 
 ## Working With Agents
 
-If you use an AI coding agent, give it the relevant files from `agents_metadata/` first. At minimum, include:
+If you use an AI coding agent, give it the relevant files from
+`agents-metadata/` first. At minimum, include:
 
-- `agents_metadata/guidlines/PROJECT_GUIDELINES.MD`
-- `agents_metadata/guidlines/SERVICE_GUIDELINES.MD`
-- `agents_metadata/guidlines/ERROR_HANDLING_GUIDELINES.MD`
-- `agents_metadata/pipeline_overview/PIPELINE_OVERVIEW.md`
+- `agents-metadata/guidlines/PROJECT_GUIDELINES.MD`
+- `agents-metadata/guidlines/SERVICE_GUIDELINES.MD`
+- `agents-metadata/guidlines/error_handling_guildline.MD`
+- `agents-metadata/overview/pipeline_overview.md`
 
 The agent metadata explains the project architecture, conventions, error-handling expectations, and the intended pipeline flow. This helps agents make changes that match the existing codebase.
 
@@ -79,7 +84,7 @@ Some tests require optional heavy dependencies such as PyTorch. If a dependency 
 - The change is scoped and follows the current pipeline/service conventions.
 - Relevant tests were added or updated.
 - Existing focused tests pass.
-- README or metadata files were updated if behavior changed.
+- The relevant file under `docs/` was updated if behavior changed.
 - Generated data, model weights, local W&B files, and private environment files are not committed.
 
 ## License

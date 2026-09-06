@@ -22,6 +22,8 @@ from pipeline.evaluation.steps.llm_inference import (
     BuildReasoningSamplesFromGnnEvaluationStep,
     GenerateAndSaveFinalAnswersBatchesContext,
     GenerateAndSaveFinalAnswersBatchesStep,
+    SaveEvidenceSubgraphsContext,
+    SaveEvidenceSubgraphsStep,
 )
 from pipeline.models import PipelineResultBank
 from pipeline.evaluation.models import GnnAnswerRetrieverEvaluationResult
@@ -63,6 +65,7 @@ class StepContextBuilder:
                 self._create_build_reasoning_samples_from_gnn_context
             ),
             BuildEvidenceSubgraphsBatchStep: self._create_evidence_subgraphs_context,
+            SaveEvidenceSubgraphsStep: self._create_save_evidence_subgraphs_context,
             GenerateAndSaveFinalAnswersBatchesStep: (
                 self._create_generate_and_save_final_answers_batches_context
             ),
@@ -201,6 +204,24 @@ class StepContextBuilder:
             exception=exception,
             pipeline_configuration=self.get_required_result(
                 BuiltPipelineConfiguration
+            ),
+        )
+
+    def _create_save_evidence_subgraphs_context(
+        self,
+        result: StepResult | None,
+        outcome: bool,
+        exception: PipelineException,
+    ) -> SaveEvidenceSubgraphsContext:
+        return SaveEvidenceSubgraphsContext(
+            result=result,
+            outcome=outcome,
+            exception=exception,
+            pipeline_configuration=self.get_required_result(
+                BuiltPipelineConfiguration
+            ),
+            gnn_evaluation_result=self.get_required_result(
+                GnnAnswerRetrieverEvaluationResult
             ),
         )
 

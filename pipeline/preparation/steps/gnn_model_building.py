@@ -161,7 +161,7 @@ class BuildGnnAnswerRetrieverStep(
 
             architecture_context.update(
                 {
-                    "rearev_preprocessing_version": 1,
+                    "rearev_preprocessing_version": 2,
                     "encoder_model_id": REAREV_ENCODER_MODEL_ID,
                     "encoder_revision": REAREV_ENCODER_REVISION,
                     "encoder_width": REAREV_ENCODER_WIDTH,
@@ -169,6 +169,8 @@ class BuildGnnAnswerRetrieverStep(
                     "relation_max_length": REAREV_RELATION_MAX_LENGTH,
                     "relation_text_schema_version": REAREV_RELATION_TEXT_SCHEMA_VERSION,
                     "encoder_frozen": True,
+                    "seed_feedback_aggregation": "sum",
+                    "instruction_revision_schema": "four-way-gru-update-v2",
                 }
             )
         elif configuration.gnn_architecture == NBFNET_ARCHITECTURE_ID:

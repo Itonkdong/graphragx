@@ -21,6 +21,9 @@ from pipeline.preparation.models.webqsp_local_graph import WebQSPProcessedInstan
 from pipeline.preparation.services.gnn_evaluation_data_preparation import (
     GnnEvaluationDataPreparationService,
 )
+from pipeline.preparation.services.gnn_answer_retriever_evaluation import (
+    GnnAnswerRetrieverEvaluationService,
+)
 from pipeline.preparation.services.gnn_training_data_preparation import (
     GnnTrainingDataPreparationConfig,
     GnnTrainingDataPreparationService,
@@ -59,10 +62,12 @@ def test_training_filter_skips_graph_without_any_gold_node() -> None:
     valid = PreparedGnnTrainingInstance.model_construct(
         source_instance_index=4,
         node_labels=torch.tensor([0.0, 1.0]),
+        gold_answer_count=1,
     )
     missing = PreparedGnnTrainingInstance.model_construct(
         source_instance_index=5,
         node_labels=torch.tensor([0.0, 0.0]),
+        gold_answer_count=1,
     )
     prepared = PreparedGnnTrainingData.model_construct(instances=[valid, missing])
 
@@ -82,6 +87,31 @@ def test_training_filter_skips_graph_without_any_gold_node() -> None:
         )
         is prepared
     )
+
+
+def test_training_filter_skips_graph_with_only_part_of_gold_set_present() -> None:
+    complete = PreparedGnnTrainingInstance.model_construct(
+        source_instance_index=1,
+        node_labels=torch.tensor([0.0, 1.0, 1.0]),
+        gold_answer_count=2,
+    )
+    partial = PreparedGnnTrainingInstance.model_construct(
+        source_instance_index=2,
+        node_labels=torch.tensor([0.0, 1.0, 0.0]),
+        gold_answer_count=2,
+    )
+    prepared = PreparedGnnTrainingData.model_construct(
+        instances=[complete, partial]
+    )
+
+    filtered = GnnTrainingDataPreparationService._filter_missing_gold_training_instances(
+        prepared_data=prepared,
+        enabled=True,
+        architecture_name="ReaRev",
+    )
+
+    assert [item.source_instance_index for item in filtered.instances] == [1]
+    assert filtered.skipped_missing_gold_in_graph_count == 1
 
 
 def test_evaluation_filter_preserves_original_instance_indices() -> None:
@@ -111,3 +141,36 @@ def test_evaluation_filter_preserves_original_instance_indices() -> None:
         )
         is prepared
     )
+
+
+def test_evaluation_filter_skips_graph_with_only_part_of_gold_set_present() -> None:
+    partial_graph = _graph(answer_present=True).model_copy(
+        update={"a_entity": ["answer", "missing-answer"]}
+    )
+    partial = PreparedGnnEvaluationInstance.model_construct(
+        source_instance_index=10,
+        instance=partial_graph,
+    )
+    prepared = PreparedGnnEvaluationData.model_construct(instances=[partial])
+
+    filtered = GnnEvaluationDataPreparationService._filter_missing_gold_evaluation_instances(
+        prepared_data=prepared,
+        enabled=True,
+    )
+
+    assert filtered.instances == []
+    assert filtered.skipped_missing_gold_in_graph_count == 1
+
+
+def test_prediction_marks_partial_gold_set_as_missing_in_graph() -> None:
+    partial_graph = _graph(answer_present=True).model_copy(
+        update={"a_entity": ["answer", "missing-answer"]}
+    )
+
+    prediction = GnnAnswerRetrieverEvaluationService._build_skipped_prediction(
+        instance_index=10,
+        instance=partial_graph,
+        global_node_vocabulary={"seed": 0, "answer": 1},
+    )
+
+    assert prediction.missing_gold_in_graph is True

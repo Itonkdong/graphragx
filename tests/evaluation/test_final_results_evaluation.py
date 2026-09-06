@@ -45,12 +45,16 @@ def _candidate(node: str, probability: float, is_gold: bool) -> AnswerCandidateS
     )
 
 
-def _prediction(candidates: list[AnswerCandidateScore]) -> EvaluatedAnswerRetrievalInstance:
+def _prediction(
+    candidates: list[AnswerCandidateScore],
+    gold_answers: list[str] | None = None,
+) -> EvaluatedAnswerRetrievalInstance:
+    resolved_gold_answers = ["gold"] if gold_answers is None else gold_answers
     return EvaluatedAnswerRetrievalInstance(
         instance_index=0,
         question="question?",
         q_entity=["topic"],
-        a_entity=["gold"],
+        a_entity=resolved_gold_answers,
         answer_candidates=candidates,
         gold_answer_scores=[],
         hit_at_1=bool(candidates and candidates[0].is_gold_answer),
@@ -67,7 +71,7 @@ def test_answer_normalization_and_set_metrics() -> None:
         "question": "q",
         "q_entity": ["e"],
         "gold_answers": ["The Moon", "Earth"],
-        "answer": "moon, the earth",
+        "answers": ["moon", "the earth"],
         "explanation": "",
         "error_message": None,
     }
@@ -87,7 +91,7 @@ def test_answer_normalization_and_set_metrics() -> None:
     assert result.precision == 1.0
     assert result.recall == 1.0
 
-    wrong_first_row = answer_row | {"answer": "Berlin, Earth"}
+    wrong_first_row = answer_row | {"answers": ["Berlin", "Earth"]}
     wrong_first_result = service._build_per_instance_result(
         instance_index=1,
         answer_row=wrong_first_row,
@@ -101,7 +105,7 @@ def test_answer_normalization_and_set_metrics() -> None:
     assert wrong_first_result.recall == 0.5
     assert wrong_first_result.f1 == 0.5
 
-    unknown_row = answer_row | {"answer": "Unknown"}
+    unknown_row = answer_row | {"answers": ["Unknown"]}
     unknown_result = service._build_per_instance_result(
         instance_index=2,
         answer_row=unknown_row,
@@ -115,7 +119,7 @@ def test_answer_normalization_and_set_metrics() -> None:
     assert unknown_result.hit is False
     assert unknown_result.hits_at_1 is False
 
-    failed_row = answer_row | {"answer": "Moon", "error_message": "timeout"}
+    failed_row = answer_row | {"answers": ["Moon"], "error_message": "timeout"}
     failed_result = service._build_per_instance_result(
         instance_index=3,
         answer_row=failed_row,
@@ -124,6 +128,87 @@ def test_answer_normalization_and_set_metrics() -> None:
         candidate_limit=10,
     )
     assert failed_result.predicted_answers == []
+    assert failed_result.exact_match is False
+    assert failed_result.hit is False
+    assert failed_result.false_negative_count == 2
+
+
+def test_comma_bearing_entities_remain_atomic_across_all_metrics() -> None:
+    service = FinalResultsEvaluationService()
+    candidates = [
+        _candidate("Washington, D.C.", 0.9, True),
+        _candidate("Paris, Texas", 0.8, True),
+    ]
+    answer_row = {
+        "question": "q",
+        "q_entity": ["topic"],
+        "gold_answers": ["Washington, D.C.", "Paris, Texas"],
+        "answers": ["Paris, Texas", "Washington, D.C."],
+        "explanation": "",
+        "error_message": None,
+    }
+    reasoning_row = {
+        "instance_index": 0,
+        "subgraph": [
+            {"source": "topic", "relation": "located_in", "target": "Washington, D.C."},
+            {"source": "topic", "relation": "located_in", "target": "Paris, Texas"},
+        ],
+    }
+
+    result = service._build_per_instance_result(
+        instance_index=0,
+        answer_row=answer_row,
+        reasoning_row=reasoning_row,
+        prediction=_prediction(candidates),
+        candidate_limit=10,
+    )
+
+    assert result.normalized_gold_answers == ["paris texas", "washington dc"]
+    assert result.normalized_predicted_answers == ["paris texas", "washington dc"]
+    assert result.true_positive_count == 2
+    assert result.false_positive_count == 0
+    assert result.false_negative_count == 0
+    assert result.exact_match is True
+    assert result.retrieval_gold_coverage == 1.0
+    assert result.reasoning_context_gold_coverage == 1.0
+    assert result.full_gold_retrieval is True
+    assert result.full_gold_context is True
+
+
+def test_separate_array_items_cannot_impersonate_one_comma_bearing_entity() -> None:
+    service = FinalResultsEvaluationService()
+    result = service._build_per_instance_result(
+        instance_index=0,
+        answer_row={
+            "question": "q",
+            "q_entity": ["topic"],
+            "gold_answers": ["Washington, D.C."],
+            "answers": ["Washington", "D.C."],
+            "explanation": "",
+            "error_message": None,
+        },
+        reasoning_row={"instance_index": 0, "subgraph": []},
+        prediction=_prediction([]),
+        candidate_limit=10,
+    )
+
+    assert result.normalized_gold_answers == ["washington dc"]
+    assert result.normalized_predicted_answers == ["washington", "dc"]
+    assert result.exact_match is False
+    assert result.true_positive_count == 0
+
+
+def test_singular_answer_artifact_is_rejected() -> None:
+    service = FinalResultsEvaluationService()
+
+    with pytest.raises(FinalResultsEvaluationException, match="Rerun inference"):
+        service._prediction_answers(
+            {
+                "answer": "Washington, D.C., Paris, Texas",
+                "answer_candidates": ["Washington, D.C.", "Paris, Texas"],
+                "error_message": None,
+            }
+        )
 
 
 def test_retrieval_conditioned_answer_metrics_cover_all_outcomes() -> None:
@@ -159,7 +244,7 @@ def test_retrieval_conditioned_answer_metrics_cover_all_outcomes() -> None:
                 "question": "question?",
                 "q_entity": ["topic"],
                 "gold_answers": ["Alpha", "Beta"],
-                "answer": ", ".join(predicted),
+                "answers": predicted,
                 "explanation": "",
                 "error_message": None,
             },
@@ -231,7 +316,7 @@ def test_conditional_metrics_are_none_when_no_answers_are_available() -> None:
             "question": "question?",
             "q_entity": ["topic"],
             "gold_answers": ["Gold"],
-            "answer": "Unknown",
+            "answers": ["Unknown"],
             "explanation": "",
             "error_message": None,
         },
@@ -295,6 +380,25 @@ def test_ndcg_variants() -> None:
     empty = _prediction([])
     assert service._ndcg_at_k(no_gold, 10) == 0.0
     assert service._ndcg_at_k(empty, 10) == 0.0
+
+    incomplete_retrieval = _prediction(
+        [_candidate("gold-1", 0.9, True)],
+        gold_answers=["gold-1", "gold-2", "gold-3"],
+    )
+    ideal_three = 1.0 + 1 / math.log2(3) + 1 / math.log2(4)
+    assert math.isclose(
+        service._ndcg_at_k(incomplete_retrieval, 5),
+        1.0 / ideal_three,
+    )
+
+    persisted_order = _prediction([
+        _candidate("wrong", 0.1, False),
+        _candidate("gold", 0.9, True),
+    ])
+    assert math.isclose(
+        service._ndcg_at_k(persisted_order, 5),
+        1 / math.log2(3),
+    )
 
 
 def test_mismatched_source_rows_raise_domain_exception() -> None:
@@ -370,7 +474,7 @@ def test_final_results_storage_integration(tmp_path: Path) -> None:
                 "gold_answers": ["Earth"],
                 "answer_candidates": ["Earth", "Venus"],
                 "model_id": "test-model",
-                "answer": "the earth",
+                "answers": ["the earth"],
                 "explanation": "Moon -> orbits -> Earth",
                 "raw_response": "",
                 "error_message": None,
@@ -382,7 +486,7 @@ def test_final_results_storage_integration(tmp_path: Path) -> None:
                 "gold_answers": ["Mars"],
                 "answer_candidates": ["Phobos", "Mars"],
                 "model_id": "test-model",
-                "answer": "Unknown",
+                "answers": ["Unknown"],
                 "explanation": "",
                 "raw_response": "",
                 "error_message": "LLM request failed",
@@ -483,20 +587,25 @@ def test_final_results_storage_integration(tmp_path: Path) -> None:
     assert retrieval_metrics["hits_at_candidate_limit"] == 1.0
     assert retrieval_metrics["candidate_limit"] == 5
     assert retrieval_metrics["average_candidate_count"] == 2.0
+    assert retrieval_metrics["ndcg_at_1"] == 0.5
+    assert math.isclose(
+        retrieval_metrics["ndcg_at_5"],
+        (1.0 + 1 / math.log2(3)) / 2,
+    )
 
     metrics = json.loads(outcome.storage_result.reasoning_metrics_path.read_text())
     assert metrics["evaluated_instances"] == 2
     assert metrics["successful_answers"] == 1
     assert metrics["failed_answers"] == 1
-    assert metrics["accuracy"] == 1.0
+    assert metrics["accuracy"] == 0.5
     assert metrics["hit_count"] == 1
-    assert metrics["hit_rate"] == 1.0
+    assert metrics["hit_rate"] == 0.5
     assert metrics["hits_at_1_count"] == 1
-    assert metrics["hits_at_1"] == 1.0
+    assert metrics["hits_at_1"] == 0.5
     assert metrics["precision"] == 1.0
-    assert metrics["recall"] == 1.0
-    assert metrics["f1"] == 1.0
-    assert metrics["grounded_explanation_rate"] == 1.0
+    assert metrics["recall"] == 0.5
+    assert math.isclose(metrics["f1"], 2 / 3)
+    assert metrics["grounded_explanation_rate"] == 0.5
     assert metrics["candidate_limit"] == 5
     assert math.isclose(metrics["ndcg_at_5"], (1.0 + 1 / math.log2(3)) / 2)
     assert metrics["retrieval_gold_coverage"] == 1.0

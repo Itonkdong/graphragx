@@ -48,6 +48,7 @@ class SavedGnnAnswerRetrieverTrainingConfig(BaseModel):
     batch_size: int = 1
     device: str = "cpu"
     profile: bool = False
+    random_seed: int | None = None
     embedding_cache_device: str | None = None
     embedding_cache_dtype: str | None = None
     loss_history: list[dict[str, float | int]] = Field(default_factory=list)

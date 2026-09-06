@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, Field
 
 from helpers.logging_config import get_logger
+from helpers.constants import MIN_CANDIDATE_TOP_K
 from pipeline.evaluation.models import (
     AnswerCandidateScore,
     EvaluatedAnswerRetrievalInstance,
@@ -89,6 +90,18 @@ class GnnAnswerRetrieverEvaluationOutcome(BaseModel):
         ...,
         description="Hits at configured candidate limit count.",
     )
+    ndcg_at_1: float = Field(default=0.0, description="Mean retrieval nDCG@1.")
+    ndcg_at_5: float = Field(default=0.0, description="Mean retrieval nDCG@5.")
+    ndcg_at_10: float = Field(default=0.0, description="Mean retrieval nDCG@10.")
+    ndcg_at_candidate_limit: float = Field(
+        default=0.0,
+        description="Mean retrieval nDCG at the configured candidate limit.",
+    )
+    conditioned_evaluated_instances: int = Field(default=0)
+    retrieval_gold_coverage: float = Field(default=0.0)
+    retrieval_full_gold_coverage_count: int = Field(default=0)
+    retrieval_full_gold_coverage_rate: float = Field(default=0.0)
+    retrieved_gold_answer_count: int = Field(default=0)
     average_candidate_count: float = Field(
         ...,
         description="Average number of selected candidate nodes.",
@@ -97,6 +110,7 @@ class GnnAnswerRetrieverEvaluationOutcome(BaseModel):
         ...,
         description="Instances where no gold answer appears in the local graph.",
     )
+    skipped_missing_gold_in_graph_count: int = Field(default=0)
 
 
 class GnnAnswerRetrieverEvaluationService(AbstractService):
@@ -216,7 +230,7 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
         if prepared_instance_count == 0:
             raise GnnAnswerRetrieverEvaluationException(
                 "GNN evaluation has no usable graphs after skipping instances "
-                "without an in-graph gold answer. Use "
+                "without their complete in-graph gold-answer set. Use "
                 "--no-skip-missing-gold-in-graph to restore the previous behavior."
             )
 
@@ -459,6 +473,17 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
             device=device,
             enabled=evaluation_config.profile,
         )
+        retrieval_metrics = self.results_service.build_metrics(
+            dataset_id=prepared_dataset.dataset_id,
+            model_run_name=loaded_model_run.run_name,
+            model_run_number=loaded_model_run.run_number,
+            predictions=predictions,
+            candidate_limit=evaluation_config.candidate_limit,
+            missing_gold_in_graph_count=missing_gold_in_graph_count,
+            skipped_missing_gold_in_graph_count=(
+                prepared_evaluation_data.skipped_missing_gold_in_graph_count
+            ),
+        )
         storage_result = self.storage_service.save_evaluation_run(
             evaluation_root=cache_root / "evaluations",
             run_name=evaluation_config.run_name,
@@ -471,14 +496,7 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
                     prepared_evaluation_data=prepared_evaluation_data,
                 ),
                 predictions=predictions,
-                metrics=self.results_service.build_metrics(
-                    dataset_id=prepared_dataset.dataset_id,
-                    model_run_name=loaded_model_run.run_name,
-                    model_run_number=loaded_model_run.run_number,
-                    predictions=predictions,
-                    candidate_limit=evaluation_config.candidate_limit,
-                    missing_gold_in_graph_count=missing_gold_in_graph_count,
-                ),
+                metrics=retrieval_metrics,
             ),
         )
         _, elapsed_seconds = self._finish_profiled_phase(
@@ -496,6 +514,10 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
             f"hits_at_1={hits_at_1:.4f} hits_at_5={hits_at_5:.4f} "
             f"hits_at_10={hits_at_10:.4f} "
             f"hits_at_candidate_limit={hits_at_candidate_limit:.4f} "
+            f"retrieval_gold_coverage="
+            f"{retrieval_metrics.retrieval_gold_coverage:.4f} "
+            f"retrieval_full_gold_coverage="
+            f"{retrieval_metrics.retrieval_full_gold_coverage_rate:.4f} "
             f"average_candidate_count={average_candidate_count:.2f} "
             f"skipped_missing_gold="
             f"{prepared_evaluation_data.skipped_missing_gold_in_graph_count}"
@@ -512,8 +534,28 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
             hits_at_10_count=hits_at_10_count,
             hits_at_candidate_limit=hits_at_candidate_limit,
             hits_at_candidate_limit_count=hits_at_candidate_limit_count,
+            ndcg_at_1=retrieval_metrics.ndcg_at_1,
+            ndcg_at_5=retrieval_metrics.ndcg_at_5,
+            ndcg_at_10=retrieval_metrics.ndcg_at_10,
+            ndcg_at_candidate_limit=retrieval_metrics.ndcg_at_candidate_limit,
+            conditioned_evaluated_instances=(
+                retrieval_metrics.conditioned_evaluated_instances
+            ),
+            retrieval_gold_coverage=retrieval_metrics.retrieval_gold_coverage,
+            retrieval_full_gold_coverage_count=(
+                retrieval_metrics.retrieval_full_gold_coverage_count
+            ),
+            retrieval_full_gold_coverage_rate=(
+                retrieval_metrics.retrieval_full_gold_coverage_rate
+            ),
+            retrieved_gold_answer_count=(
+                retrieval_metrics.retrieved_gold_answer_count
+            ),
             average_candidate_count=average_candidate_count,
             missing_gold_in_graph_count=missing_gold_in_graph_count,
+            skipped_missing_gold_in_graph_count=(
+                prepared_evaluation_data.skipped_missing_gold_in_graph_count
+            ),
         )
 
     @staticmethod
@@ -530,9 +572,9 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
     def _validate_candidate_selection_config(
         evaluation_config: GnnAnswerRetrieverEvaluationConfig,
     ) -> None:
-        if evaluation_config.candidate_top_k <= 0:
+        if evaluation_config.candidate_top_k < MIN_CANDIDATE_TOP_K:
             raise GnnAnswerRetrieverEvaluationException(
-                "candidate_top_k must be greater than zero."
+                f"candidate_top_k must be at least {MIN_CANDIDATE_TOP_K}."
             )
 
         if evaluation_config.candidate_limit <= 0:
@@ -708,7 +750,9 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
         hit_at_candidate_limit = any(
             candidate.is_gold_answer for candidate in answer_candidates
         )
-        missing_gold_in_graph = not any(score.present_in_graph for score in gold_answer_scores)
+        missing_gold_in_graph = any(
+            not score.present_in_graph for score in gold_answer_scores
+        )
 
         return EvaluatedAnswerRetrievalInstance(
             instance_index=instance_index,
@@ -754,8 +798,8 @@ class GnnAnswerRetrieverEvaluationService(AbstractService):
             hit_at_5=False,
             hit_at_10=False,
             hit_at_candidate_limit=False,
-            missing_gold_in_graph=not any(
-                score.present_in_graph for score in gold_answer_scores
+            missing_gold_in_graph=any(
+                not score.present_in_graph for score in gold_answer_scores
             ),
         )
 

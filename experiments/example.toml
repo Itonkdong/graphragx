@@ -1,0 +1,44 @@
+version = 1
+
+[defaults]
+args = ["--default", "--seed", "42"]
+
+[[runs]]
+id = "graphsage_retriever_01"
+args = [
+  "--retriever-only",
+  "--gnn-architecture", "graphsage",
+  "--gnn-layers", "3",
+  "--gnn-hidden-dim", "256",
+  "--training-epochs", "2",
+  "--training-run-name", "graphsage_model_01",
+  "--evaluation-run-name", "graphsage_retriever_01",
+  "--training-max-instances", "100",
+  "--evaluation-max-instances", "100",
+]
+
+[[runs]]
+id = "graphsage_deepseek_sp"
+after = ["graphsage_retriever_01"]
+args = [
+  "--inference-only",
+  "--retriever-run-name", "graphsage_retriever_01",
+  "--llm-provider", "deepseek",
+  "--main-llm-model", "deepseek-v4-flash",
+  "--subgraph-algorithm", "shortest_path",
+  "--inference-run-name", "graphsage_deepseek_sp",
+]
+
+[[runs]]
+id = "graphsage_deepseek_pcst"
+after = ["graphsage_retriever_01"]
+args = [
+  "--inference-only",
+  "--retriever-run-name", "graphsage_retriever_01",
+  "--llm-provider", "deepseek",
+  "--main-llm-model", "deepseek-v4-flash",
+  "--subgraph-algorithm", "pcst",
+  "--pcst-edge-cost-strategy", "constant",
+  "--pcst-edge-cost", "0.25",
+  "--inference-run-name", "graphsage_deepseek_pcst",
+]

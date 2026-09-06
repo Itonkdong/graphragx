@@ -15,6 +15,7 @@ from pipeline.abstract import AbstractStep, StepContext
 from pipeline.exceptions import PipelineException
 from pipeline.evaluation.models import (
     GnnAnswerRetrieverEvaluationResult,
+    SavedEvidenceSubgraphRun,
     SavedLlmInferenceRun,
 )
 from helpers.path_serialization import project_absolute_path
@@ -148,11 +149,14 @@ def _build_available_wandb_config(
         runs["inference"] = _run_reference(inference_config)
         inference_payload = inference_config.get("inference")
         if isinstance(inference_payload, dict):
+            evidence_payload = inference_payload.get("evidence_subgraph")
             configs["inference"] = {
                 key: value
                 for key, value in inference_payload.items()
-                if key != "evidence_metrics"
+                if key not in {"evidence_metrics", "evidence_subgraph"}
             }
+            if isinstance(evidence_payload, dict):
+                configs["evidence"] = evidence_payload
             if inference_payload.get("model_id") is not None:
                 payload["model_id"] = inference_payload["model_id"]
             if inference_payload.get("llm_provider") is not None:
@@ -323,12 +327,38 @@ class LogRetrieverToWandbStep(
                 retrieval_metrics={
                     "evaluated_instances": result.evaluated_instances,
                     "hits_at_1": result.hits_at_1,
+                    "hits_at_1_count": result.hits_at_1_count,
                     "hits_at_5": result.hits_at_5,
+                    "hits_at_5_count": result.hits_at_5_count,
                     "hits_at_10": result.hits_at_10,
+                    "hits_at_10_count": result.hits_at_10_count,
                     "hits_at_candidate_limit": result.hits_at_candidate_limit,
+                    "hits_at_candidate_limit_count": (
+                        result.hits_at_candidate_limit_count
+                    ),
+                    "ndcg_at_1": result.ndcg_at_1,
+                    "ndcg_at_5": result.ndcg_at_5,
+                    "ndcg_at_10": result.ndcg_at_10,
+                    "ndcg_at_candidate_limit": result.ndcg_at_candidate_limit,
+                    "conditioned_evaluated_instances": (
+                        result.conditioned_evaluated_instances
+                    ),
+                    "retrieval_gold_coverage": result.retrieval_gold_coverage,
+                    "retrieval_full_gold_coverage_count": (
+                        result.retrieval_full_gold_coverage_count
+                    ),
+                    "retrieval_full_gold_coverage_rate": (
+                        result.retrieval_full_gold_coverage_rate
+                    ),
+                    "retrieved_gold_answer_count": (
+                        result.retrieved_gold_answer_count
+                    ),
                     "average_candidate_count": result.average_candidate_count,
                     "missing_gold_in_graph_count": (
                         result.missing_gold_in_graph_count
+                    ),
+                    "skipped_missing_gold_in_graph_count": (
+                        result.skipped_missing_gold_in_graph_count
                     ),
                 },
                 reasoning_metrics={},
@@ -342,7 +372,7 @@ class LogRetrieverToWandbStep(
                     scalar_metrics
                 )
             )
-            self.coordinator.log(metrics)
+            self.coordinator.log_aggregate_metrics(metrics)
         if not self.copy_to_new_experiment:
             self.coordinator.persist_metadata(result.evaluation_config_path)
         if not is_logged_continuation:
@@ -529,7 +559,7 @@ class LogInferenceToWandbStep(
                 evidence_payload[
                     "Run_Summary/evidence_candidate_reduction_percentage"
                 ] = candidate_reduction_percentage
-            self.coordinator.log(
+            self.coordinator.log_aggregate_metrics(
                 evidence_payload,
                 source_config_path=source_config_path,
                 architecture_name=(
@@ -549,6 +579,142 @@ class LogInferenceToWandbStep(
         )
         self.coordinator.persist_metadata(result.inference_config_path)
         metadata = self.coordinator.metadata
+        return result.model_copy(
+            update={
+                "wandb_status": metadata.status,
+                "wandb_run_id": metadata.run_id,
+                "wandb_run_url": metadata.run_url,
+                "wandb_error_message": metadata.error_message,
+            }
+        )
+
+
+class LogEvidenceToWandbStep(
+    AbstractStep[SavedEvidenceSubgraphRun, SavedEvidenceSubgraphRun]
+):
+    """Log a saved evidence-only run into its new copied W&B experiment."""
+
+    def __init__(
+        self,
+        coordinator: WandbExperimentCoordinator,
+        force_default: bool = False,
+    ) -> None:
+        super().__init__(force_default=force_default)
+        self.coordinator = coordinator
+
+    def execute_default(
+        self,
+        context: StepContext[SavedEvidenceSubgraphRun],
+    ) -> SavedEvidenceSubgraphRun:
+        result = context.result
+        if result is None:
+            raise PipelineException("Evidence W&B logging requires an evidence run.")
+        try:
+            config = json.loads(result.evidence_config_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            config = {}
+        evaluation_ref = config.get("evaluation_config", {})
+        evaluation_path_value = (
+            evaluation_ref.get("full_config_path")
+            if isinstance(evaluation_ref, dict)
+            else None
+        )
+        evaluation_config_path = (
+            project_absolute_path(evaluation_path_value)
+            if isinstance(evaluation_path_value, str)
+            else None
+        )
+        self.coordinator.ensure_run(
+            source_config_path=evaluation_config_path,
+            architecture_name=result.gnn_architecture,
+        )
+        evidence_config = config.get("evidence", {})
+        if not isinstance(evidence_config, dict):
+            evidence_config = {}
+        self.coordinator.update_config(
+            make_project_paths_relative(
+                {
+                    "dataset_id": result.dataset_id,
+                    "gnn_architecture": result.gnn_architecture,
+                    "runs": {
+                        "evidence": {
+                            "name": result.evidence_run_name,
+                            "number": result.evidence_run_number,
+                        }
+                    },
+                    "configs": {
+                        "evidence": {
+                            key: value
+                            for key, value in evidence_config.items()
+                            if key != "evidence_metrics"
+                        }
+                    },
+                    "source_paths": {
+                        "evidence_config_path": result.evidence_config_path,
+                        "evidence_subgraphs_path": result.evidence_subgraphs_path,
+                        "evidence_metrics_path": result.evidence_metrics_path,
+                    },
+                }
+            ),
+            source_config_path=evaluation_config_path,
+        )
+        strategy_tag = (
+            "sp" if result.subgraph_algorithm == "shortest_path" else "pcst"
+        )
+        tags = [result.subgraph_algorithm]
+        pcst = result.evidence_configuration.get("pcst")
+        if isinstance(pcst, dict) and pcst.get("edge_cost_strategy"):
+            tags.append(f"pcst-{pcst['edge_cost_strategy']}")
+        self.coordinator.update_tags(tags)
+        self.coordinator.update_inference_run_name(
+            evidence_algorithm=result.subgraph_algorithm,
+            model_id=None,
+        )
+        metrics = result.evidence_metrics
+        payload = {
+            **{
+                (
+                    f"Summary_Plots/{name}"
+                    if name.startswith("reasoning_context_")
+                    else f"Summary_Plots/evidence_{name}"
+                ): value
+                for name, value in metrics.items()
+                if isinstance(value, int | float)
+            },
+            "Run_Summary/evidence_candidate_reduction_percentage": metrics.get(
+                "candidate_reduction_percentage", 0.0
+            ),
+            "Run_Summary/reasoning_context_gold_coverage": metrics.get(
+                "reasoning_context_gold_coverage", 0.0
+            ),
+            "Run_Summary/reasoning_context_full_gold_coverage": metrics.get(
+                "reasoning_context_full_gold_coverage_rate", 0.0
+            ),
+            "Run_Summary/evidence_empty_subgraph_rate": metrics.get(
+                "empty_subgraph_rate", 0.0
+            ),
+        }
+        self.coordinator.log_aggregate_metrics(
+            payload,
+            source_config_path=evaluation_config_path,
+            architecture_name=result.gnn_architecture,
+        )
+        self.coordinator.log_artifact(
+            name=f"evidence-{result.evidence_run_name}",
+            artifact_type="evidence-subgraphs",
+            paths=[
+                result.evidence_config_path,
+                result.evidence_subgraphs_path,
+                result.evidence_metrics_path,
+            ],
+            source_config_path=evaluation_config_path,
+        )
+        self.coordinator.persist_metadata(result.evidence_config_path)
+        metadata = self.coordinator.metadata
+        logger.info(
+            f"Logged evidence run to W&B: run={result.evidence_run_name} "
+            f"strategy={strategy_tag} status={metadata.status}"
+        )
         return result.model_copy(
             update={
                 "wandb_status": metadata.status,

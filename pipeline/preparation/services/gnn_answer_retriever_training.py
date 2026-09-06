@@ -24,6 +24,7 @@ from helpers.constants import (
     DEFAULT_TRAINING_PROFILE,
     DEFAULT_TRAINING_WEIGHT_DECAY,
     DEFAULT_WANDB_TRAINING_LOG_EVERY,
+    DEFAULT_RANDOM_SEED,
     GNN_ANSWER_RETRIEVER_CONFIG_FILENAME,
     GNN_ANSWER_RETRIEVER_WEIGHTS_FILENAME,
 )
@@ -85,6 +86,7 @@ class GnnAnswerRetrieverTrainingConfig(BaseModel):
     batch_size: int = Field(default=DEFAULT_TRAINING_BATCH_SIZE, gt=0)
     device: str = Field(default=DEFAULT_TRAINING_DEVICE)
     profile: bool = Field(default=DEFAULT_TRAINING_PROFILE)
+    random_seed: int = Field(default=DEFAULT_RANDOM_SEED, ge=0)
     run_name: str | None = Field(default=None)
     continue_from_model_run_name: str | None = Field(default=None)
     continue_from_model_run_number: int | None = Field(default=None)

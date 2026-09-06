@@ -305,6 +305,13 @@ class GnnTrainingDataPreparationService(AbstractService):
         prepared_instances: list[PreparedGnnTrainingInstance] = []
         skipped_instances = 0
         for offset, instance in enumerate(selected_instances):
+            if not instance.nodes:
+                skipped_instances += 1
+                logger.warning(
+                    f"Skipping empty {architecture.display_name} training graph: "
+                    f"instance_index={start_index + offset}"
+                )
+                continue
             seed_node_indices = None
             if requirements.uses_seed_distributions:
                 seed_ids = sorted(
@@ -314,7 +321,7 @@ class GnnTrainingDataPreparationService(AbstractService):
                         if entity in instance.node2id
                     }
                 )
-                if not instance.nodes or not seed_ids:
+                if not seed_ids:
                     skipped_instances += 1
                     logger.warning(
                         f"Skipping {architecture.display_name} training graph without "
@@ -382,6 +389,7 @@ class GnnTrainingDataPreparationService(AbstractService):
                     edge_relation_index=edge_relation_index,
                     active_relation_offsets=active_relation_offsets,
                     node_labels=instance.node_labels,
+                    gold_answer_count=len(set(instance.a_entity)),
                     seed_node_indices=seed_node_indices,
                 )
             )
@@ -426,21 +434,26 @@ class GnnTrainingDataPreparationService(AbstractService):
     ) -> PreparedGnnTrainingData:
         if not enabled:
             return prepared_data
+        if any(instance.gold_answer_count is None for instance in prepared_data.instances):
+            raise GnnAnswerRetrieverTrainingException(
+                "Prepared training data is missing gold-answer count metadata."
+            )
         kept_instances = [
             instance
             for instance in prepared_data.instances
-            if float(instance.node_labels.sum().item()) > 0
+            if instance.gold_answer_count > 0
+            and int(instance.node_labels.sum().item()) == instance.gold_answer_count
         ]
         skipped_count = len(prepared_data.instances) - len(kept_instances)
         if skipped_count:
             logger.warning(
                 f"Skipped {skipped_count} {architecture_name} training graphs because "
-                "none of their gold answer entities are present in the graph."
+                "at least one gold answer entity is absent from the graph."
             )
         if not kept_instances:
             raise GnnAnswerRetrieverTrainingException(
                 f"{architecture_name} training has no usable graphs after skipping "
-                "instances without an in-graph gold answer. Use "
+                "instances without their complete in-graph gold-answer set. Use "
                 "--no-skip-missing-gold-in-graph to restore the previous behavior."
             )
         return prepared_data.model_copy(

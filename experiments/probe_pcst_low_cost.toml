@@ -1,0 +1,67 @@
+# Probe: inspect the low-cost PCST regime.
+#
+# This is an evidence-only sweep over the existing NBFNet seed-42 retriever.
+# It makes no LLM calls and does not retrain or reevaluate the GNN. The
+# logarithmic lambda grid determines whether the previous 0.25--1.0 results
+# were still cost-limited or had already reached the minimum tree that
+# connects all profitable candidates.
+
+version = 1
+
+[defaults]
+args = [
+  "--evidence-only",
+  "--dataset", "WebQSP",
+  "--default",
+  "--retriever-run-name", "exp0_nbfnet_seed42_retriever",
+  "--subgraph-algorithm", "pcst",
+  "--seed", "42",
+]
+
+[[runs]]
+id = "probe_pcst_low_cost_seed42_pcst_constant_lambda_0p1"
+args = [
+  "--pcst-edge-cost-strategy", "constant",
+  "--pcst-edge-cost", "0.1",
+  "--evidence-run-name", "probe_pcst_low_cost_seed42_pcst_constant_lambda_0p1",
+]
+
+[[runs]]
+id = "probe_pcst_low_cost_seed42_pcst_constant_lambda_0p01"
+args = [
+  "--pcst-edge-cost-strategy", "constant",
+  "--pcst-edge-cost", "0.01",
+  "--evidence-run-name", "probe_pcst_low_cost_seed42_pcst_constant_lambda_0p01",
+]
+
+[[runs]]
+id = "probe_pcst_low_cost_seed42_pcst_constant_lambda_0p001"
+args = [
+  "--pcst-edge-cost-strategy", "constant",
+  "--pcst-edge-cost", "0.001",
+  "--evidence-run-name", "probe_pcst_low_cost_seed42_pcst_constant_lambda_0p001",
+]
+
+[[runs]]
+id = "probe_pcst_low_cost_seed42_pcst_semantic_lambda_0p1"
+args = [
+  "--pcst-edge-cost-strategy", "semantic",
+  "--pcst-edge-cost", "0.1",
+  "--evidence-run-name", "probe_pcst_low_cost_seed42_pcst_semantic_lambda_0p1",
+]
+
+[[runs]]
+id = "probe_pcst_low_cost_seed42_pcst_semantic_lambda_0p01"
+args = [
+  "--pcst-edge-cost-strategy", "semantic",
+  "--pcst-edge-cost", "0.01",
+  "--evidence-run-name", "probe_pcst_low_cost_seed42_pcst_semantic_lambda_0p01",
+]
+
+[[runs]]
+id = "probe_pcst_low_cost_seed42_pcst_semantic_lambda_0p001"
+args = [
+  "--pcst-edge-cost-strategy", "semantic",
+  "--pcst-edge-cost", "0.001",
+  "--evidence-run-name", "probe_pcst_low_cost_seed42_pcst_semantic_lambda_0p001",
+]

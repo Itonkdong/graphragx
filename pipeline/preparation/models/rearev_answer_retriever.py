@@ -48,6 +48,35 @@ def graph_softmax(scores: Tensor, graph_index: Tensor, graph_count: int) -> Tens
     return exponentials / denominators.index_select(0, graph_index).clamp_min(1e-12)
 
 
+class ReaRevQueryReform(nn.Module):
+    """Paper-aligned four-way query interaction with a GRU-style update gate."""
+
+    def __init__(self, hidden_dimension: int) -> None:
+        super().__init__()
+        self.candidate_projection = nn.Linear(hidden_dimension * 4, hidden_dimension)
+        self.gate_input_projection = nn.Linear(hidden_dimension, hidden_dimension)
+        self.gate_hidden_projection = nn.Linear(
+            hidden_dimension, hidden_dimension, bias=False
+        )
+
+    def forward(self, instruction: Tensor, seed_state: Tensor) -> Tensor:
+        interaction = torch.cat(
+            (
+                instruction,
+                seed_state,
+                instruction - seed_state,
+                instruction * seed_state,
+            ),
+            dim=-1,
+        )
+        candidate = self.candidate_projection(interaction)
+        update_gate = torch.sigmoid(
+            self.gate_input_projection(seed_state)
+            + self.gate_hidden_projection(instruction)
+        )
+        return (1.0 - update_gate) * instruction + update_gate * candidate
+
+
 class ReaRevAnswerRetriever(nn.Module, AnswerRetrieverModel):
     """Question-conditioned adaptive reason-and-revise graph executor."""
 
@@ -118,12 +147,8 @@ class ReaRevAnswerRetriever(nn.Module, AnswerRetrieverModel):
         self.node_score_layers = nn.ModuleList(
             nn.Linear(hidden_dimension, 1) for _ in range(reasoning_steps)
         )
-        self.revision_candidate_layers = nn.ModuleList(
-            nn.Linear(hidden_dimension * 2, hidden_dimension)
-            for _ in range(num_instructions)
-        )
-        self.revision_gate_layers = nn.ModuleList(
-            nn.Linear(hidden_dimension * 2, hidden_dimension)
+        self.query_reform_layers = nn.ModuleList(
+            ReaRevQueryReform(hidden_dimension)
             for _ in range(num_instructions)
         )
         self.dropout = nn.Dropout(dropout)
@@ -263,28 +288,26 @@ class ReaRevAnswerRetriever(nn.Module, AnswerRetrieverModel):
         self,
         instructions: list[Tensor],
         node_states: Tensor,
-        seed_distribution: Tensor,
+        seed_mask: Tensor,
         node_graph_index: Tensor,
         graph_count: int,
     ) -> list[Tensor]:
         kg_state = node_states.new_zeros((graph_count, self.hidden_dimension))
+        if seed_mask.ndim != 1 or seed_mask.shape[0] != node_states.shape[0]:
+            raise ValueError("seed_mask must be one-dimensional and aligned with nodes.")
         kg_state.index_add_(
             0,
             node_graph_index,
-            node_states * seed_distribution.to(node_states.dtype).unsqueeze(-1),
+            node_states * seed_mask.to(node_states.dtype).unsqueeze(-1),
         )
-        revised: list[Tensor] = []
-        for instruction, candidate_layer, gate_layer in zip(
-            instructions,
-            self.revision_candidate_layers,
-            self.revision_gate_layers,
-            strict=True,
-        ):
-            revision_input = torch.cat((instruction, kg_state), dim=-1)
-            candidate = torch.tanh(candidate_layer(revision_input))
-            gate = torch.sigmoid(gate_layer(revision_input))
-            revised.append(gate * instruction + (1.0 - gate) * candidate)
-        return revised
+        return [
+            reform(instruction, kg_state)
+            for instruction, reform in zip(
+                instructions,
+                self.query_reform_layers,
+                strict=True,
+            )
+        ]
 
     def forward(
         self,
@@ -299,6 +322,7 @@ class ReaRevAnswerRetriever(nn.Module, AnswerRetrieverModel):
         initialization_relation_index: Tensor,
         node_graph_index: Tensor,
         seed_distribution: Tensor,
+        seed_mask: Tensor,
         graph_count: int,
         **_: Any,
     ) -> Tensor:
@@ -339,7 +363,7 @@ class ReaRevAnswerRetriever(nn.Module, AnswerRetrieverModel):
                 instructions = self._revise_instructions(
                     instructions,
                     node_states,
-                    seed_distribution,
+                    seed_mask,
                     node_graph_index,
                     graph_count,
                 )
@@ -372,7 +396,7 @@ def build_rearev_model(
     """Registry callback for ReaRev."""
     context = architecture_context or {}
     expected_context = {
-        "rearev_preprocessing_version": 1,
+        "rearev_preprocessing_version": 2,
         "encoder_model_id": REAREV_ENCODER_MODEL_ID,
         "encoder_revision": REAREV_ENCODER_REVISION,
         "encoder_width": REAREV_ENCODER_WIDTH,
@@ -380,6 +404,8 @@ def build_rearev_model(
         "relation_max_length": REAREV_RELATION_MAX_LENGTH,
         "relation_text_schema_version": REAREV_RELATION_TEXT_SCHEMA_VERSION,
         "encoder_frozen": True,
+        "seed_feedback_aggregation": "sum",
+        "instruction_revision_schema": "four-way-gru-update-v2",
     }
     for key, expected_value in expected_context.items():
         if key not in context:

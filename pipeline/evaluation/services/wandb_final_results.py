@@ -53,7 +53,7 @@ class WandbFinalResultsLoggingService(AbstractService):
     table_key = "Per_Instance_Metrics/per_instance_results"
     aggregate_table_key = "Summary_Metrics/aggregate_metrics"
     summary_plot_prefix = "Summary_Plots"
-    artifact_type = "evaluation-results"
+    artifact_type = "final-results"
     retrieval_conditioned_metric_keys = (
         "conditioned_evaluated_instances",
         "retrieval_gold_coverage",
@@ -178,7 +178,9 @@ class WandbFinalResultsLoggingService(AbstractService):
             inference_config = wandb_config.get("configs", {}).get("inference", {})
             if not isinstance(inference_config, dict):
                 inference_config = {}
-            evidence_configuration = inference_config.get("evidence_subgraph", {})
+            evidence_configuration = wandb_config.get("configs", {}).get(
+                "evidence", {}
+            )
             evidence_algorithm = (
                 evidence_configuration.get("algorithm")
                 if isinstance(evidence_configuration, dict)
@@ -216,8 +218,8 @@ class WandbFinalResultsLoggingService(AbstractService):
                 payload = {
                     self.table_key: table,
                     self.aggregate_table_key: aggregate_table,
-                    **self.build_summary_plot_metrics(scalar_metrics),
                 }
+                summary_metrics = self.build_summary_plot_metrics(scalar_metrics)
                 run_summary_plot_metrics = self.build_run_summary_plot_metrics(
                     scalar_metrics=scalar_metrics,
                     wandb_config=wandb_config,
@@ -225,8 +227,12 @@ class WandbFinalResultsLoggingService(AbstractService):
                 loss_points = self.build_training_loss_points(
                     wandb_config.get("configs", {}).get("model", {})
                 )
-                if run_summary_plot_metrics:
-                    run.log(run_summary_plot_metrics)
+                aggregate_metrics = {
+                    **run_summary_plot_metrics,
+                    **summary_metrics,
+                }
+                if aggregate_metrics:
+                    run.log(aggregate_metrics)
                 if loss_points:
                     for point in loss_points:
                         run.log(
@@ -241,7 +247,6 @@ class WandbFinalResultsLoggingService(AbstractService):
                 self._add_artifact_files(
                     artifact=artifact,
                     final_result=final_result,
-                    results_config=results_config,
                 )
                 run.log_artifact(artifact)
                 return WandbFinalResultsLogResult(
@@ -268,16 +273,25 @@ class WandbFinalResultsLoggingService(AbstractService):
                 "evaluated_instances"
             ),
             "retrieval_hits_at_1": retrieval_metrics.get("hits_at_1"),
+            "retrieval_hits_at_1_count": retrieval_metrics.get("hits_at_1_count"),
             "retrieval_hits_at_5": retrieval_metrics.get("hits_at_5"),
+            "retrieval_hits_at_5_count": retrieval_metrics.get("hits_at_5_count"),
             "retrieval_hits_at_10": retrieval_metrics.get("hits_at_10"),
+            "retrieval_hits_at_10_count": retrieval_metrics.get("hits_at_10_count"),
             "retrieval_hits_at_candidate_limit": retrieval_metrics.get(
                 "hits_at_candidate_limit"
+            ),
+            "retrieval_hits_at_candidate_limit_count": retrieval_metrics.get(
+                "hits_at_candidate_limit_count"
             ),
             "retrieval_average_candidate_count": retrieval_metrics.get(
                 "average_candidate_count"
             ),
             "retrieval_missing_gold_in_graph_count": retrieval_metrics.get(
                 "missing_gold_in_graph_count"
+            ),
+            "retrieval_skipped_missing_gold_in_graph_count": retrieval_metrics.get(
+                "skipped_missing_gold_in_graph_count"
             ),
             "answer_accuracy": reasoning_metrics.get("accuracy"),
             "answer_hit_rate": reasoning_metrics.get("hit_rate"),
@@ -291,19 +305,25 @@ class WandbFinalResultsLoggingService(AbstractService):
             "grounding_fully_grounded_explanation_rate": reasoning_metrics.get(
                 "fully_grounded_explanation_rate"
             ),
-            "ranking_ndcg_at_1": reasoning_metrics.get("ndcg_at_1"),
-            "ranking_ndcg_at_5": reasoning_metrics.get("ndcg_at_5"),
-            "ranking_ndcg_at_10": reasoning_metrics.get("ndcg_at_10"),
-            "ranking_ndcg_at_candidate_limit": reasoning_metrics.get(
-                "ndcg_at_candidate_limit"
+            "ranking_ndcg_at_1": retrieval_metrics.get(
+                "ndcg_at_1", reasoning_metrics.get("ndcg_at_1")
+            ),
+            "ranking_ndcg_at_5": retrieval_metrics.get(
+                "ndcg_at_5", reasoning_metrics.get("ndcg_at_5")
+            ),
+            "ranking_ndcg_at_10": retrieval_metrics.get(
+                "ndcg_at_10", reasoning_metrics.get("ndcg_at_10")
+            ),
+            "ranking_ndcg_at_candidate_limit": retrieval_metrics.get(
+                "ndcg_at_candidate_limit",
+                reasoning_metrics.get("ndcg_at_candidate_limit"),
             ),
         }
-        mappings.update(
-            {
-                key: reasoning_metrics.get(key)
-                for key in cls.retrieval_conditioned_metric_keys
-            }
-        )
+        for key in cls.retrieval_conditioned_metric_keys:
+            value = reasoning_metrics.get(key)
+            if not isinstance(value, int | float):
+                value = retrieval_metrics.get(key)
+            mappings[key] = value
         return {
             key: value
             for key, value in mappings.items()
@@ -558,10 +578,11 @@ class WandbFinalResultsLoggingService(AbstractService):
                 **inference_payload,
                 "total_instances": inference_config["total_instances"],
             }
+        evidence_payload = inference_payload.get("evidence_subgraph")
         inference_payload = {
             key: value
             for key, value in inference_payload.items()
-            if key != "evidence_metrics"
+            if key not in {"evidence_metrics", "evidence_subgraph"}
         }
 
         model_run_name = model_ref.get("model_run_name") or results_config.get("model_run_name")
@@ -601,6 +622,11 @@ class WandbFinalResultsLoggingService(AbstractService):
                 "configs": {
                     "model": model_config,
                     "evaluation": evaluation_config.get("evaluation", {}),
+                    **(
+                        {"evidence": evidence_payload}
+                        if isinstance(evidence_payload, dict)
+                        else {}
+                    ),
                     "inference": inference_payload,
                 },
                 "source_paths": source_paths,
@@ -818,16 +844,11 @@ class WandbFinalResultsLoggingService(AbstractService):
         cls,
         artifact: Any,
         final_result: FinalResultsEvaluationResult,
-        results_config: dict[str, Any],
     ) -> None:
+        """Upload only final-result-owned files; upstream artifacts remain references."""
         for path in sorted(final_result.results_run_directory.iterdir()):
             if path.is_file():
                 artifact.add_file(str(path), name=f"results/{path.name}")
-
-        for value in cls._build_source_paths(results_config).values():
-            path = project_absolute_path(value)
-            if path.exists() and path.is_file():
-                artifact.add_file(str(path), name=f"sources/{path.name}")
 
     @staticmethod
     def _artifact_name(results_run_name: str) -> str:

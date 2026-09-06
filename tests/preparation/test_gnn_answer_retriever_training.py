@@ -188,6 +188,7 @@ class GnnAnswerRetrieverTrainingServiceTests(unittest.TestCase):
             [{"epoch": 1, "average_loss": 0.5}],
         )
         self.assertEqual(config["training"]["device"], "cpu")
+        self.assertEqual(config["training"]["random_seed"], 42)
         self.assertEqual(config["embedding_model"], "text-embedding-3-small")
         self.assertNotIn("entity_embedding_model", config)
         self.assertNotIn("question_embedding_model", config)

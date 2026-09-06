@@ -72,6 +72,28 @@ class ExtractedReasoningPathsBatch(StepResult):
     items: list[ReasoningPathsForPrediction] = Field(default_factory=list)
 
 
+class SavedEvidenceSubgraphRun(StepResult):
+    """Persisted evidence construction run without LLM answer generation."""
+
+    dataset_id: str
+    gnn_architecture: str
+    evaluation_run_name: str
+    evidence_run_directory: Path
+    evidence_run_name: str
+    evidence_run_number: int
+    evaluated_instances: int
+    subgraph_algorithm: str
+    evidence_configuration: dict[str, object] = Field(default_factory=dict)
+    evidence_metrics: dict[str, float | int] = Field(default_factory=dict)
+    evidence_config_path: Path
+    evidence_subgraphs_path: Path
+    evidence_metrics_path: Path
+    wandb_status: str | None = None
+    wandb_run_id: str | None = None
+    wandb_run_url: str | None = None
+    wandb_error_message: str | None = None
+
+
 class GeneratedAnswerForPrediction(BaseModel):
     """Generated LLM answer for one path-extracted prediction."""
 
@@ -90,7 +112,10 @@ class GeneratedAnswerForPrediction(BaseModel):
     )
     model_id: str = Field(..., description="LLM model used for answer generation.")
     llm_provider: str = Field(default="openai", description="LLM provider used.")
-    answer: str = Field(default="", description="Generated final answer.")
+    answers: list[str] = Field(
+        default_factory=list,
+        description="Generated answer entities with atomic entity boundaries.",
+    )
     explanation: str = Field(
         default="",
         description="Explanation of which reasoning paths supported the answer.",
