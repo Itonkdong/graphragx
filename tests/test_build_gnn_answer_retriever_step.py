@@ -11,11 +11,14 @@ from pipeline import (
     BuiltGnnAnswerRetriever,
     BuiltPipelineConfiguration,
     LoadedDataset,
+    PreparedWebQSPGraphDataset,
     Pipeline,
     PipelineException,
     StepContext,
     StepContextBuilder,
 )
+from pipeline.preparation.models.webqsp_local_graph import WebQSPVocabularyStore
+from pathlib import Path
 
 
 try:
@@ -38,18 +41,20 @@ class FakeConfigurationStep(AbstractStep[BuiltPipelineConfiguration, LoadedDatas
         return BuildGnnAnswerRetrieverStepTests.make_configuration()
 
 
-class FakeLoadedDatasetStep(AbstractStep[LoadedDataset, BuiltPipelineConfiguration]):
+class FakeLoadedDatasetStep(
+    AbstractStep[PreparedWebQSPGraphDataset, BuiltPipelineConfiguration]
+):
     def execute_default(
         self,
         context: StepContext[BuiltPipelineConfiguration],
-    ) -> LoadedDataset:
-        return LoadedDataset(
+    ) -> PreparedWebQSPGraphDataset:
+        return PreparedWebQSPGraphDataset(
             dataset_id="WebQSP",
-            dataset_family="question_answering",
-            hugging_face_dataset_name="ml1996/webqsp",
-            split_names=["train", "validation", "test"],
-            split_sizes={"train": 3, "validation": 2, "test": 1},
-            hugging_face_dataset=FakeDatasetDict(),
+            processing_version="test",
+            train_instances=[],
+            test_instances=[],
+            vocabulary_store=WebQSPVocabularyStore(),
+            cache_directory=Path("data/webqsp/processed"),
         )
 
 
@@ -57,9 +62,11 @@ class BuildGnnAnswerRetrieverStepTests(unittest.TestCase):
     @staticmethod
     def make_configuration(
         node_classifier: str = "mlp",
+        gnn_architecture: str = "graphsage",
     ) -> BuiltPipelineConfiguration:
         return BuiltPipelineConfiguration(
             dataset_id="WebQSP",
+            gnn_architecture=gnn_architecture,
             main_llm_model="gpt-5.4",
             subgraph_construction_algorithm="shortest_path",
             context_construction_strategy="structured_triples",
@@ -74,16 +81,19 @@ class BuildGnnAnswerRetrieverStepTests(unittest.TestCase):
     @staticmethod
     def make_loaded_dataset_context(
         builder: StepContextBuilder,
-    ) -> StepContext[LoadedDataset]:
-        loaded_dataset = LoadedDataset(
+    ) -> StepContext[PreparedWebQSPGraphDataset]:
+        prepared_dataset = PreparedWebQSPGraphDataset(
             dataset_id="WebQSP",
-            dataset_family="question_answering",
-            hugging_face_dataset_name="ml1996/webqsp",
-            split_names=["train", "validation", "test"],
-            split_sizes={"train": 3, "validation": 2, "test": 1},
-            hugging_face_dataset=FakeDatasetDict(),
+            processing_version="test",
+            train_instances=[],
+            test_instances=[],
+            vocabulary_store=WebQSPVocabularyStore(),
+            cache_directory=Path("data/webqsp/processed"),
         )
-        return builder.create_context(result=loaded_dataset)
+        return builder.create_context(
+            result=prepared_dataset,
+            next_step=BuildGnnAnswerRetrieverStep(),
+        )
 
     @unittest.skipIf(torch is None, "PyTorch is not installed.")
     def test_builds_gnn_answer_retriever_from_loaded_dataset_and_stored_configuration(self) -> None:
@@ -121,6 +131,38 @@ class BuildGnnAnswerRetrieverStepTests(unittest.TestCase):
         result = step.execute(self.make_loaded_dataset_context(builder))
 
         self.assertIsInstance(result.model.classifier, nn.Sequential)
+
+    @unittest.skipIf(torch is None, "PyTorch is not installed.")
+    def test_factory_builds_distinct_architecture_types(self) -> None:
+        from pipeline.preparation.models.gnn_answer_retriever import (
+            AdvancedGraphSageAnswerRetriever,
+            GraphSageAnswerRetriever,
+            build_gnn_answer_retriever,
+        )
+
+        shared = dict(
+            entity_embedding_dimension=8,
+            question_embedding_dimension=6,
+            relation_embedding_dimension=6,
+            hidden_dimension=4,
+            gnn_layer_count=2,
+            node_classifier="mlp",
+            dropout=0.1,
+        )
+        baseline = build_gnn_answer_retriever("graphsage", **shared)
+        advanced = build_gnn_answer_retriever(
+            "aa-graphsage",
+            **shared,
+            use_edge_mlp=True,
+            question_aware_classifier=True,
+            add_layer_normalization=True,
+            edge_mlp_hidden_dim=128,
+        )
+
+        self.assertIsInstance(baseline, GraphSageAnswerRetriever)
+        self.assertIsInstance(advanced, AdvancedGraphSageAnswerRetriever)
+        self.assertFalse(baseline.use_edge_mlp)
+        self.assertTrue(advanced.use_edge_mlp)
 
     @unittest.skipIf(torch is None, "PyTorch is not installed.")
     def test_model_forward_returns_one_logit_per_node(self) -> None:
@@ -170,6 +212,46 @@ class BuildGnnAnswerRetrieverStepTests(unittest.TestCase):
         self.assertEqual(tuple(logits.shape), (4,))
         self.assertEqual(len(model.layer_norms), 2)
         self.assertEqual(model.edge_mlp_hidden_dim, 3)
+        self.assertIsNotNone(model.edge_mlp[0].weight.grad)
+
+    @unittest.skipIf(torch is None, "PyTorch is not installed.")
+    def test_combined_options_support_bfloat16_autocast(self) -> None:
+        from pipeline.preparation.models.gnn_answer_retriever import GnnAnswerRetriever
+
+        model = GnnAnswerRetriever(
+            entity_embedding_dimension=8,
+            question_embedding_dimension=6,
+            relation_embedding_dimension=6,
+            hidden_dimension=4,
+            gnn_layer_count=2,
+            node_classifier="mlp",
+            use_edge_mlp=True,
+            question_aware_classifier=True,
+            add_layer_normalization=True,
+            edge_mlp_hidden_dim=256,
+            dropout=0.1,
+        )
+        entity_features = torch.randn(4, 8)
+        question_features = torch.randn(6)
+        relation_features = torch.randn(6, 6)
+        edge_index = torch.tensor(
+            [
+                [0, 1, 2, 1, 2, 3],
+                [1, 2, 3, 0, 1, 2],
+            ]
+        )
+
+        with torch.autocast(device_type="cpu", dtype=torch.bfloat16):
+            logits = model(
+                entity_features=entity_features,
+                edge_index=edge_index,
+                question_features=question_features,
+                relation_features=relation_features,
+            )
+            loss = logits.float().sum()
+        loss.backward()
+
+        self.assertEqual(tuple(logits.shape), (4,))
         self.assertIsNotNone(model.edge_mlp[0].weight.grad)
 
     @unittest.skipIf(torch is None, "PyTorch is not installed.")

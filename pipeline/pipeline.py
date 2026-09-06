@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from typing import Iterable
 
 from helpers.logging_config import get_logger
@@ -22,11 +23,13 @@ class Pipeline:
         evaluation_steps: Iterable[AbstractStep] | None = None,
         context_builder: StepContextBuilder | None = None,
         force_all_default: bool = False,
+        completion_callbacks: Iterable[Callable[[], None]] | None = None,
     ):
         self.preparation_steps = list(preparation_steps or [])
         self.evaluation_steps = list(evaluation_steps or [])
         self.context_builder = context_builder or StepContextBuilder()
         self.force_all_default = force_all_default
+        self.completion_callbacks = list(completion_callbacks or [])
 
         if self.force_all_default:
             for step in [*self.preparation_steps, *self.evaluation_steps]:
@@ -41,6 +44,7 @@ class Pipeline:
         )
         if result.success:
             self._log_pipeline_success(result)
+        self._run_completion_callbacks()
         return result
 
     def evaluate(self, initial_context: StepContext) -> PipelineExecutionResult:
@@ -52,6 +56,7 @@ class Pipeline:
         )
         if result.success:
             self._log_pipeline_success(result)
+        self._run_completion_callbacks()
         return result
 
     def run(self, initial_context: StepContext) -> PipelineExecutionResult:
@@ -64,6 +69,7 @@ class Pipeline:
             reset_result_bank=False,
         )
         if not preparation_result.success:
+            self._run_completion_callbacks()
             return preparation_result
 
         first_evaluation_step = self.evaluation_steps[0] if self.evaluation_steps else None
@@ -77,6 +83,7 @@ class Pipeline:
             reset_result_bank=False,
         )
         if not evaluation_result.success:
+            self._run_completion_callbacks()
             return evaluation_result
 
         total_steps_executed = (
@@ -95,7 +102,16 @@ class Pipeline:
             total_steps=total_steps,
         )
         self._log_pipeline_success(result)
+        self._run_completion_callbacks()
         return result
+
+    def _run_completion_callbacks(self) -> None:
+        """Run best-effort lifecycle callbacks after pipeline execution."""
+        for callback in self.completion_callbacks:
+            try:
+                callback()
+            except Exception as error:
+                logger.warning(f"Pipeline completion callback failed: {error}")
 
     def _run_steps(
         self,

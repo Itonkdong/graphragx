@@ -18,6 +18,9 @@ from pipeline.preparation.services.gnn_answer_retriever_training import (
     GnnAnswerRetrieverTrainingConfig,
     GnnAnswerRetrieverTrainingService,
 )
+from pipeline.preparation.services.gnn_training_data_preparation import (
+    GnnTrainingDataPreparationService,
+)
 from pipeline.preparation.steps.gnn_model_building import BuiltGnnAnswerRetriever
 
 
@@ -37,10 +40,42 @@ class FakeTorch:
 
 
 class GnnAnswerRetrieverTrainingServiceTests(unittest.TestCase):
+    def test_console_and_wandb_intervals_can_be_evaluated_independently(self) -> None:
+        service = GnnAnswerRetrieverTrainingService()
+
+        self.assertFalse(
+            service._is_progress_due(
+                instance_index=5,
+                total_instances=20,
+                interval=10,
+            )
+        )
+        self.assertTrue(
+            service._is_progress_due(
+                instance_index=5,
+                total_instances=20,
+                interval=5,
+            )
+        )
+        self.assertTrue(
+            service._is_progress_due(
+                instance_index=20,
+                total_instances=20,
+                interval=7,
+            )
+        )
+        self.assertFalse(
+            service._is_progress_due(
+                instance_index=20,
+                total_instances=20,
+                interval=0,
+            )
+        )
+
     def test_select_train_instances_defaults_to_full_split(self) -> None:
         dataset = SimpleNamespace(train_instances=list(range(3)))
 
-        selected, start, end = GnnAnswerRetrieverTrainingService._select_train_instances(
+        selected, start, end = GnnTrainingDataPreparationService._select_instances(
             prepared_dataset=dataset,
             start_instance=0,
             max_instances=None,
@@ -53,7 +88,7 @@ class GnnAnswerRetrieverTrainingServiceTests(unittest.TestCase):
     def test_select_train_instances_uses_start_plus_max_semantics(self) -> None:
         dataset = SimpleNamespace(train_instances=list(range(300)))
 
-        selected, start, end = GnnAnswerRetrieverTrainingService._select_train_instances(
+        selected, start, end = GnnTrainingDataPreparationService._select_instances(
             prepared_dataset=dataset,
             start_instance=101,
             max_instances=100,
@@ -72,7 +107,7 @@ class GnnAnswerRetrieverTrainingServiceTests(unittest.TestCase):
             GnnAnswerRetrieverTrainingException,
             "greater than or equal to 0",
         ):
-            GnnAnswerRetrieverTrainingService._select_train_instances(
+            GnnTrainingDataPreparationService._select_instances(
                 prepared_dataset=dataset,
                 start_instance=-1,
                 max_instances=None,
@@ -85,7 +120,7 @@ class GnnAnswerRetrieverTrainingServiceTests(unittest.TestCase):
             GnnAnswerRetrieverTrainingException,
             "selected no instances",
         ):
-            GnnAnswerRetrieverTrainingService._select_train_instances(
+            GnnTrainingDataPreparationService._select_instances(
                 prepared_dataset=dataset,
                 start_instance=3,
                 max_instances=None,
@@ -132,25 +167,38 @@ class GnnAnswerRetrieverTrainingServiceTests(unittest.TestCase):
                 continued_run=None,
                 model_run_directory=run_directory,
                 torch=FakeTorch,
+                embedding_cache_device="cuda",
+                embedding_cache_dtype="bfloat16",
             )
 
             config = json.loads((run_directory / "model_config.json").read_text())
 
         self.assertFalse(config["is_fine_tuned_model"])
-        self.assertIsNone(config["continued_from_model_run_name"])
-        self.assertEqual(config["training_start_instance"], 5)
-        self.assertEqual(config["training_end_instance"], 15)
-        self.assertEqual(config["trained_instance_range"], {"start": 5, "end": 15})
-        self.assertEqual(config["trained_instances"], 10)
+        self.assertNotIn("continued_from_model_run_name", config)
+        self.assertNotIn("training_start_instance", config)
+        self.assertNotIn("training_end_instance", config)
+        self.assertNotIn("trained_instance_range", config)
+        self.assertNotIn("trained_instances", config)
+        self.assertEqual(
+            config["training"]["trained_instances"],
+            {"start": 5, "end": 15, "count": 10},
+        )
+        self.assertEqual(
+            config["training"]["loss_history"],
+            [{"epoch": 1, "average_loss": 0.5}],
+        )
         self.assertEqual(config["training"]["device"], "cpu")
-        self.assertFalse(config["use_edge_mlp"])
-        self.assertFalse(config["question_aware_classifier"])
-        self.assertTrue(config["use_reverse_edges"])
-        self.assertTrue(config["add_layer_normalization"])
-        self.assertEqual(config["edge_mlp_hidden_dim"], 64)
-        self.assertEqual(config["dropout"], 0.25)
-        self.assertTrue(config["training"]["use_reverse_edges"])
-        self.assertTrue(config["training"]["add_layer_normalization"])
+        self.assertEqual(config["training"]["random_seed"], 42)
+        self.assertEqual(config["embedding_model"], "text-embedding-3-small")
+        self.assertNotIn("entity_embedding_model", config)
+        self.assertNotIn("question_embedding_model", config)
+        self.assertNotIn("relation_embedding_model", config)
+        self.assertNotIn("use_edge_mlp", config)
+        self.assertNotIn("use_reverse_edges", config)
+        self.assertNotIn("use_reverse_edges", config["training"])
+        self.assertNotIn("add_layer_normalization", config["training"])
+        self.assertEqual(config["training"]["embedding_cache_device"], "cuda")
+        self.assertEqual(config["training"]["embedding_cache_dtype"], "bfloat16")
 
     def test_save_model_config_marks_continued_training(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -242,14 +290,21 @@ class GnnAnswerRetrieverTrainingServiceTests(unittest.TestCase):
         self.assertEqual(config["continued_from_model_run_number"], 1)
         self.assertNotIn("continued_from_model_config_path", config)
         self.assertNotIn("continued_from_weights_path", config)
-        self.assertEqual(config["entity_embedding_model"], "text-embedding-3-large")
-        self.assertEqual(config["question_embedding_model"], "text-embedding-3-large")
-        self.assertEqual(config["relation_embedding_model"], "text-embedding-3-large")
-        self.assertEqual(config["hidden_dimension"], 512)
-        self.assertEqual(config["gnn_layer_count"], 3)
-        self.assertEqual(config["node_classifier"], "linear")
-        self.assertEqual(config["training_start_instance"], 101)
-        self.assertEqual(config["training_end_instance"], 151)
+        self.assertEqual(config["embedding_model"], "text-embedding-3-large")
+        self.assertNotIn("entity_embedding_model", config)
+        self.assertNotIn("question_embedding_model", config)
+        self.assertNotIn("relation_embedding_model", config)
+        self.assertNotIn("hidden_dimension", config)
+        self.assertNotIn("gnn_layer_count", config)
+        self.assertNotIn("node_classifier", config)
+        self.assertNotIn("hidden_dimension", config["training"])
+        self.assertNotIn("gnn_layer_count", config["training"])
+        self.assertNotIn("training_start_instance", config)
+        self.assertNotIn("training_end_instance", config)
+        self.assertEqual(
+            config["training"]["trained_instances"],
+            {"start": 101, "end": 151, "count": 50},
+        )
 
 
 if __name__ == "__main__":

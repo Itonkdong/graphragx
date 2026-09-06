@@ -1,0 +1,298 @@
+{
+  "authoritative_group_union": [
+    "experiment1",
+    "experiment1_seed_winners",
+    "experiment1_winners"
+  ],
+  "excluded_metrics": [
+    "empty_subgraph_count",
+    "empty_subgraph_rate",
+    "average_construction_time_ms",
+    "average_objective"
+  ],
+  "experiment_file": "/Users/itonkdong/Work/Fax/NLP/project/graphragx/experiments/experiment_1_evidence_subgraphs.toml",
+  "metrics": {
+    "average_collected_prize": "Summary_Plots/evidence_average_collected_prize",
+    "average_distinct_nodes": "Summary_Plots/evidence_average_distinct_nodes",
+    "average_edge_cost": "Summary_Plots/evidence_average_edge_cost",
+    "average_subgraph_triples": "Summary_Plots/evidence_average_subgraph_triples",
+    "candidate_reduction_percentage": "Summary_Plots/evidence_candidate_reduction_percentage",
+    "context_candidate_coverage": "Summary_Plots/evidence_average_candidate_evidence_coverage",
+    "context_full_gold_coverage": "Summary_Plots/reasoning_context_full_gold_coverage_rate",
+    "context_gold_coverage": "Summary_Plots/reasoning_context_gold_coverage"
+  },
+  "runs": [
+    {
+      "configuration_id": "shortest_path",
+      "evidence_lineage_name": "1_exp1a_nbfnet_seed42_sp",
+      "experiment_id": "exp1_nbfnet_seed42_sp",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "aarinynz",
+      "wandb_run_name": "123_20260830_090742_nbfnet_sp",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/aarinynz"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "evidence_lineage_name": "28_exp1a_nbfnet_seed42_pcst_constant_lambda_0p01",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_constant_lambda_0p01",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "yro7rop9",
+      "wandb_run_name": "164_20260831_124901_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/yro7rop9"
+    },
+    {
+      "configuration_id": "pcst_constant_0.25",
+      "evidence_lineage_name": "2_exp1a_nbfnet_seed42_pcst_constant_l025",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_constant_l025",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "94tbxiho",
+      "wandb_run_name": "124_20260830_090823_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/94tbxiho"
+    },
+    {
+      "configuration_id": "pcst_constant_0.5",
+      "evidence_lineage_name": "3_exp1a_nbfnet_seed42_pcst_constant_l05",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_constant_l05",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "2qfddc4b",
+      "wandb_run_name": "125_20260830_090852_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/2qfddc4b"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "evidence_lineage_name": "4_exp1a_nbfnet_seed42_pcst_constant_l10",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_constant_l10",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "rexz8bsx",
+      "wandb_run_name": "126_20260830_090922_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/rexz8bsx"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "evidence_lineage_name": "29_exp1a_nbfnet_seed42_pcst_semantic_lambda_0p01",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_semantic_lambda_0p01",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "qdyzy3cs",
+      "wandb_run_name": "165_20260831_124933_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/qdyzy3cs"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.25",
+      "evidence_lineage_name": "5_exp1a_nbfnet_seed42_pcst_semantic_l025",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_semantic_l025",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "o2qxph7x",
+      "wandb_run_name": "127_20260830_090955_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/o2qxph7x"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.5",
+      "evidence_lineage_name": "6_exp1a_nbfnet_seed42_pcst_semantic_l05",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_semantic_l05",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "ycg0iqki",
+      "wandb_run_name": "128_20260830_091058_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/ycg0iqki"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "evidence_lineage_name": "7_exp1a_nbfnet_seed42_pcst_semantic_l10",
+      "experiment_id": "exp1_nbfnet_seed42_pcst_semantic_l10",
+      "seed": 42,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "7nr1obww",
+      "wandb_run_name": "129_20260830_091200_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/7nr1obww"
+    },
+    {
+      "configuration_id": "shortest_path",
+      "evidence_lineage_name": "8_exp1a_nbfnet_seed1337_sp",
+      "experiment_id": "exp1_nbfnet_seed1337_sp",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "r8swb3b8",
+      "wandb_run_name": "130_20260830_091300_nbfnet_sp",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/r8swb3b8"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "evidence_lineage_name": "30_exp1a_nbfnet_seed1337_pcst_constant_lambda_0p01",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_constant_lambda_0p01",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "8ge3oj20",
+      "wandb_run_name": "166_20260831_125040_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/8ge3oj20"
+    },
+    {
+      "configuration_id": "pcst_constant_0.25",
+      "evidence_lineage_name": "9_exp1a_nbfnet_seed1337_pcst_constant_l025",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_constant_l025",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "5k91go6y",
+      "wandb_run_name": "131_20260830_091344_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/5k91go6y"
+    },
+    {
+      "configuration_id": "pcst_constant_0.5",
+      "evidence_lineage_name": "10_exp1a_nbfnet_seed1337_pcst_constant_l05",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_constant_l05",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "yj66xfjl",
+      "wandb_run_name": "132_20260830_091415_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/yj66xfjl"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "evidence_lineage_name": "11_exp1a_nbfnet_seed1337_pcst_constant_l10",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_constant_l10",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "mxb795gy",
+      "wandb_run_name": "133_20260830_091447_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/mxb795gy"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "evidence_lineage_name": "31_exp1a_nbfnet_seed1337_pcst_semantic_lambda_0p01",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_semantic_lambda_0p01",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "t8wh8ra9",
+      "wandb_run_name": "167_20260831_125111_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/t8wh8ra9"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.25",
+      "evidence_lineage_name": "12_exp1a_nbfnet_seed1337_pcst_semantic_l025",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_semantic_l025",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "bjrgh3z0",
+      "wandb_run_name": "134_20260830_091519_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/bjrgh3z0"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.5",
+      "evidence_lineage_name": "13_exp1a_nbfnet_seed1337_pcst_semantic_l05",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_semantic_l05",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "0xj4f6sm",
+      "wandb_run_name": "135_20260830_091620_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/0xj4f6sm"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "evidence_lineage_name": "14_exp1a_nbfnet_seed1337_pcst_semantic_l10",
+      "experiment_id": "exp1_nbfnet_seed1337_pcst_semantic_l10",
+      "seed": 1337,
+      "wandb_group": "experiment1",
+      "wandb_run_id": "rjipbij6",
+      "wandb_run_name": "136_20260830_091720_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/rjipbij6"
+    },
+    {
+      "configuration_id": "shortest_path",
+      "evidence_lineage_name": "15_exp1a_nbfnet_seed2026_sp",
+      "experiment_id": "exp1_nbfnet_seed2026_sp",
+      "seed": 2026,
+      "wandb_group": "experiment1_winners",
+      "wandb_run_id": "76qoecir",
+      "wandb_run_name": "137_20260830_091822_nbfnet_sp",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/76qoecir"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "evidence_lineage_name": "32_exp1a_nbfnet_seed2026_pcst_constant_lambda_0p01",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_constant_lambda_0p01",
+      "seed": 2026,
+      "wandb_group": "experiment1_winners",
+      "wandb_run_id": "l7jhfcpe",
+      "wandb_run_name": "168_20260831_125212_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/l7jhfcpe"
+    },
+    {
+      "configuration_id": "pcst_constant_0.25",
+      "evidence_lineage_name": "16_exp1a_nbfnet_seed2026_pcst_constant_l025",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_constant_l025",
+      "seed": 2026,
+      "wandb_group": "experiment1_seed_winners",
+      "wandb_run_id": "uk8zsaaa",
+      "wandb_run_name": "138_20260830_091908_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/uk8zsaaa"
+    },
+    {
+      "configuration_id": "pcst_constant_0.5",
+      "evidence_lineage_name": "17_exp1a_nbfnet_seed2026_pcst_constant_l05",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_constant_l05",
+      "seed": 2026,
+      "wandb_group": "experiment1_seed_winners",
+      "wandb_run_id": "ff8e0giq",
+      "wandb_run_name": "139_20260830_091938_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/ff8e0giq"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "evidence_lineage_name": "18_exp1a_nbfnet_seed2026_pcst_constant_l10",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_constant_l10",
+      "seed": 2026,
+      "wandb_group": "experiment1_winners",
+      "wandb_run_id": "da69xkhh",
+      "wandb_run_name": "140_20260830_092011_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/da69xkhh"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "evidence_lineage_name": "33_exp1a_nbfnet_seed2026_pcst_semantic_lambda_0p01",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_semantic_lambda_0p01",
+      "seed": 2026,
+      "wandb_group": "experiment1_winners",
+      "wandb_run_id": "f5gpt04e",
+      "wandb_run_name": "169_20260831_125247_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/f5gpt04e"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.25",
+      "evidence_lineage_name": "19_exp1a_nbfnet_seed2026_pcst_semantic_l025",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_semantic_l025",
+      "seed": 2026,
+      "wandb_group": "experiment1_seed_winners",
+      "wandb_run_id": "hgouzya9",
+      "wandb_run_name": "141_20260830_092042_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/hgouzya9"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.5",
+      "evidence_lineage_name": "20_exp1a_nbfnet_seed2026_pcst_semantic_l05",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_semantic_l05",
+      "seed": 2026,
+      "wandb_group": "experiment1_seed_winners",
+      "wandb_run_id": "98jb0akz",
+      "wandb_run_name": "142_20260830_092144_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/98jb0akz"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "evidence_lineage_name": "21_exp1a_nbfnet_seed2026_pcst_semantic_l10",
+      "experiment_id": "exp1_nbfnet_seed2026_pcst_semantic_l10",
+      "seed": 2026,
+      "wandb_group": "experiment1_winners",
+      "wandb_run_id": "coc5k7g7",
+      "wandb_run_name": "143_20260830_092245_nbfnet_pcst",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/coc5k7g7"
+    }
+  ],
+  "selection_rule": "Exact experiment-defined evidence lineage with matching algorithm, cost strategy, and lambda; one complete run per declared run.",
+  "wandb_project": "itonkdong-org/graphragx"
+}

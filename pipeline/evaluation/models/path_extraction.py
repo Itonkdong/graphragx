@@ -158,6 +158,35 @@ class ReasoningPath(BaseModel):
     )
 
 
+class EvidenceSubgraphConstruction(BaseModel):
+    """Per-instance evidence-subgraph construction metadata."""
+
+    strategy: str = "shortest_path"
+    edge_cost_strategy: str | None = None
+    edge_cost_lambda: float | None = None
+    semantic_embedding_model: str | None = None
+    input_candidate_count: int = 0
+    valid_candidate_count: int = 0
+    selected_candidate_count: int = 0
+    selected_candidate_ranks: list[int] = Field(default_factory=list)
+    collected_prize: float = 0.0
+    selected_node_count: int = 0
+    selected_triple_count: int = 0
+    total_edge_cost: float = 0.0
+    objective: float = 0.0
+    valid_seed_count: int = 0
+    missing_seed_count: int = 0
+    construction_time_ms: float = 0.0
+    empty_result_reason: str | None = None
+
+    @property
+    def candidate_evidence_coverage(self) -> float:
+        """Return the fraction of candidates represented in the evidence."""
+        if self.input_candidate_count == 0:
+            return 0.0
+        return self.selected_candidate_count / self.input_candidate_count
+
+
 class ExtractedReasoningPaths(StepResult):
     """Structured paths and deduplicated reasoning subgraph for LLM context."""
 
@@ -176,3 +205,7 @@ class ExtractedReasoningPaths(StepResult):
     )
     found_paths: int = Field(default=0, description="Number of candidates with paths.")
     missing_paths: int = Field(default=0, description="Number of candidates without paths.")
+    construction: EvidenceSubgraphConstruction = Field(
+        default_factory=EvidenceSubgraphConstruction,
+        description="Evidence strategy and per-instance construction analytics.",
+    )

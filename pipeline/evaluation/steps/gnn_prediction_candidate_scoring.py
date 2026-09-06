@@ -131,12 +131,9 @@ class GnnPredictionCandidateScoringStep(
 
     def _load_processed_instance(self, instance_index: int):
         try:
-            import torch
-
-            try:
-                instances = torch.load(self.processed_instances_path, weights_only=False)
-            except TypeError:
-                instances = torch.load(self.processed_instances_path)
+            instances = WebQSPLocalGraphStorageService().load_instances(
+                self.processed_instances_path
+            )
         except Exception as error:
             raise GnnAnswerRetrieverEvaluationException(
                 f"Could not load processed test instances from "

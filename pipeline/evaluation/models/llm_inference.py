@@ -12,9 +12,11 @@ from pipeline.evaluation.models.gnn_answer_retriever_evaluation import (
 )
 from pipeline.evaluation.models.path_extraction import (
     CandidateNodeScores,
+    EvidenceSubgraphConstruction,
     ExtractedReasoningPaths,
     GraphTriple,
 )
+from pipeline.preparation.models.webqsp_local_graph import WebQSPProcessedInstance
 
 
 class ReasoningSampleForPrediction(BaseModel):
@@ -28,6 +30,11 @@ class ReasoningSampleForPrediction(BaseModel):
     candidate_scores: CandidateNodeScores = Field(
         ...,
         description="Candidate scores and local graph sample for path extraction.",
+    )
+    graph_instance: WebQSPProcessedInstance | None = Field(
+        default=None,
+        exclude=True,
+        description="In-memory processed graph used by optimized path extraction.",
     )
 
 
@@ -65,6 +72,28 @@ class ExtractedReasoningPathsBatch(StepResult):
     items: list[ReasoningPathsForPrediction] = Field(default_factory=list)
 
 
+class SavedEvidenceSubgraphRun(StepResult):
+    """Persisted evidence construction run without LLM answer generation."""
+
+    dataset_id: str
+    gnn_architecture: str
+    evaluation_run_name: str
+    evidence_run_directory: Path
+    evidence_run_name: str
+    evidence_run_number: int
+    evaluated_instances: int
+    subgraph_algorithm: str
+    evidence_configuration: dict[str, object] = Field(default_factory=dict)
+    evidence_metrics: dict[str, float | int] = Field(default_factory=dict)
+    evidence_config_path: Path
+    evidence_subgraphs_path: Path
+    evidence_metrics_path: Path
+    wandb_status: str | None = None
+    wandb_run_id: str | None = None
+    wandb_run_url: str | None = None
+    wandb_error_message: str | None = None
+
+
 class GeneratedAnswerForPrediction(BaseModel):
     """Generated LLM answer for one path-extracted prediction."""
 
@@ -78,8 +107,15 @@ class GeneratedAnswerForPrediction(BaseModel):
     found_reasoning_paths: int = Field(default=0)
     missing_reasoning_paths: int = Field(default=0)
     reasoning_paths_text: str = Field(default="")
+    evidence_construction: EvidenceSubgraphConstruction = Field(
+        default_factory=EvidenceSubgraphConstruction
+    )
     model_id: str = Field(..., description="LLM model used for answer generation.")
-    answer: str = Field(default="", description="Generated final answer.")
+    llm_provider: str = Field(default="openai", description="LLM provider used.")
+    answers: list[str] = Field(
+        default_factory=list,
+        description="Generated answer entities with atomic entity boundaries.",
+    )
     explanation: str = Field(
         default="",
         description="Explanation of which reasoning paths supported the answer.",
@@ -101,6 +137,21 @@ class GeneratedFinalAnswersBatch(StepResult):
     dataset_id: str = Field(..., description="Dataset identifier.")
     evaluation_run_name: str = Field(..., description="Source GNN evaluation run name.")
     model_id: str = Field(..., description="LLM model used for answer generation.")
+    llm_provider: str = Field(default="openai", description="LLM provider used.")
+    reasoning_effort: str | None = Field(default=None)
+    generate_explanation: bool = Field(
+        default=True,
+        description="Whether this run requested LLM-generated explanations.",
+    )
+    evidence_subgraph: dict[str, object] = Field(default_factory=dict)
+    inference_batch_size: int | None = Field(
+        default=None,
+        description="Number of answers persisted together during batched inference.",
+    )
+    inference_parallel_calls: int = Field(
+        default=1,
+        description="Maximum simultaneous LLM API calls used for this run.",
+    )
     items: list[GeneratedAnswerForPrediction] = Field(default_factory=list)
 
     @property
@@ -123,9 +174,22 @@ class SavedLlmInferenceRun(StepResult):
     inference_run_name: str = Field(..., description="Created inference run folder name.")
     inference_run_number: int = Field(..., description="Created inference run number.")
     model_id: str = Field(..., description="LLM model used for answer generation.")
+    llm_provider: str = Field(default="openai", description="LLM provider used.")
+    reasoning_effort: str | None = Field(default=None)
+    generate_explanation: bool = Field(
+        default=True,
+        description="Whether this run requested LLM-generated explanations.",
+    )
+    evidence_subgraph: dict[str, object] = Field(default_factory=dict)
+    inference_batch_size: int | None = None
+    inference_parallel_calls: int = 1
     total_instances: int = Field(..., description="Number of instances processed.")
     successful_answers: int = Field(..., description="Number of successful generations.")
     failed_answers: int = Field(..., description="Number of failed generations.")
     reasoning_path: Path = Field(..., description="Saved reasoning path.")
     answers_path: Path = Field(..., description="Saved answers path.")
     inference_config_path: Path = Field(..., description="Saved inference config path.")
+    wandb_status: str | None = None
+    wandb_run_id: str | None = None
+    wandb_run_url: str | None = None
+    wandb_error_message: str | None = None

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
+import time
 from typing import TYPE_CHECKING, Any
 
 from helpers.logging_config import get_logger
@@ -43,6 +44,9 @@ class WebQSPLocalGraphProcessorService(AbstractService):
         processing_version: str,
         use_reverse_edges: bool,
         cache_directory: Path,
+        source_fingerprints: dict[str, str] | None = None,
+        entity_mapping_sha256: str | None = None,
+        profile: bool = False,
     ) -> PreparedWebQSPGraphDataset:
         """Process WebQSP train, validation, and test splits."""
         if loaded_dataset.dataset_id != WEBQSP_DATASET_ID:
@@ -53,18 +57,22 @@ class WebQSPLocalGraphProcessorService(AbstractService):
         vocabulary_store = WebQSPVocabularyStore()
         self.entity_name_mapping_service.reset_summary()
         logger.info(f"Processing WebQSP train split into local graph instances")
+        phase_started_at = time.perf_counter()
         train_instances = self._process_split(
             rows=loaded_dataset.hugging_face_dataset["train"],
             vocabulary_store=vocabulary_store,
             use_reverse_edges=use_reverse_edges,
         )
+        train_seconds = time.perf_counter() - phase_started_at
         test_rows = self._combined_test_rows(loaded_dataset.hugging_face_dataset)
         logger.info(f"Processing WebQSP validation+test split into local graph instances")
+        phase_started_at = time.perf_counter()
         test_instances = self._process_split(
             rows=test_rows,
             vocabulary_store=vocabulary_store,
             use_reverse_edges=use_reverse_edges,
         )
+        test_seconds = time.perf_counter() - phase_started_at
         entity_mapping_summary = self.entity_name_mapping_service.build_summary()
         logger.info(
             f"Finished WebQSP entity mapping: "
@@ -81,6 +89,14 @@ class WebQSPLocalGraphProcessorService(AbstractService):
                 f"Unmapped WebQSP MID-like entities remain after processing: "
                 f"samples={entity_mapping_summary.unmapped_mid_samples}"
             )
+        if profile:
+            logger.info(
+                "WebQSP graph processing profile: "
+                f"train_ms={train_seconds * 1000:.2f} "
+                f"test_ms={test_seconds * 1000:.2f} "
+                f"train_instances={len(train_instances)} "
+                f"test_instances={len(test_instances)}"
+            )
 
         return PreparedWebQSPGraphDataset(
             dataset_id=loaded_dataset.dataset_id,
@@ -90,6 +106,8 @@ class WebQSPLocalGraphProcessorService(AbstractService):
             test_instances=test_instances,
             vocabulary_store=vocabulary_store,
             entity_mapping_summary=entity_mapping_summary,
+            source_fingerprints=source_fingerprints or {},
+            entity_mapping_sha256=entity_mapping_sha256,
             cache_directory=cache_directory,
         )
 

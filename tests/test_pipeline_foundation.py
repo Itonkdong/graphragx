@@ -180,8 +180,10 @@ class PipelineFoundationTests(unittest.TestCase):
         self.assertTrue(builder.has_stored_result(FinalAnswerResult))
 
     def test_step_failure_stops_phase_execution(self) -> None:
+        completions: list[str] = []
         pipeline = Pipeline(
             preparation_steps=[InitialToQueryStep(), FailingStep(), CandidateToAnswerStep()],
+            completion_callbacks=[lambda: completions.append("finished")],
         )
 
         result = pipeline.prepare(self.make_initial_context())
@@ -189,6 +191,7 @@ class PipelineFoundationTests(unittest.TestCase):
         self.assertFalse(result.success)
         self.assertEqual(result.steps_executed, 1)
         self.assertEqual(result.exception_type, "PipelineException")
+        self.assertEqual(completions, ["finished"])
 
     def test_first_step_can_run_from_empty_initial_context(self) -> None:
         class EmptyAwareInitialStep(AbstractStep[QueryNodesResult, InitialStepResult]):

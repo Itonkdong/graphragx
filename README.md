@@ -1,280 +1,124 @@
 # graphragX
 
-`graphragX` is an experimental GraphRAG pipeline for knowledge-graph question answering. It combines graph-based candidate retrieval with GNN scoring, reasoning-subgraph extraction, LLM answer generation, final evaluation metrics, and optional Weights & Biases visualization.
+`graphragX` is an experimental GraphRAG pipeline for question answering over
+knowledge graphs. It trains a graph neural network (GNN) to rank answer
+entities, constructs a compact evidence subgraph, and asks a language model to
+generate the final answer from structured triples.
 
-The current implementation is focused on WebQSP. The pipeline prepares local graph data, trains a GNN answer retriever, evaluates candidate-answer retrieval, builds reasoning subgraphs, calls an LLM for final answers, computes final metrics, and saves all artifacts under `data/webqsp`.
+The current implementation targets **WebQSP** and supports:
 
-This project was highly inspired by **GNN-RAG: Graph Neural Retrieval for Large Language Model Reasoning**: https://arxiv.org/pdf/2405.20139
+- GraphSAGE, Advance GraphSAGE, R-GCN, HGT, ReaRev, and NBFNet retrievers;
+- union-of-shortest-paths and Prize-Collecting Steiner Tree (PCST) evidence;
+- constant and semantic PCST edge costs;
+- OpenAI, DeepSeek, and FINKI Vezilka-compatible LLM inference;
+- local, per-stage artifacts and optional Weights & Biases tracking;
+- resumable TOML experiment manifests and reproducible result-generation scripts.
 
-For the full project explanation, read the final paper at [`metadata/GraphRagX.pdf`](metadata/GraphRagX.pdf). Architecture graphs, supporting reports, and metric explanations are also available in the [`metadata/`](metadata/) folder.
+The implementation was inspired by [GNN-RAG: Graph Neural Retrieval for Large
+Language Model Reasoning](https://arxiv.org/abs/2405.20139).
 
-## Setup
+## Quick start
 
-Create a virtual environment and install dependencies:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Create your local environment file:
+The shortest setup uses Docker Compose. Copy the environment template, add the
+required API keys, and run the small example experiment together with Qdrant:
 
 ```bash
 cp .env.example .env
+docker compose up --build --abort-on-container-exit --exit-code-from graphragx
 ```
 
-Fill in at least:
+See [Docker Compose](docs/docker.md) for command overrides, official
+experiments, scripts, persistent paths, and optional NVIDIA GPU access.
+
+For a native environment, install [uv](https://docs.astral.sh/uv/), then create
+the locked Python 3.11 environment:
 
 ```bash
-OPENAI_API_KEY=your_openai_key
+uv sync --frozen
+cp .env.example .env
 ```
 
-Start Qdrant before running any training or evaluation step that uses embeddings:
+Add the API keys needed by your selected stages to `.env`. Embedding-based
+architectures and semantic PCST also require Qdrant:
 
 ```bash
 docker compose up -d qdrant
 ```
 
-By default the pipeline connects to `http://localhost:6333` and stores embeddings in Qdrant collections prefixed with `graphragx_embeddings`.
-
-W&B logging is enabled by default for full runs. For first-time W&B usage, run:
+Run the complete pipeline with recommended defaults:
 
 ```bash
-wandb login
+uv run graphragx --default
 ```
 
-or set `WANDB_API_KEY` in your shell environment. If you do not want W&B for a run, use `--no-wandb`.
-
-## Running The Pipeline
-
-Run the main entrypoint:
+Common stage-specific commands:
 
 ```bash
-python main.py
+# Train and evaluate a retriever without LLM calls
+uv run graphragx --retriever-only --gnn-architecture nbfnet --default
+
+# Compare evidence construction from a saved retriever
+uv run graphragx --evidence-only \
+  --retriever-run-name RUN_NAME \
+  --subgraph-algorithm pcst \
+  --pcst-edge-cost-strategy constant \
+  --pcst-edge-cost 1.0 \
+  --default
+
+# Generate answers from a saved retriever
+uv run graphragx --inference-only \
+  --retriever-run-name RUN_NAME \
+  --subgraph-algorithm shortest_path \
+  --default
 ```
 
-With no arguments, the pipeline runs in full mode, but it still asks you to select configurable project options interactively. Full mode includes training, evaluation, LLM inference, final result computation, and W&B logging.
+Use `uv run graphragx --help` for the complete CLI reference.
 
-To use recommended default selections without interactive prompts:
+## Experiment manifests
+
+Preview or execute a resumable manifest:
 
 ```bash
-python main.py --default
+uv run graphragx-experiments experiments/example.toml --dry-run
+uv run graphragx-experiments experiments/example.toml
 ```
 
-To run the full pipeline without W&B:
+The three official code-indexed experiments are:
 
-```bash
-python main.py --default --no-wandb
-```
+- `experiment_0_gnn_architectures.toml` — retriever architecture comparison;
+- `experiment_1_evidence_subgraphs.toml` — evidence-subgraph comparison;
+- `experiment_2_end_to_end.toml` — end-to-end LLM comparison.
 
-To run only GNN training:
+Additional `probe_*.toml` files are diagnostics, not official experiments.
 
-```bash
-python main.py --train-only --default
-```
+## Documentation
 
-To evaluate a saved model run:
+- [Documentation index](docs/index.md)
+- [Installation and first runs](docs/getting-started.md)
+- [Docker Compose](docs/docker.md)
+- [Pipeline and supported architectures](docs/pipeline.md)
+- [Configuration reference](docs/configuration.md)
+- [Experiment manifests and result scripts](docs/experiments.md)
+- [Artifacts and W&B](docs/artifacts-and-wandb.md)
+- [Metrics reference](docs/metrics/index.md)
+- [Development guide](docs/development.md)
 
-```bash
-python main.py --evaluation-only --evaluation-model-run-number 12 --default
-```
+## Outputs and research material
 
-## CLI Flags
+Runtime artifacts are written under `data/webqsp/`. Generated figures, tables,
+and provenance records live under `metadata/`.
 
-### Run Mode
+## Project lineage
 
-| Flag | Description |
-| --- | --- |
-| `--full` | Runs setup, GNN training, GNN evaluation, LLM inference, final results, and W&B logging. This is the default run mode. |
-| `--train-only` | Runs dataset selection/configuration, dataset loading, local WebQSP graph preparation, GNN model construction, and GNN training. It stops after saving the trained model run. |
-| `--evaluation-only` | Runs setup and evaluates a previously saved GNN model run. Use this with `--evaluation-model-run-name` or `--evaluation-model-run-number`. |
-
-### Dataset And Pipeline Configuration
-
-| Flag | Description |
-| --- | --- |
-| `--dataset DATASET` | Dataset id to use. The current supported dataset is `WebQSP`. |
-| `--main-llm-model MAIN_LLM_MODEL` | LLM model id used for final answer generation. |
-| `--subgraph-algorithm SUBGRAPH_ALGORITHM` | Subgraph construction algorithm. The current supported option is `shortest_path`. |
-| `--context-strategy CONTEXT_STRATEGY` | How the reasoning subgraph is represented for the LLM. The current supported option is `structured_triples`. |
-| `--gnn-layers GNN_LAYERS` | Number of GNN message-passing layers. |
-| `--gnn-hidden-dim GNN_HIDDEN_DIM` | Hidden dimension used inside the GNN. |
-| `--node-classifier NODE_CLASSIFIER` | Node classifier head used after the GNN. Supported options include `mlp` and `linear`. |
-| `--question-embedding-model QUESTION_EMBEDDING_MODEL` | OpenAI embedding model used for question text. |
-| `--relation-embedding-model RELATION_EMBEDDING_MODEL` | OpenAI embedding model used for relation text. |
-| `--entity-embedding-model ENTITY_EMBEDDING_MODEL` | OpenAI embedding model used for entity text. |
-
-### Training
-
-| Flag | Description |
-| --- | --- |
-| `--training-epochs TRAINING_EPOCHS` | Number of GNN training epochs. |
-| `--training-learning-rate TRAINING_LEARNING_RATE` | Learning rate for GNN training. |
-| `--training-weight-decay TRAINING_WEIGHT_DECAY` | Weight decay for GNN training. |
-| `--training-max-instances TRAINING_MAX_INSTANCES` | Optional limit for how many WebQSP training instances to use. If omitted, the full train split is used. |
-| `--training-start-instance TRAINING_START_INSTANCE` | Zero-based train split index where training starts. With `--training-max-instances 100 --training-start-instance 101`, the slice is `[101:201]`. |
-| `--training-log-every TRAINING_LOG_EVERY` | How often training progress is logged, measured in processed instances. |
-| `--training-device {auto,cpu,cuda,mps}` | Device used for GNN training. `auto` selects the best available supported device. |
-| `--training-run-name TRAINING_RUN_NAME` | Optional label for the saved training run folder. |
-| `--continue-training-model-run-name CONTINUE_TRAINING_MODEL_RUN_NAME` | Continue training from a saved GNN model run folder name or suffix. Valid in full and train-only runs. |
-| `--continue-training-model-run-number CONTINUE_TRAINING_MODEL_RUN_NUMBER` | Continue training from a saved GNN model run numeric prefix. Valid in full and train-only runs. |
-| `--use-edge-mlp` | Use a trainable question-relation MLP instead of fixed cosine edge weights. |
-| `--question-aware-classifier` | Classify nodes from `h_v`, projected question embedding, and their element-wise product. |
-| `--use-reverse-edges` | Materialize reverse edges in prepared WebQSP graphs and use a separate processed cache variant. |
-| `--add-layer-normalization` | Apply residual connection plus LayerNorm after each GNN layer. |
-| `--edge-mlp-hidden-dim EDGE_MLP_HIDDEN_DIM` | Hidden dimension for the edge MLP. Defaults to the selected GNN hidden dimension. |
-| `--dropout DROPOUT` | Dropout used by upgraded GNN components. Default: `0.1`. |
-
-### GNN Evaluation
-
-| Flag | Description |
-| --- | --- |
-| `--evaluation-model-run-name EVALUATION_MODEL_RUN_NAME` | Saved model run folder name or suffix to evaluate. |
-| `--evaluation-model-run-number EVALUATION_MODEL_RUN_NUMBER` | Saved model run numeric prefix to evaluate. |
-| `--answer-threshold ANSWER_THRESHOLD` | Minimum answer-node probability for threshold candidate selection. |
-| `--candidate-top-k CANDIDATE_TOP_K` | Minimum number of selected candidates when threshold selection returns too few. |
-| `--candidate-limit CANDIDATE_LIMIT` | Maximum number of selected answer candidates after threshold and top-k selection. `--limit` is an alias. |
-| `--evaluation-run-name EVALUATION_RUN_NAME` | Optional label for the saved evaluation run folder. |
-| `--evaluation-max-instances EVALUATION_MAX_INSTANCES` | Optional limit for how many WebQSP test instances to evaluate. If omitted, the full test split is used. |
-| `--evaluation-log-every EVALUATION_LOG_EVERY` | How often GNN evaluation progress is logged, measured in evaluated instances. |
-
-### LLM Inference And Results
-
-| Flag | Description |
-| --- | --- |
-| `--no-llm-inference` | Stops after GNN candidate retrieval and skips reasoning-subgraph extraction, LLM answer generation, final results, and W&B logging. If this is used, also pass `--no-wandb`. |
-| `--inference-run-name INFERENCE_RUN_NAME` | Optional label for the saved LLM inference run folder. |
-| `--llm-inference-batch-size LLM_INFERENCE_BATCH_SIZE` | Number of samples to process per persistence batch during LLM inference. The LLM calls remain one-by-one. |
-
-### W&B
-
-| Flag | Description |
-| --- | --- |
-| `--no-wandb` | Skips W&B upload. Local result files are still saved. |
-| `--wandb-project WANDB_PROJECT` | W&B project name. Defaults to `WANDB_PROJECT` from the environment, then `graphragx`. |
-| `--wandb-entity WANDB_ENTITY` | Optional W&B entity/team. Defaults to `WANDB_ENTITY` from the environment. |
-| `--wandb-mode {online,offline,disabled}` | W&B mode. Defaults to `WANDB_MODE` from the environment, then `online`. |
-
-### Execution Helpers
-
-| Flag | Description |
-| --- | --- |
-| `--default` | Uses recommended default values for configurable selections instead of prompting interactively. |
-| `--force-default` | Forces every pipeline step to use its default execution path. This is mostly useful for tests and controlled runs. |
-
-## Outputs
-
-Pipeline outputs are saved under `data/webqsp`:
-
-`data/webqsp/processed`
-
-Processed WebQSP graph cache and vocabulary artifacts.
-
-`data/webqsp/models/<run>`
-
-GNN training outputs, including `model_config.json`, model weights, and loss history.
-
-`data/webqsp/evaluations/<run>`
-
-GNN retrieval evaluation outputs, including `evaluation_config.json` and `predictions.jsonl`.
-
-`data/webqsp/inference/<run>`
-
-LLM inference outputs, including `inference_config.json`, `answers.jsonl`, and `reasoning.jsonl`.
-
-`data/webqsp/results/<run>`
-
-Final result outputs, including `results_config.json`, retrieval metrics, reasoning/answer metrics, and per-instance metrics.
-
-## Project Structure
-
-```text
-graphragx/
-├── main.py
-├── requirements.txt
-├── docker-compose.yml
-├── README.md
-├── LICENSE
-├── CONTRIBUTING.md
-├── helpers/
-│   ├── constants.py
-│   ├── env_variables.py
-│   ├── logging_config.py
-│   ├── openai_rate_limit_logging.py
-│   └── path_serialization.py
-├── pipeline/
-│   ├── abstract.py
-│   ├── context_builder.py
-│   ├── exceptions.py
-│   ├── pipeline.py
-│   ├── services.py
-│   ├── preparation/
-│   │   ├── exceptions/
-│   │   ├── helpers/
-│   │   ├── models/
-│   │   ├── services/
-│   │   └── steps/
-│   └── evaluation/
-│       ├── exceptions/
-│       ├── models/
-│       ├── services/
-│       └── steps/
-├── mappings/
-│   └── webqsp/
-├── metadata/
-│   ├── GraphRagX.pdf
-│   ├── metrics/
-│   │   ├── prediction_metrics.md
-│   │   └── retrieval_metrics.md
-│   └── other/
-│       ├── REPORT.pdf
-│       ├── graphragx-final.drawio.png
-│       └── graphragx.drawio
-├── agents_metadata/
-│   ├── guidlines/
-│   │   ├── ERROR_HANDLING_GUIDELINES.MD
-│   │   ├── GENERAL_GUIDELINES.MD
-│   │   ├── PROJECT_GUIDELINES.MD
-│   │   ├── PROJECT_OVERVIEW.md
-│   │   └── SERVICE_GUIDELINES.MD
-│   └── pipeline_overview/
-│       ├── PIPELINE_OVERVIEW.md
-│       ├── preparation/
-│       └── evaluation/
-├── tests/
-│   ├── preparation/
-│   └── evaluation/
-└── data/
-    └── webqsp/
-        ├── processed/
-        ├── processed_reverse_edges/
-        ├── models/
-        ├── evaluations/
-        ├── inference/
-        └── results/
-```
-
-`main.py` is the CLI entrypoint and composes the full pipeline. `pipeline/` contains the actual preparation and evaluation steps, services, models, exceptions, and pipeline runner. `helpers/` contains shared constants, environment handling, logging, rate-limit visibility, and path serialization utilities.
-
-`metadata/` is the human-facing project documentation folder. It contains the final paper, project report, architecture diagrams, and metric explanations. `agents_metadata/` is the agent-facing context folder; contributors using AI coding agents should start there to understand conventions, expected service structure, error handling, and the intended pipeline flow.
-
-`data/webqsp/` is generated locally during runs. It contains processed graph caches, trained model runs, evaluation outputs, LLM inference outputs, and final result folders.
-
-## Contributing With Agents
-
-If you want to contribute with coding agents, first read `agents_metadata/guidlines/PROJECT_GUIDELINES.MD` and `agents_metadata/pipeline_overview/PIPELINE_OVERVIEW.md`.
-
-The `agents_metadata/` folder explains the expected project conventions, how services and steps should be structured, how errors should be handled, and how the pipeline is intended to flow. Give those files to the agent as context before asking it to change the project.
+This implementation builds on top of the initial `graphragX` project. The
+accompanying [final thesis](metadata/thesis/thesis.pdf) documents the extended
+system, methodology, and experimental findings.
 
 ## Credits
 
-This project was made by **Andrea Stevanoska** and **Viktor Kostadinoski**.
-
-It was supervised by the TA **M.Sc. Martina Toshevska** and the Professor: **PhD Sonja Gievska**.
-
-All contributors and supervisors are part of **FINKI, the Faculty of Computer Science and Engineering in Skopje**.
+Created by **Viktor Kostadinoski**, supervised by **PhD Sonja Gievska** at FINKI, Ss. Cyril and
+Methodius University in Skopje.
 
 ## License
 
-This project is released under the MIT License. See `LICENSE`.
+Released under the [MIT License](LICENSE).

@@ -4,11 +4,22 @@ from __future__ import annotations
 
 import json
 import re
+import threading
 import time
 from typing import Any
 
-from helpers.constants import DEEPSEEK_API_KEY_ENV_NAME, OPENAI_API_KEY_ENV_NAME
-from helpers.env_variables import DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, OPENAI_API_KEY
+from helpers.constants import (
+    DEEPSEEK_API_KEY_ENV_NAME,
+    DEFAULT_VEZILKA_BASE_URL,
+    OPENAI_API_KEY_ENV_NAME,
+    VEZILKA_API_KEY_ENV_NAME,
+)
+from helpers.env_variables import (
+    DEEPSEEK_API_KEY,
+    DEEPSEEK_BASE_URL,
+    OPENAI_API_KEY,
+    VEZILKA_API_KEY,
+)
 from helpers.logging_config import get_logger
 from helpers.openai_rate_limit_logging import (
     create_rate_limit_logging_http_client,
@@ -16,7 +27,10 @@ from helpers.openai_rate_limit_logging import (
     is_openai_rate_limit_error,
     rate_limit_wait_seconds,
 )
-from pipeline.evaluation.exceptions import LlmAnswerGenerationException
+from pipeline.evaluation.exceptions import (
+    InsufficientLlmCreditsException,
+    LlmAnswerGenerationException,
+)
 from pipeline.services import AbstractService
 
 logger = get_logger(__name__)
@@ -45,34 +59,55 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
         "gpt-4o-mini": {"input": 0.15, "output": 0.6},
     }
 
-    system_prompt = (
+    explanation_system_prompt = (
         "You answer questions using only the provided reasoning paths. "
-        "Return only valid JSON with the keys answer and explanation. "
-        "If the paths do not support an answer, set answer to Unknown."
+        "Return only valid JSON with the keys answers and explanation. "
+        "The answers value must be a JSON array of complete entity names. "
+        "If the paths do not support an answer, return an empty answers array."
     )
+    answer_only_system_prompt = (
+        "You answer questions using only the provided reasoning paths. "
+        "Return only valid JSON with the key answers. The answers value must be "
+        "a JSON array of complete entity names. Do not generate an explanation. "
+        "If the paths do not support an answer, return an empty answers array."
+    )
+    def __init__(self) -> None:
+        self._chat_models: dict[tuple[str, str, str | None, str | None], Any] = {}
+        self._chat_models_lock = threading.Lock()
 
     def generate_answer(
         self,
         question: str,
         reasoning_paths_text: str,
         model_id: str,
-    ) -> tuple[str, str]:
-        """Call the LLM and return the generated answer with the prompt."""
+        provider_id: str = "openai",
+        reasoning_effort: str | None = None,
+    ) -> tuple[list[str], str]:
+        """Call the LLM and return atomic answer entities with the prompt."""
         result = self.generate_answer_with_explanation(
             question=question,
             reasoning_paths_text=reasoning_paths_text,
             model_id=model_id,
+            provider_id=provider_id,
+            reasoning_effort=reasoning_effort,
+            generate_explanation=False,
         )
-        return result["answer"], result["prompt"]
+        return result["answers"], result["prompt"]
 
     def generate_answer_with_explanation(
         self,
         question: str,
         reasoning_paths_text: str,
         model_id: str,
-    ) -> dict[str, str]:
-        """Call the LLM and return parsed answer, explanation, and raw response."""
-        api_key, api_key_env_name, base_url = self._model_api_settings(model_id)
+        provider_id: str = "openai",
+        reasoning_effort: str | None = None,
+        generate_explanation: bool = True,
+    ) -> dict[str, Any]:
+        """Call the LLM and optionally request an explanation."""
+        api_key, api_key_env_name, base_url = self._model_api_settings(
+            model_id,
+            provider_id,
+        )
         if not api_key:
             raise LlmAnswerGenerationException(
                 f"{api_key_env_name} must be set in .env before LLM inference."
@@ -81,30 +116,37 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
         prompt = self.build_prompt(
             question=question,
             reasoning_paths_text=reasoning_paths_text,
+            generate_explanation=generate_explanation,
         )
 
         try:
+            started_at = time.monotonic()
             from langchain_core.messages import HumanMessage, SystemMessage
-            from langchain_openai import ChatOpenAI
 
             messages = [
-                SystemMessage(content=self.system_prompt),
+                SystemMessage(
+                    content=(
+                        self.explanation_system_prompt
+                        if generate_explanation
+                        else self.answer_only_system_prompt
+                    )
+                ),
                 HumanMessage(content=prompt),
             ]
-            chat_model = self._create_chat_model(
-                chat_openai_type=ChatOpenAI,
+            chat_model = self._get_chat_model(
+                provider_id=provider_id,
                 model_id=model_id,
-                prompt=prompt,
                 api_key=api_key,
                 base_url=base_url,
+                reasoning_effort=reasoning_effort,
             )
-            started_at = time.monotonic()
             response = self._invoke_with_visible_rate_limit_retries(
                 chat_model=chat_model,
                 messages=messages,
                 model_id=model_id,
                 prompt=prompt,
             )
+            raw_response = self.extract_response_content(response.content).strip()
             elapsed_seconds = time.monotonic() - started_at
             if elapsed_seconds >= self.slow_request_warning_seconds:
                 logger.warning(
@@ -112,13 +154,22 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
                     f"elapsed_seconds={elapsed_seconds:.2f} "
                     f"prompt_chars={len(prompt)}"
                 )
+        except InsufficientLlmCreditsException:
+            raise
         except Exception as error:
+            if self.is_insufficient_credit_error(error):
+                raise InsufficientLlmCreditsException(
+                    f"LLM provider has insufficient credits for model {model_id}: "
+                    f"{error}"
+                ) from error
             raise LlmAnswerGenerationException(
                 f"LLM answer generation failed: {error}"
             ) from error
 
-        raw_response = self.extract_response_content(response.content).strip()
-        parsed_response = self.parse_json_response(raw_response)
+        parsed_response = self.parse_json_response(
+            raw_response,
+            generate_explanation=generate_explanation,
+        )
         usage = self.extract_token_usage(response)
         estimated_cost = self.estimate_cost_usd(
             model_id=model_id,
@@ -126,7 +177,7 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
             completion_tokens=usage["completion_tokens"],
         )
         return {
-            "answer": parsed_response["answer"],
+            "answers": parsed_response["answers"],
             "explanation": parsed_response["explanation"],
             "raw_response": raw_response,
             "prompt": prompt,
@@ -147,6 +198,11 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
             try:
                 return chat_model.invoke(messages)
             except Exception as error:
+                if self.is_insufficient_credit_error(error):
+                    raise InsufficientLlmCreditsException(
+                        f"LLM provider has insufficient credits for model "
+                        f"{model_id}: {error}"
+                    ) from error
                 if not is_openai_rate_limit_error(error):
                     raise
 
@@ -171,19 +227,95 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
 
         return chat_model.invoke(messages)
 
+    @classmethod
+    def is_insufficient_credit_error(cls, error: BaseException) -> bool:
+        """Recognize provider billing exhaustion without treating rate limits as fatal."""
+        markers = (
+            "insufficient balance",
+            "insufficient_balance",
+            "insufficient credits",
+            "insufficient_credits",
+            "insufficient quota",
+            "insufficient_quota",
+            "out of credits",
+            "credit balance",
+            "billing hard limit",
+            "billing_hard_limit",
+        )
+        visited: set[int] = set()
+        current: BaseException | None = error
+        while current is not None and id(current) not in visited:
+            visited.add(id(current))
+            response = getattr(current, "response", None)
+            status_code = getattr(current, "status_code", None)
+            if status_code is None:
+                status_code = getattr(response, "status_code", None)
+            if status_code == 402:
+                return True
+
+            values: list[object] = [current, getattr(current, "body", None)]
+            if response is not None:
+                values.extend(
+                    [
+                        getattr(response, "text", None),
+                        getattr(response, "content", None),
+                    ]
+                )
+                try:
+                    values.append(response.json())
+                except Exception:
+                    pass
+            searchable = " ".join(
+                str(value).lower() for value in values if value is not None
+            )
+            if any(marker in searchable for marker in markers):
+                return True
+            current = current.__cause__ or current.__context__
+        return False
+
+    def _get_chat_model(
+        self,
+        *,
+        provider_id: str,
+        model_id: str,
+        api_key: str,
+        base_url: str | None,
+        reasoning_effort: str | None = None,
+    ) -> Any:
+        """Return one reusable LangChain client for a resolved model configuration."""
+        from langchain_openai import ChatOpenAI
+
+        cache_key = (provider_id, model_id, base_url, reasoning_effort)
+        chat_model = self._chat_models.get(cache_key)
+        if chat_model is not None:
+            return chat_model
+
+        with self._chat_models_lock:
+            chat_model = self._chat_models.get(cache_key)
+            if chat_model is None:
+                chat_model = self._create_chat_model(
+                    chat_openai_type=ChatOpenAI,
+                    model_id=model_id,
+                    api_key=api_key,
+                    base_url=base_url,
+                    reasoning_effort=reasoning_effort,
+                )
+                self._chat_models[cache_key] = chat_model
+        return chat_model
+
     @staticmethod
     def _create_chat_model(
         chat_openai_type: Any,
         model_id: str,
-        prompt: str,
         api_key: str,
         base_url: str | None = None,
+        reasoning_effort: str | None = None,
     ) -> Any:
         http_client = create_rate_limit_logging_http_client(
             logger=logger,
             operation="llm_answer_generation",
             model_id=model_id,
-            item_count=len(prompt),
+            item_count=1,
         )
         model_kwargs = {
             "model": model_id,
@@ -192,59 +324,29 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
             "max_retries": 0,
             "timeout": LangChainOpenAiAnswerGenerationService.request_timeout_seconds,
             "http_client": http_client,
+            "streaming": False,
         }
         if base_url is None:
             model_kwargs["model_kwargs"] = {
                 "response_format": {"type": "json_object"}
             }
+        if reasoning_effort is not None:
+            model_kwargs["reasoning_effort"] = reasoning_effort
         if base_url is not None:
             model_kwargs["base_url"] = base_url
+            model_kwargs["use_responses_api"] = False
 
-        try:
-            return chat_openai_type(**model_kwargs)
-        except TypeError:
-            try:
-                fallback_kwargs = dict(model_kwargs)
-                fallback_kwargs.pop("model_kwargs", None)
-                return chat_openai_type(**fallback_kwargs)
-            except TypeError:
-                pass
-            if base_url is not None:
-                try:
-                    fallback_kwargs = dict(model_kwargs)
-                    fallback_kwargs.pop("base_url", None)
-                    fallback_kwargs["openai_api_base"] = base_url
-                    return chat_openai_type(**fallback_kwargs)
-                except TypeError:
-                    pass
-            logger.warning(
-                "Current LangChain ChatOpenAI does not support max_retries=0 "
-                "or custom http_client; OpenAI SDK retries/rate-limit headers may "
-                "remain hidden in logs."
-            )
-            fallback_kwargs = {
-                "model": model_id,
-                "api_key": api_key,
-                "temperature": 0,
-                "timeout": LangChainOpenAiAnswerGenerationService.request_timeout_seconds,
-            }
-            if base_url is not None:
-                fallback_kwargs["base_url"] = base_url
-            else:
-                fallback_kwargs["model_kwargs"] = {
-                    "response_format": {"type": "json_object"}
-                }
-            try:
-                return chat_openai_type(**fallback_kwargs)
-            except TypeError:
-                legacy_kwargs = dict(fallback_kwargs)
-                legacy_kwargs.pop("timeout", None)
-                legacy_kwargs.pop("model_kwargs", None)
-                return chat_openai_type(**legacy_kwargs)
+        return chat_openai_type(**model_kwargs)
 
     @classmethod
-    def _model_api_settings(cls, model_id: str) -> tuple[str | None, str, str | None]:
-        if model_id in cls.deepseek_model_ids:
+    def _model_api_settings(
+        cls,
+        model_id: str,
+        provider_id: str = "openai",
+    ) -> tuple[str | None, str, str | None]:
+        if provider_id == "vezilka":
+            return VEZILKA_API_KEY, VEZILKA_API_KEY_ENV_NAME, DEFAULT_VEZILKA_BASE_URL
+        if provider_id == "deepseek" or model_id in cls.deepseek_model_ids:
             return DEEPSEEK_API_KEY, DEEPSEEK_API_KEY_ENV_NAME, DEEPSEEK_BASE_URL
 
         return OPENAI_API_KEY, OPENAI_API_KEY_ENV_NAME, None
@@ -261,6 +363,19 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
                 "prompt_tokens": input_tokens,
                 "completion_tokens": output_tokens,
                 "total_tokens": total_tokens or input_tokens + output_tokens,
+            }
+
+        direct_usage = getattr(response, "usage", None)
+        if direct_usage is not None:
+            prompt_tokens = cls._int_value(getattr(direct_usage, "prompt_tokens", 0))
+            completion_tokens = cls._int_value(
+                getattr(direct_usage, "completion_tokens", 0)
+            )
+            total_tokens = cls._int_value(getattr(direct_usage, "total_tokens", 0))
+            return {
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "total_tokens": total_tokens or prompt_tokens + completion_tokens,
             }
 
         response_metadata = getattr(response, "response_metadata", None)
@@ -303,24 +418,45 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
         return value if isinstance(value, int) else 0
 
     @staticmethod
-    def build_prompt(question: str, reasoning_paths_text: str) -> str:
+    def build_prompt(
+        question: str,
+        reasoning_paths_text: str,
+        generate_explanation: bool = True,
+    ) -> str:
         """Build the final-answer prompt."""
+        answer_instructions = (
+            "Return only valid JSON in this exact shape:\n"
+            "{\"answers\": [\"complete entity name\"], \"explanation\": \"...\"}\n"
+            "Each answer must be one complete entity name in its own array item. "
+            "Do not split an entity name that contains commas. "
+            "Return an empty answers array when no answer is supported. "
+            "The explanation must briefly name the reasoning path triples used. "
+            "Use only the reasoning paths."
+            if generate_explanation
+            else (
+                "Return only valid JSON in this exact shape:\n"
+                "{\"answers\": [\"complete entity name\"]}\n"
+                "Each answer must be one complete entity name in its own array item. "
+                "Do not split an entity name that contains commas. "
+                "Return an empty answers array when no answer is supported. "
+                "Do not include an explanation. Use only the reasoning paths."
+            )
+        )
         return (
             "Question:\n"
             f"{question}\n\n"
             "Reasoning paths:\n"
             f"{reasoning_paths_text}\n\n"
-            "Return only valid JSON in this exact shape:\n"
-            "{\"answer\": \"...\", \"explanation\": \"...\"}\n"
-            "The answer must be only the answer entity or entities. "
-            "If multiple answers are supported, use a comma-separated string. "
-            "The explanation must briefly name the reasoning path triples used. "
-            "Use only the reasoning paths."
+            f"{answer_instructions}"
         )
 
     @classmethod
-    def parse_json_response(cls, response_text: str) -> dict[str, str]:
-        """Parse the model JSON answer and explanation."""
+    def parse_json_response(
+        cls,
+        response_text: str,
+        generate_explanation: bool = True,
+    ) -> dict[str, Any]:
+        """Parse a response containing atomic answer entities."""
         cleaned_response = cls._strip_json_code_fence(response_text)
         try:
             parsed_response = json.loads(cleaned_response)
@@ -332,17 +468,35 @@ class LangChainOpenAiAnswerGenerationService(AbstractService):
         if not isinstance(parsed_response, dict):
             raise LlmAnswerGenerationException("LLM response JSON must be an object.")
 
-        answer = parsed_response.get("answer")
-        explanation = parsed_response.get("explanation")
-        if not isinstance(answer, str) or not isinstance(explanation, str):
+        raw_answers = parsed_response.get("answers")
+        explanation = parsed_response.get("explanation", "")
+        if not isinstance(raw_answers, list) or any(
+            not isinstance(answer, str) for answer in raw_answers
+        ):
             raise LlmAnswerGenerationException(
-                "LLM response JSON must contain string fields 'answer' and "
-                "'explanation'."
+                "LLM response JSON field 'answers' must be an array of strings."
+            )
+        if generate_explanation and not isinstance(explanation, str):
+            raise LlmAnswerGenerationException(
+                "LLM response JSON must contain a string field 'explanation'."
             )
 
+        answers: list[str] = []
+        seen: set[str] = set()
+        for answer in raw_answers:
+            stripped = answer.strip()
+            if not stripped or stripped in seen:
+                continue
+            answers.append(stripped)
+            seen.add(stripped)
+
         return {
-            "answer": answer.strip(),
-            "explanation": explanation.strip(),
+            "answers": answers,
+            "explanation": (
+                explanation.strip()
+                if generate_explanation and isinstance(explanation, str)
+                else ""
+            ),
         }
 
     @staticmethod

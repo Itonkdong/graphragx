@@ -26,8 +26,10 @@ class FakeQdrantClient:
         self.points: dict[str, dict] = {}
         self.upserts: list[list[dict]] = []
         self.created_collections: list[str] = []
+        self.collection_exists_calls = 0
 
     def collection_exists(self, collection_name: str) -> bool:
+        self.collection_exists_calls += 1
         return True
 
     def create_collection(self, collection_name: str, vectors_config):
@@ -179,6 +181,19 @@ class EmbeddingCacheTests(unittest.TestCase):
         vectors = service.embeddings_for_texts(cache=cache, texts=["b", "a"])
 
         self.assertEqual(vectors, [[2.0, 0.0], [1.0, 0.0]])
+
+    def test_cache_identity_can_be_loaded_without_contacting_qdrant(self) -> None:
+        service, _, _, qdrant_client = self._service_and_cache()
+
+        cache = service.load_node_cache(
+            cache_root=None,
+            model_id="text-embedding-3-small",
+            vocabulary={"Paris": 0},
+            ensure_collection=False,
+        )
+
+        self.assertEqual(cache.cache_kind, "nodes")
+        self.assertEqual(qdrant_client.collection_exists_calls, 0)
 
 
 if __name__ == "__main__":

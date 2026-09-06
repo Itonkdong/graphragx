@@ -12,10 +12,14 @@ from pydantic import BaseModel, Field
 
 from helpers.constants import (
     GNN_ANSWER_RETRIEVER_EVALUATION_CONFIG_FILENAME,
+    GNN_ANSWER_RETRIEVER_EVALUATION_METRICS_FILENAME,
     GNN_ANSWER_RETRIEVER_EVALUATION_PREDICTIONS_FILENAME,
 )
 from helpers.path_serialization import make_project_paths_relative
-from pipeline.evaluation.models import EvaluatedAnswerRetrievalInstance
+from pipeline.evaluation.models import (
+    EvaluatedAnswerRetrievalInstance,
+    GnnAnswerRetrieverMetrics,
+)
 from pipeline.preparation.exceptions import GnnAnswerRetrieverEvaluationException
 from pipeline.services import AbstractService
 
@@ -24,6 +28,7 @@ class GnnAnswerRetrieverEvaluationStoragePayload(BaseModel):
 
     evaluation_config: dict[str, Any] = Field(default_factory=dict)
     predictions: list[EvaluatedAnswerRetrievalInstance] = Field(default_factory=list)
+    metrics: GnnAnswerRetrieverMetrics
 
 
 class GnnAnswerRetrieverEvaluationStorageResult(BaseModel):
@@ -34,6 +39,7 @@ class GnnAnswerRetrieverEvaluationStorageResult(BaseModel):
     evaluation_run_number: int
     evaluation_config_path: Path
     predictions_path: Path
+    retrieval_metrics_path: Path
 
 
 class GnnAnswerRetrieverEvaluationStorageService(AbstractService):
@@ -41,6 +47,7 @@ class GnnAnswerRetrieverEvaluationStorageService(AbstractService):
 
     config_filename = GNN_ANSWER_RETRIEVER_EVALUATION_CONFIG_FILENAME
     predictions_filename = GNN_ANSWER_RETRIEVER_EVALUATION_PREDICTIONS_FILENAME
+    metrics_filename = GNN_ANSWER_RETRIEVER_EVALUATION_METRICS_FILENAME
 
     def save_evaluation_run(
         self,
@@ -56,12 +63,27 @@ class GnnAnswerRetrieverEvaluationStorageService(AbstractService):
             )
             evaluation_config_path = evaluation_run_directory / self.config_filename
             predictions_path = evaluation_run_directory / self.predictions_filename
+            retrieval_metrics_path = evaluation_run_directory / self.metrics_filename
             evaluation_run_name = evaluation_run_directory.name
             evaluation_run_number = self._extract_run_number(evaluation_run_name)
             evaluation_config = dict(payload.evaluation_config)
             evaluation_config["run_name"] = evaluation_run_name
             evaluation_config["run_number"] = evaluation_run_number
             evaluation_config["evaluated_instances"] = len(payload.predictions)
+            metrics = payload.metrics.model_copy(
+                update={
+                    "evaluation_run_name": evaluation_run_name,
+                    "evaluation_run_number": evaluation_run_number,
+                }
+            )
+            existing_artifacts = evaluation_config.get("artifacts", {})
+            if not isinstance(existing_artifacts, dict):
+                existing_artifacts = {}
+            evaluation_config["artifacts"] = {
+                **existing_artifacts,
+                "predictions_path": str(predictions_path),
+                "retrieval_metrics_path": str(retrieval_metrics_path),
+            }
 
             evaluation_config_path.write_text(
                 json.dumps(
@@ -75,6 +97,10 @@ class GnnAnswerRetrieverEvaluationStorageService(AbstractService):
                 for prediction in payload.predictions:
                     predictions_file.write(prediction.model_dump_json())
                     predictions_file.write("\n")
+            retrieval_metrics_path.write_text(
+                metrics.model_dump_json(indent=2),
+                encoding="utf-8",
+            )
         except OSError as error:
             raise GnnAnswerRetrieverEvaluationException(
                 f"Could not save GNN answer-retriever evaluation run: {error}"
@@ -86,6 +112,7 @@ class GnnAnswerRetrieverEvaluationStorageService(AbstractService):
             evaluation_run_number=evaluation_run_number,
             evaluation_config_path=evaluation_config_path,
             predictions_path=predictions_path,
+            retrieval_metrics_path=retrieval_metrics_path,
         )
 
     def _create_evaluation_run_directory(

@@ -2,6 +2,7 @@
 
 import json
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 
@@ -10,6 +11,8 @@ from pipeline import (
     BuildReasoningSamplesFromGnnEvaluationStep,
     CandidateNodeScore,
     EvaluationSample,
+    EvaluatedAnswerRetrievalInstance,
+    ExtractedReasoningPathsBatch,
     ExtractShortestPathsBatchStep,
     ExtractShortestPathsStep,
     GenerateAndSaveFinalAnswersBatchesStep,
@@ -24,9 +27,18 @@ from pipeline import (
     SaveInferenceRunStep,
     ShortestPathExtractionService,
     StepContext,
+    ReasoningPathsForPrediction,
     WebQSPVocabularyStore,
 )
 from pipeline.preparation.models.webqsp_local_graph import WebQSPProcessedInstance
+from pipeline.evaluation.models import (
+    GeneratedAnswerForPrediction,
+    GeneratedFinalAnswersBatch,
+)
+from pipeline.evaluation.services.llm_inference_storage import (
+    LlmInferenceStorageService,
+)
+from pipeline.evaluation.exceptions import InsufficientLlmCreditsException
 
 
 def make_sample() -> EvaluationSample:
@@ -171,6 +183,24 @@ class GnnPredictionCandidateScoringStepTests(unittest.TestCase):
 
 
 class ShortestPathExtractionServiceTests(unittest.TestCase):
+    @staticmethod
+    def _make_processed_instance_with_reverse_edges():
+        import torch
+
+        return WebQSPProcessedInstance(
+            question="who is connected",
+            q_entity=["Topic"],
+            a_entity=["Answer"],
+            nodes=["Topic", "Middle", "Answer"],
+            node2id={"Topic": 0, "Middle": 1, "Answer": 2},
+            edge_index=torch.tensor(
+                [[0, 1, 1, 2], [1, 2, 0, 1]],
+                dtype=torch.long,
+            ),
+            edge_relations=["r1", "r2", "reverse__r1", "reverse__r2"],
+            node_labels=torch.tensor([0.0, 0.0, 1.0]),
+        )
+
     def test_multi_hop_path_preserves_relation_labels(self) -> None:
         print("\n[test_multi_hop_path_preserves_relation_labels] Starting.")
         service = ShortestPathExtractionService()
@@ -351,6 +381,99 @@ class ShortestPathExtractionServiceTests(unittest.TestCase):
         self.assertIn("No reasoning subgraph found.", result.reasoning_paths_text)
         print("[test_unreachable_candidate_is_recorded_without_abort] Passed.")
 
+    def test_processed_graph_path_uses_entity_names_and_ignores_reverse_duplicates(
+        self,
+    ) -> None:
+        service = ShortestPathExtractionService()
+        result = service.extract_paths_from_processed_graph(
+            instance=self._make_processed_instance_with_reverse_edges(),
+            sample=EvaluationSample(
+                sample_id="0",
+                question="who is connected",
+                q_entities=["Topic"],
+                a_entities=["Answer"],
+                graph_triples=[],
+            ),
+            candidates=[
+                CandidateNodeScore(
+                    node_id="Answer",
+                    score=0.9,
+                    local_node_id=2,
+                )
+            ],
+        )
+
+        self.assertEqual(len(result.paths[0].shortest_paths), 1)
+        self.assertEqual(
+            [
+                (triple.source, triple.relation, triple.target)
+                for triple in result.paths[0].triples
+            ],
+            [("Topic", "r1", "Middle"), ("Middle", "r2", "Answer")],
+        )
+        self.assertNotIn("reverse__", result.reasoning_paths_text)
+
+    def test_processed_graph_extracts_multiple_candidates_with_one_bfs(self) -> None:
+        import torch
+        from unittest.mock import patch
+
+        instance = WebQSPProcessedInstance(
+            question="who is connected",
+            q_entity=["Topic"],
+            a_entity=["Answer A", "Answer B"],
+            nodes=["Topic", "Shared", "Answer A", "Answer B"],
+            node2id={"Topic": 0, "Shared": 1, "Answer A": 2, "Answer B": 3},
+            edge_index=torch.tensor([[0, 1, 1], [1, 2, 3]], dtype=torch.long),
+            edge_relations=["r1", "r2", "r3"],
+            node_labels=torch.tensor([0.0, 0.0, 1.0, 1.0]),
+        )
+        sample = EvaluationSample(
+            sample_id="0",
+            question=instance.question,
+            q_entities=instance.q_entity,
+            a_entities=instance.a_entity,
+            graph_triples=[],
+        )
+        service = ShortestPathExtractionService()
+
+        with patch.object(
+            service,
+            "_multi_target_bfs",
+            wraps=service._multi_target_bfs,
+        ) as bfs:
+            result = service.extract_paths_from_processed_graph(
+                instance=instance,
+                sample=sample,
+                candidates=[
+                    CandidateNodeScore(node_id="Answer A", score=0.9),
+                    CandidateNodeScore(node_id="Answer B", score=0.8),
+                ],
+            )
+
+        self.assertEqual(bfs.call_count, 1)
+        self.assertEqual(result.found_paths, 2)
+        self.assertEqual(
+            [triple.relation for triple in result.reasoning_subgraph_triples],
+            ["r1", "r2", "r3"],
+        )
+
+    def test_processed_graph_candidate_seed_has_empty_shortest_path(self) -> None:
+        instance = self._make_processed_instance_with_reverse_edges()
+        result = ShortestPathExtractionService().extract_paths_from_processed_graph(
+            instance=instance,
+            sample=EvaluationSample(
+                sample_id="0",
+                question=instance.question,
+                q_entities=instance.q_entity,
+                a_entities=instance.a_entity,
+                graph_triples=[],
+            ),
+            candidates=[CandidateNodeScore(node_id="Topic", score=1.0)],
+        )
+
+        self.assertTrue(result.paths[0].path_found)
+        self.assertEqual(result.paths[0].shortest_paths, [[]])
+
 
 class PathExtractionPipelineTests(unittest.TestCase):
     def test_mock_scoring_and_path_extraction_run_as_pipeline_steps(self) -> None:
@@ -381,7 +504,7 @@ class FakeAnswerGenerationService:
         question: str,
         reasoning_paths_text: str,
         model_id: str,
-    ) -> tuple[str, str]:
+    ) -> tuple[list[str], str]:
         self.calls.append((question, reasoning_paths_text, model_id))
         prompt = (
             "Question:\n"
@@ -390,24 +513,27 @@ class FakeAnswerGenerationService:
             f"{reasoning_paths_text}\n\n"
             "Answer the question using only the reasoning paths."
         )
-        return "Jaxon Bieber", prompt
+        return ["Jaxon Bieber"], prompt
 
     def generate_answer_with_explanation(
         self,
         question: str,
         reasoning_paths_text: str,
         model_id: str,
+        provider_id: str = "openai",
+        reasoning_effort: str | None = None,
+        generate_explanation: bool = True,
     ) -> dict[str, str]:
         self.calls.append((question, reasoning_paths_text, model_id))
         return {
-            "answer": "Jaxon Bieber",
+            "answers": ["Jaxon Bieber"],
             "explanation": (
                 "Used Justin Bieber -> people.person.sibling_s -> m.0gxnnwp "
                 "and m.0gxnnwp -> people.sibling_relationship.sibling -> Jaxon Bieber."
             ),
             "raw_response": json.dumps(
                 {
-                    "answer": "Jaxon Bieber",
+                    "answers": ["Jaxon Bieber"],
                     "explanation": (
                         "Used Justin Bieber -> people.person.sibling_s -> m.0gxnnwp "
                         "and m.0gxnnwp -> people.sibling_relationship.sibling -> Jaxon Bieber."
@@ -416,6 +542,67 @@ class FakeAnswerGenerationService:
             ),
             "prompt": "unused in batch storage",
         }
+
+
+class ConcurrentFakeAnswerGenerationService:
+    def __init__(self, expected_parallel_calls: int) -> None:
+        self.expected_parallel_calls = expected_parallel_calls
+        self.active_calls = 0
+        self.maximum_active_calls = 0
+        self._lock = threading.Lock()
+        self._all_workers_started = threading.Event()
+
+    def generate_answer_with_explanation(
+        self,
+        question: str,
+        reasoning_paths_text: str,
+        model_id: str,
+        provider_id: str = "openai",
+        reasoning_effort: str | None = None,
+        generate_explanation: bool = True,
+    ) -> dict[str, str | int | float]:
+        with self._lock:
+            self.active_calls += 1
+            self.maximum_active_calls = max(
+                self.maximum_active_calls,
+                self.active_calls,
+            )
+            if self.active_calls == self.expected_parallel_calls:
+                self._all_workers_started.set()
+
+        workers_started = self._all_workers_started.wait(timeout=2.0)
+        with self._lock:
+            self.active_calls -= 1
+        if not workers_started:
+            raise AssertionError("Expected concurrent LLM calls did not start.")
+
+        return {
+            "answers": ["Answer"],
+            "explanation": "Explanation",
+            "raw_response": '{"answers":["Answer"],"explanation":"Explanation"}',
+            "prompt": question,
+            "prompt_tokens": 1,
+            "completion_tokens": 1,
+            "total_tokens": 2,
+            "estimated_cost_usd": 0.0,
+        }
+
+
+class InternallyBrokenAnswerGenerationService:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def generate_answer_with_explanation(
+        self,
+        question: str,
+        reasoning_paths_text: str,
+        model_id: str,
+        provider_id: str = "openai",
+        reasoning_effort: str | None = None,
+        generate_explanation: bool = True,
+    ) -> dict[str, str]:
+        self.calls += 1
+        raise TypeError("internal reasoning_effort handling failed")
 
 
 class LlmAnswerGenerationStepTests(unittest.TestCase):
@@ -433,7 +620,7 @@ class LlmAnswerGenerationStepTests(unittest.TestCase):
 
         result = step.execute(StepContext(result=extracted_paths))
 
-        self.assertEqual(result.answer, "Jaxon Bieber")
+        self.assertEqual(result.answers, ["Jaxon Bieber"])
         self.assertEqual(result.model_id, "test-model")
         self.assertEqual(result.extracted_paths, extracted_paths)
         self.assertIn("Question:", result.prompt)
@@ -445,6 +632,102 @@ class LlmAnswerGenerationStepTests(unittest.TestCase):
 
 
 class LlmInferenceBatchStepTests(unittest.TestCase):
+    def test_insufficient_credits_are_not_recorded_as_an_ordinary_failed_answer(
+        self,
+    ) -> None:
+        class InsufficientCreditsService:
+            def generate_answer_with_explanation(self, **kwargs):
+                raise InsufficientLlmCreditsException("insufficient credits")
+
+        extracted_paths = ShortestPathExtractionService().extract_paths(
+            sample=make_sample(),
+            candidates=[CandidateNodeScore(node_id="Jaxon Bieber", score=1.0)],
+        )
+        prediction = EvaluatedAnswerRetrievalInstance(
+            instance_index=0,
+            question=make_sample().question,
+            q_entity=make_sample().q_entities,
+            a_entity=make_sample().a_entities,
+            answer_candidates=[],
+            gold_answer_scores=[],
+            hit_at_1=False,
+            missing_gold_in_graph=False,
+        )
+        item = ReasoningPathsForPrediction(
+            instance_index=0,
+            prediction=prediction,
+            extracted_paths=extracted_paths,
+        )
+
+        with self.assertRaises(InsufficientLlmCreditsException):
+            GenerateFinalAnswersBatchStep(
+                model_id="deepseek-v4-flash",
+                llm_provider="deepseek",
+                answer_generation_service=InsufficientCreditsService(),
+            )._generate_answer(item)
+
+    def test_internal_type_error_is_recorded_without_retrying_request(self) -> None:
+        extracted_paths = ShortestPathExtractionService().extract_paths(
+            sample=make_sample(),
+            candidates=[CandidateNodeScore(node_id="Jaxon Bieber", score=1.0)],
+        )
+        prediction = EvaluatedAnswerRetrievalInstance(
+            instance_index=0,
+            question=make_sample().question,
+            q_entity=make_sample().q_entities,
+            a_entity=make_sample().a_entities,
+            answer_candidates=[],
+            gold_answer_scores=[],
+            hit_at_1=False,
+            missing_gold_in_graph=False,
+        )
+        item = ReasoningPathsForPrediction(
+            instance_index=0,
+            prediction=prediction,
+            extracted_paths=extracted_paths,
+        )
+        fake_service = InternallyBrokenAnswerGenerationService()
+
+        generated = GenerateFinalAnswersBatchStep(
+            model_id="test-model",
+            reasoning_effort="low",
+            answer_generation_service=fake_service,
+        )._generate_answer(item)
+
+        self.assertEqual(fake_service.calls, 1)
+        self.assertEqual(generated.answers, [])
+        self.assertEqual(
+            generated.error_message,
+            "internal reasoning_effort handling failed",
+        )
+
+    def test_candidate_reduction_percentage_uses_global_candidate_counts(self) -> None:
+        answers = GeneratedFinalAnswersBatch(
+            dataset_id="WebQSP",
+            evaluation_run_name="1_test",
+            model_id="test-model",
+            items=[
+                GeneratedAnswerForPrediction(
+                    instance_index=0,
+                    question="Question one?",
+                    model_id="test-model",
+                    found_reasoning_paths=3,
+                    missing_reasoning_paths=1,
+                ),
+                GeneratedAnswerForPrediction(
+                    instance_index=1,
+                    question="Question two?",
+                    model_id="test-model",
+                    found_reasoning_paths=2,
+                    missing_reasoning_paths=2,
+                ),
+            ],
+        )
+
+        metrics = LlmInferenceStorageService._build_evidence_metrics(answers)
+
+        self.assertEqual(metrics["candidate_reduction_percentage"], 37.5)
+
     @staticmethod
     def _make_processed_instance():
         import torch
@@ -539,10 +822,13 @@ class LlmInferenceBatchStepTests(unittest.TestCase):
         self.assertEqual(result.dataset_id, "WebQSP")
         self.assertEqual(len(result.samples), 1)
         self.assertEqual(result.samples[0].candidate_scores.candidates[0].node_id, "Jaxon Bieber")
+        self.assertEqual(result.samples[0].candidate_scores.sample.graph_triples, [])
+        self.assertIsNotNone(result.samples[0].graph_instance)
         self.assertEqual(
-            result.samples[0].candidate_scores.sample.graph_triples[0].relation,
+            result.samples[0].graph_instance.edge_relations[0],
             "people.person.sibling_s",
         )
+        self.assertNotIn("graph_instance", result.samples[0].model_dump())
         print("[test_gnn_predictions_become_batch_reasoning_samples] Passed.")
 
     def test_batch_inference_saves_expected_files(self) -> None:
@@ -589,6 +875,7 @@ class LlmInferenceBatchStepTests(unittest.TestCase):
             )
             answers_batch = GenerateFinalAnswersBatchStep(
                 model_id="test-model",
+                generate_explanation=True,
                 answer_generation_service=FakeAnswerGenerationService(),
             ).execute(StepContext(result=paths_batch))
 
@@ -625,6 +912,11 @@ class LlmInferenceBatchStepTests(unittest.TestCase):
             self.assertEqual(reasoning_row["analytics"]["min_length"], 2)
             self.assertIn("Jaxon Bieber", answers_text)
             self.assertIn("explanation", answers_text)
+            self.assertIn("Used Justin Bieber", answers_text)
+            inference_config = json.loads(
+                saved_run.inference_config_path.read_text(encoding="utf-8")
+            )
+            self.assertTrue(inference_config["inference"]["generate_explanation"])
         print("[test_batch_inference_saves_expected_files] Passed.")
 
     def test_batched_inference_saves_each_batch(self) -> None:
@@ -686,6 +978,7 @@ class LlmInferenceBatchStepTests(unittest.TestCase):
             reasoning_rows = saved_run.reasoning_path.read_text(encoding="utf-8").splitlines()
             summary = json.loads(saved_run.inference_config_path.read_text(encoding="utf-8"))
             self.assertEqual(len(answer_lines), 2)
+            self.assertEqual(json.loads(answer_lines[0])["answers"], ["Jaxon Bieber"])
             self.assertEqual(len(reasoning_rows), 2)
             self.assertEqual(len(fake_service.calls), 2)
             self.assertEqual(saved_run.total_instances, 2)
@@ -693,8 +986,83 @@ class LlmInferenceBatchStepTests(unittest.TestCase):
             self.assertEqual(summary["inference"]["total_requests"], 2)
             self.assertEqual(summary["inference"]["total_tokens"], 0)
             self.assertEqual(summary["inference"]["total_cost_usd"], 0.0)
+            self.assertFalse(summary["inference"]["generate_explanation"])
+            self.assertEqual(
+                summary["inference"]["evidence_metrics"][
+                    "candidate_reduction_percentage"
+                ],
+                0.0,
+            )
+            self.assertTrue(
+                all(
+                    json.loads(line)["explanation"] == ""
+                    for line in answer_lines
+                )
+            )
             self.assertEqual(summary["successful_answers"], 2)
         print("[test_batched_inference_saves_each_batch] Passed.")
+
+    def test_parallel_inference_is_bounded_ordered_and_persisted(self) -> None:
+        extracted_paths = ShortestPathExtractionService().extract_paths(
+            sample=make_sample(),
+            candidates=[CandidateNodeScore(node_id="Jaxon Bieber", score=1.0)],
+        )
+        prediction = EvaluatedAnswerRetrievalInstance(
+            instance_index=0,
+            question=make_sample().question,
+            q_entity=make_sample().q_entities,
+            a_entity=make_sample().a_entities,
+            answer_candidates=[],
+            gold_answer_scores=[],
+            hit_at_1=False,
+            missing_gold_in_graph=False,
+        )
+        items = [
+            ReasoningPathsForPrediction(
+                instance_index=instance_index,
+                prediction=prediction.model_copy(
+                    update={"instance_index": instance_index}
+                ),
+                extracted_paths=extracted_paths,
+            )
+            for instance_index in range(3)
+        ]
+        paths_batch = ExtractedReasoningPathsBatch(
+            dataset_id="WebQSP",
+            evaluation_run_name="1_test",
+            items=items,
+        )
+        fake_service = ConcurrentFakeAnswerGenerationService(
+            expected_parallel_calls=3
+        )
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            saved_run = GenerateAndSaveFinalAnswersBatchesStep(
+                model_id="test-model",
+                inference_root=Path(temporary_directory) / "inference",
+                inference_batch_size=3,
+                inference_parallel_calls=3,
+                answer_generation_service=fake_service,
+            ).execute(StepContext(result=paths_batch))
+
+            answer_rows = [
+                json.loads(line)
+                for line in saved_run.answers_path.read_text(
+                    encoding="utf-8"
+                ).splitlines()
+            ]
+            inference_config = json.loads(
+                saved_run.inference_config_path.read_text(encoding="utf-8")
+            )
+
+        self.assertEqual(fake_service.maximum_active_calls, 3)
+        self.assertEqual(
+            [row["instance_index"] for row in answer_rows],
+            [0, 1, 2],
+        )
+        self.assertEqual(saved_run.inference_parallel_calls, 3)
+        self.assertEqual(inference_config["inference"]["parallel_calls"], 3)
+        self.assertEqual(inference_config["inference"]["batch_size"], 3)
 
 
 if __name__ == "__main__":

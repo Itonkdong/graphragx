@@ -5,7 +5,10 @@ from pipeline.evaluation.models.gnn_answer_retriever_evaluation import (
     EvaluatedAnswerRetrievalInstance,
     GnnAnswerRetrieverEvaluationConfig,
     GnnAnswerRetrieverEvaluationResult,
+    GnnAnswerRetrieverMetrics,
     GoldAnswerScore,
+    PreparedGnnEvaluationData,
+    PreparedGnnEvaluationInstance,
 )
 from pipeline.evaluation.models.llm_answer_generation import GeneratedFinalAnswer
 from pipeline.evaluation.models.final_results import (
@@ -16,6 +19,7 @@ from pipeline.evaluation.models.final_results import (
     FinalResultsEvaluationResult,
     PerInstanceFinalResult,
     RankingMetrics,
+    RetrievalConditionedAnswerMetrics,
 )
 from pipeline.evaluation.models.llm_inference import (
     BuiltReasoningSamples,
@@ -24,11 +28,13 @@ from pipeline.evaluation.models.llm_inference import (
     GeneratedFinalAnswersBatch,
     ReasoningPathsForPrediction,
     ReasoningSampleForPrediction,
+    SavedEvidenceSubgraphRun,
     SavedLlmInferenceRun,
 )
 from pipeline.evaluation.models.path_extraction import (
     CandidateNodeScore,
     CandidateNodeScores,
+    EvidenceSubgraphConstruction,
     EvaluationSample,
     ExtractedReasoningPaths,
     GraphTriple,
@@ -41,6 +47,7 @@ __all__ = [
     "CandidateNodeScore",
     "CandidateNodeScores",
     "EvaluationSample",
+    "EvidenceSubgraphConstruction",
     "EvaluatedAnswerRetrievalInstance",
     "ExtractedReasoningPathsBatch",
     "ExtractedReasoningPaths",
@@ -54,12 +61,17 @@ __all__ = [
     "GeneratedFinalAnswersBatch",
     "GnnAnswerRetrieverEvaluationConfig",
     "GnnAnswerRetrieverEvaluationResult",
+    "GnnAnswerRetrieverMetrics",
     "GoldAnswerScore",
+    "PreparedGnnEvaluationData",
+    "PreparedGnnEvaluationInstance",
     "GraphTriple",
     "PerInstanceFinalResult",
     "RankingMetrics",
+    "RetrievalConditionedAnswerMetrics",
     "ReasoningPathsForPrediction",
     "ReasoningPath",
     "ReasoningSampleForPrediction",
+    "SavedEvidenceSubgraphRun",
     "SavedLlmInferenceRun",
 ]

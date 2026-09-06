@@ -96,13 +96,7 @@ class WebQSPReverseEdgeProcessingTests(unittest.TestCase):
                 cache_directory=cache_directory,
             )
             storage.save(dataset)
-            metadata = {
-                "dataset_id": "WebQSP",
-                "processing_version": "test",
-                "use_reverse_edges": True,
-                "train_size": 0,
-                "test_size": 0,
-            }
+            metadata = storage._build_metadata(dataset)
 
         self.assertTrue(
             storage._is_valid_metadata(
@@ -120,6 +114,85 @@ class WebQSPReverseEdgeProcessingTests(unittest.TestCase):
                 use_reverse_edges=False,
             )
         )
+
+    def test_packed_cache_round_trip_selective_loading_and_provenance(self) -> None:
+        class TemporaryStorage(WebQSPLocalGraphStorageService):
+            def __init__(self, root: Path):
+                self.root = root
+
+            def get_cache_directory(self, dataset_id, use_reverse_edges=False):
+                return self.root
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            cache_directory = Path(temporary_directory)
+            storage = TemporaryStorage(cache_directory)
+            vocabulary = WebQSPVocabularyStore()
+            train_instance = self.make_processor().process_row(
+                row={
+                    "question": "train question",
+                    "q_entity": ["A"],
+                    "a_entity": ["B"],
+                    "graph": [["A", "parent", "B"]],
+                },
+                vocabulary_store=vocabulary,
+                use_reverse_edges=True,
+            )
+            test_instance = self.make_processor().process_row(
+                row={
+                    "question": "test question",
+                    "q_entity": ["C"],
+                    "a_entity": ["D"],
+                    "graph": [["C", "child", "D"]],
+                },
+                vocabulary_store=vocabulary,
+                use_reverse_edges=True,
+            )
+            dataset = PreparedWebQSPGraphDataset(
+                dataset_id="WebQSP",
+                processing_version="6",
+                use_reverse_edges=True,
+                train_instances=[train_instance],
+                test_instances=[test_instance],
+                vocabulary_store=vocabulary,
+                source_fingerprints={"train": "train-fingerprint"},
+                entity_mapping_sha256="mapping-hash",
+                cache_directory=cache_directory,
+            )
+            storage.save(dataset)
+
+            payload = torch.load(
+                cache_directory / storage.train_instances_filename,
+                weights_only=False,
+            )
+            self.assertEqual(payload["storage_format"], storage.storage_format)
+            self.assertEqual(payload["edge_index"].shape, (2, 2))
+
+            loaded = storage.load_if_available(
+                dataset_id="WebQSP",
+                processing_version="6",
+                use_reverse_edges=True,
+                load_train_instances=False,
+                load_test_instances=True,
+                source_fingerprints={"train": "train-fingerprint"},
+                entity_mapping_sha256="mapping-hash",
+            )
+            self.assertIsNotNone(loaded)
+            self.assertEqual(loaded.train_instances, [])
+            self.assertEqual(len(loaded.test_instances), 1)
+            self.assertEqual(loaded.test_instances[0].node2id, {"C": 0, "D": 1})
+            self.assertEqual(
+                loaded.test_instances[0].edge_index.tolist(),
+                [[0, 1], [1, 0]],
+            )
+
+            stale = storage.load_if_available(
+                dataset_id="WebQSP",
+                processing_version="6",
+                use_reverse_edges=True,
+                source_fingerprints={"train": "changed"},
+                entity_mapping_sha256="mapping-hash",
+            )
+            self.assertIsNone(stale)
 
 
 if __name__ == "__main__":

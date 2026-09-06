@@ -17,4 +17,7 @@ class GeneratedFinalAnswer(StepResult):
     )
     model_id: str = Field(..., description="LLM model used for answer generation.")
     prompt: str = Field(..., description="Prompt sent to the LLM.")
-    answer: str = Field(..., description="Generated answer text.")
+    answers: list[str] = Field(
+        default_factory=list,
+        description="Generated answer entities with atomic entity boundaries.",
+    )

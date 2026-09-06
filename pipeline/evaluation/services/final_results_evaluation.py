@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import math
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,9 +27,14 @@ from pipeline.evaluation.models import (
     GnnAnswerRetrieverEvaluationResult,
     PerInstanceFinalResult,
     RankingMetrics,
+    RetrievalConditionedAnswerMetrics,
     SavedLlmInferenceRun,
 )
 from pipeline.evaluation.models.final_results import ExplanationGroundingMetrics
+from pipeline.evaluation.services.gnn_retriever_results import (
+    GnnRetrieverResultsService,
+)
+from pipeline.preparation.helpers.gnn_architecture import infer_gnn_architecture
 from pipeline.services import AbstractService
 
 
@@ -67,6 +71,14 @@ class FinalResultsEvaluationService(AbstractService):
     arrow_triple_pattern = re.compile(
         r"([^.;\n]+?)\s*->\s*([A-Za-z0-9_./-]+)\s*->\s*([^.;\n]+)"
     )
+
+    def __init__(
+        self,
+        retriever_results_service: GnnRetrieverResultsService | None = None,
+    ) -> None:
+        self.retriever_results_service = (
+            retriever_results_service or GnnRetrieverResultsService()
+        )
 
     def evaluate(
         self,
@@ -107,24 +119,40 @@ class FinalResultsEvaluationService(AbstractService):
             )
             for instance_index in sorted(answers_by_index)
         ]
-        retrieval_metrics = self._build_retrieval_metrics(
-            gnn_evaluation_result=gnn_evaluation_result,
+        retrieval_metrics = self.retriever_results_service.build_metrics(
+            dataset_id=gnn_evaluation_result.dataset_id,
+            model_run_name=gnn_evaluation_result.model_run_name,
+            model_run_number=gnn_evaluation_result.model_run_number,
             predictions=predictions,
-        )
+            candidate_limit=candidate_limit,
+            missing_gold_in_graph_count=(
+                gnn_evaluation_result.missing_gold_in_graph_count
+            ),
+            skipped_missing_gold_in_graph_count=(
+                gnn_evaluation_result.skipped_missing_gold_in_graph_count
+            ),
+            evaluation_run_name=gnn_evaluation_result.evaluation_run_name,
+            evaluation_run_number=gnn_evaluation_result.evaluation_run_number,
+        ).model_dump(mode="json")
         reasoning_metrics = self._build_reasoning_metrics(
             gnn_evaluation_result=gnn_evaluation_result,
             llm_inference_run=llm_inference_run,
             per_instance_results=per_instance_results,
+            retrieval_metrics=retrieval_metrics,
             candidate_limit=candidate_limit,
         )
         model_config_path = (
             gnn_evaluation_result.model_run_directory / "model_config.json"
         )
-        gnn_id = self._build_gnn_id(model_config_path)
+        gnn_architecture = self._build_gnn_architecture(model_config_path)
         results_config = FinalResultsConfig(
             dataset_id=llm_inference_run.dataset_id,
+            model_run_name=gnn_evaluation_result.model_run_name,
+            evaluation_run_name=gnn_evaluation_result.evaluation_run_name,
+            inference_run_name=llm_inference_run.inference_run_name,
             model_id=llm_inference_run.model_id,
-            gnn_id=gnn_id,
+            llm_provider=llm_inference_run.llm_provider,
+            gnn_architecture=gnn_architecture,
             configs={
                 "model_config_path": model_config_path,
                 "evaluation_config_path": gnn_evaluation_result.evaluation_config_path,
@@ -138,6 +166,19 @@ class FinalResultsEvaluationService(AbstractService):
                         gnn_evaluation_result.model_run_directory
                         / "gnn_answer_retriever.pt"
                     ),
+                    **(
+                        {
+                            "relation_vocabulary_path": str(
+                                gnn_evaluation_result.model_run_directory
+                                / "relation_vocabulary.json"
+                            )
+                        }
+                        if (
+                            gnn_evaluation_result.model_run_directory
+                            / "relation_vocabulary.json"
+                        ).exists()
+                        else {}
+                    ),
                 },
                 "evaluation": {
                     "name": gnn_evaluation_result.evaluation_run_name,
@@ -148,6 +189,7 @@ class FinalResultsEvaluationService(AbstractService):
                 },
                 "inference": {
                     "name": llm_inference_run.inference_run_name,
+                    "evidence_subgraph": llm_inference_run.evidence_subgraph,
                     "inference_config_path": str(
                         llm_inference_run.inference_config_path
                     ),
@@ -169,88 +211,6 @@ class FinalResultsEvaluationService(AbstractService):
             per_instance_results=per_instance_results,
         )
 
-    @staticmethod
-    def _build_retrieval_metrics(
-        gnn_evaluation_result: GnnAnswerRetrieverEvaluationResult,
-        predictions: list[EvaluatedAnswerRetrievalInstance],
-    ) -> dict[str, Any]:
-        evaluated_instances = len(predictions)
-        hits_at_1_count = sum(1 for prediction in predictions if prediction.hit_at_1)
-        hits_at_5_count = sum(
-            1
-            for prediction in predictions
-            if FinalResultsEvaluationService._retrieval_hits_at_k(prediction, 5)
-        )
-        hits_at_10_count = sum(
-            1
-            for prediction in predictions
-            if FinalResultsEvaluationService._retrieval_hits_at_k(prediction, 10)
-        )
-        candidate_limit = FinalResultsEvaluationService._extract_candidate_limit(
-            FinalResultsEvaluationService._load_json_object(
-                gnn_evaluation_result.evaluation_config_path
-            )
-        )
-        hits_at_candidate_limit_count = sum(
-            1
-            for prediction in predictions
-            if FinalResultsEvaluationService._retrieval_hits_at_k(
-                prediction,
-                candidate_limit,
-            )
-        )
-        total_candidate_count = sum(
-            len(prediction.answer_candidates)
-            for prediction in predictions
-        )
-        missing_gold_in_graph_count = sum(
-            1 for prediction in predictions if prediction.missing_gold_in_graph
-        )
-        return {
-            "dataset_id": gnn_evaluation_result.dataset_id,
-            "model_run_name": gnn_evaluation_result.model_run_name,
-            "model_run_number": gnn_evaluation_result.model_run_number,
-            "evaluation_run_name": gnn_evaluation_result.evaluation_run_name,
-            "evaluation_run_number": gnn_evaluation_result.evaluation_run_number,
-            "evaluated_instances": evaluated_instances,
-            "hits_at_1": FinalResultsEvaluationService._safe_divide(
-                hits_at_1_count,
-                evaluated_instances,
-            ),
-            "hits_at_1_count": hits_at_1_count,
-            "hits_at_5": FinalResultsEvaluationService._safe_divide(
-                hits_at_5_count,
-                evaluated_instances,
-            ),
-            "hits_at_5_count": hits_at_5_count,
-            "hits_at_10": FinalResultsEvaluationService._safe_divide(
-                hits_at_10_count,
-                evaluated_instances,
-            ),
-            "hits_at_10_count": hits_at_10_count,
-            "hits_at_candidate_limit": FinalResultsEvaluationService._safe_divide(
-                hits_at_candidate_limit_count,
-                evaluated_instances,
-            ),
-            "hits_at_candidate_limit_count": hits_at_candidate_limit_count,
-            "candidate_limit": candidate_limit,
-            "average_candidate_count": FinalResultsEvaluationService._safe_divide(
-                total_candidate_count,
-                evaluated_instances,
-            ),
-            "missing_gold_in_graph_count": missing_gold_in_graph_count,
-        }
-
-    @staticmethod
-    def _retrieval_hits_at_k(
-        prediction: EvaluatedAnswerRetrievalInstance,
-        k: int,
-    ) -> bool:
-        return any(
-            candidate.is_gold_answer
-            for candidate in prediction.answer_candidates[:k]
-        )
-
     def _build_per_instance_result(
         self,
         instance_index: int,
@@ -265,6 +225,28 @@ class FinalResultsEvaluationService(AbstractService):
         normalized_predicted_answers = self._normalize_answer_list(predicted_answers)
         gold_set = set(normalized_gold_answers)
         predicted_set = set(normalized_predicted_answers)
+        retrieved_candidate_set = set(
+            self._normalize_answer_list(
+                [candidate.node for candidate in prediction.answer_candidates]
+            )
+        )
+        context_entity_set = self._normalized_context_entities(reasoning_row)
+        retrieved_gold_set = gold_set & retrieved_candidate_set
+        context_visible_gold_set = gold_set & context_entity_set
+        retrieval_gold_coverage = self._safe_divide(
+            len(retrieved_gold_set),
+            len(gold_set),
+        )
+        reasoning_context_gold_coverage = self._safe_divide(
+            len(context_visible_gold_set),
+            len(gold_set),
+        )
+        full_gold_retrieval = bool(gold_set) and retrieved_gold_set == gold_set
+        full_gold_context = bool(gold_set) and context_visible_gold_set == gold_set
+        llm_retrieved_gold_utilization = self._optional_divide(
+            len(predicted_set & retrieved_gold_set),
+            len(retrieved_gold_set),
+        )
         true_positive_count = len(gold_set & predicted_set)
         false_positive_count = len(predicted_set - gold_set)
         false_negative_count = len(gold_set - predicted_set)
@@ -275,6 +257,7 @@ class FinalResultsEvaluationService(AbstractService):
             explanation=str(answer_row.get("explanation", "")),
             reasoning_row=reasoning_row,
         )
+        answer_failed = answer_row.get("error_message") is not None
         return PerInstanceFinalResult(
             instance_index=instance_index,
             question=str(answer_row.get("question", "")),
@@ -283,7 +266,7 @@ class FinalResultsEvaluationService(AbstractService):
             predicted_answers=predicted_answers,
             normalized_gold_answers=normalized_gold_answers,
             normalized_predicted_answers=normalized_predicted_answers,
-            exact_match=gold_set == predicted_set,
+            exact_match=not answer_failed and gold_set == predicted_set,
             hit=true_positive_count > 0,
             hits_at_1=(
                 bool(normalized_predicted_answers)
@@ -300,10 +283,25 @@ class FinalResultsEvaluationService(AbstractService):
             grounded_mentioned_triple_count=grounding["grounded_mentioned_triple_count"],
             grounded_explanation=grounding["grounded_explanation"],
             fully_grounded_explanation=grounding["fully_grounded_explanation"],
-            ndcg_at_1=self._ndcg_at_k(prediction, 1),
-            ndcg_at_5=self._ndcg_at_k(prediction, 5),
-            ndcg_at_10=self._ndcg_at_k(prediction, 10),
-            ndcg_at_candidate_limit=self._ndcg_at_k(prediction, candidate_limit),
+            ndcg_at_1=self.retriever_results_service.ndcg_at_k(prediction, 1),
+            ndcg_at_5=self.retriever_results_service.ndcg_at_k(prediction, 5),
+            ndcg_at_10=self.retriever_results_service.ndcg_at_k(prediction, 10),
+            ndcg_at_candidate_limit=self.retriever_results_service.ndcg_at_k(
+                prediction,
+                candidate_limit,
+            ),
+            retrieved_gold_answers=sorted(retrieved_gold_set),
+            context_visible_gold_answers=sorted(context_visible_gold_set),
+            retrieval_gold_coverage=retrieval_gold_coverage,
+            reasoning_context_gold_coverage=reasoning_context_gold_coverage,
+            llm_retrieved_gold_utilization=llm_retrieved_gold_utilization,
+            full_gold_retrieval=full_gold_retrieval,
+            full_gold_context=full_gold_context,
+            retrieval_generation_outcome=self._retrieval_generation_outcome(
+                gold_set=gold_set,
+                retrieved_gold_set=retrieved_gold_set,
+                predicted_set=predicted_set,
+            ),
         )
 
     def _build_reasoning_metrics(
@@ -311,22 +309,33 @@ class FinalResultsEvaluationService(AbstractService):
         gnn_evaluation_result: GnnAnswerRetrieverEvaluationResult,
         llm_inference_run: SavedLlmInferenceRun,
         per_instance_results: list[PerInstanceFinalResult],
+        retrieval_metrics: dict[str, Any],
         candidate_limit: int,
     ) -> FinalReasoningMetrics:
         evaluated_instances = len(per_instance_results)
         exact_match_count = sum(1 for item in per_instance_results if item.exact_match)
         hit_count = sum(1 for item in per_instance_results if item.hit)
         hits_at_1_count = sum(1 for item in per_instance_results if item.hits_at_1)
-        true_positive_count = sum(item.true_positive_count for item in per_instance_results)
-        false_positive_count = sum(item.false_positive_count for item in per_instance_results)
-        false_negative_count = sum(item.false_negative_count for item in per_instance_results)
+        true_positive_count = sum(
+            item.true_positive_count for item in per_instance_results
+        )
+        false_positive_count = sum(
+            item.false_positive_count for item in per_instance_results
+        )
+        false_negative_count = sum(
+            item.false_negative_count for item in per_instance_results
+        )
         precision = self._safe_divide(true_positive_count, true_positive_count + false_positive_count)
         recall = self._safe_divide(true_positive_count, true_positive_count + false_negative_count)
-        grounded_count = sum(1 for item in per_instance_results if item.grounded_explanation)
+        grounded_count = sum(
+            1 for item in per_instance_results if item.grounded_explanation
+        )
         fully_grounded_count = sum(
             1 for item in per_instance_results if item.fully_grounded_explanation
         )
-        mentioned_triple_count = sum(item.mentioned_triple_count for item in per_instance_results)
+        mentioned_triple_count = sum(
+            item.mentioned_triple_count for item in per_instance_results
+        )
         grounded_mentioned_triple_count = sum(
             item.grounded_mentioned_triple_count for item in per_instance_results
         )
@@ -336,6 +345,7 @@ class FinalResultsEvaluationService(AbstractService):
             inference_run_name=llm_inference_run.inference_run_name,
             model_run_name=gnn_evaluation_result.model_run_name,
             model_id=llm_inference_run.model_id,
+            llm_provider=llm_inference_run.llm_provider,
             answer_metrics=FinalAnswerMetrics(
                 evaluated_instances=evaluated_instances,
                 successful_answers=sum(
@@ -349,7 +359,10 @@ class FinalResultsEvaluationService(AbstractService):
                 hit_count=hit_count,
                 hit_rate=self._safe_divide(hit_count, evaluated_instances),
                 hits_at_1_count=hits_at_1_count,
-                hits_at_1=self._safe_divide(hits_at_1_count, evaluated_instances),
+                hits_at_1=self._safe_divide(
+                    hits_at_1_count,
+                    evaluated_instances,
+                ),
                 true_positive_count=true_positive_count,
                 false_positive_count=false_positive_count,
                 false_negative_count=false_negative_count,
@@ -372,13 +385,198 @@ class FinalResultsEvaluationService(AbstractService):
                 grounded_mentioned_triple_count=grounded_mentioned_triple_count,
             ),
             ranking_metrics=RankingMetrics(
-                ndcg_at_1=self._mean([item.ndcg_at_1 for item in per_instance_results]),
-                ndcg_at_5=self._mean([item.ndcg_at_5 for item in per_instance_results]),
-                ndcg_at_10=self._mean([item.ndcg_at_10 for item in per_instance_results]),
-                ndcg_at_candidate_limit=self._mean(
-                    [item.ndcg_at_candidate_limit for item in per_instance_results]
+                ndcg_at_1=float(retrieval_metrics["ndcg_at_1"]),
+                ndcg_at_5=float(retrieval_metrics["ndcg_at_5"]),
+                ndcg_at_10=float(retrieval_metrics["ndcg_at_10"]),
+                ndcg_at_candidate_limit=float(
+                    retrieval_metrics["ndcg_at_candidate_limit"]
                 ),
                 candidate_limit=candidate_limit,
+            ),
+            retrieval_conditioned_answer_metrics=(
+                self._build_retrieval_conditioned_answer_metrics(
+                    per_instance_results
+                )
+            ),
+        )
+
+    def _build_retrieval_conditioned_answer_metrics(
+        self,
+        per_instance_results: list[PerInstanceFinalResult],
+    ) -> RetrievalConditionedAnswerMetrics:
+        """Aggregate retrieval availability and downstream answer utilization."""
+        eligible_results = [
+            item for item in per_instance_results if item.normalized_gold_answers
+        ]
+        eligible_count = len(eligible_results)
+        full_retrieval_results = [
+            item for item in eligible_results if item.full_gold_retrieval
+        ]
+        full_context_results = [
+            item for item in eligible_results if item.full_gold_context
+        ]
+        retrieved_gold_answer_count = sum(
+            len(item.retrieved_gold_answers) for item in eligible_results
+        )
+        answered_retrieved_gold_count = sum(
+            len(
+                set(item.normalized_predicted_answers)
+                & set(item.retrieved_gold_answers)
+            )
+            for item in eligible_results
+        )
+        full_retrieval_omissions = sum(
+            not set(item.normalized_gold_answers).issubset(
+                item.normalized_predicted_answers
+            )
+            for item in full_retrieval_results
+        )
+        full_retrieval_exact_matches = sum(
+            item.exact_match for item in full_retrieval_results
+        )
+        full_context_omissions = sum(
+            not set(item.normalized_gold_answers).issubset(
+                item.normalized_predicted_answers
+            )
+            for item in full_context_results
+        )
+        full_context_exact_matches = sum(
+            item.exact_match for item in full_context_results
+        )
+        full_context_complete_answers = (
+            len(full_context_results) - full_context_omissions
+        )
+        partial_context_results = [
+            item
+            for item in eligible_results
+            if item.context_visible_gold_answers and not item.full_gold_context
+        ]
+        partial_context_fully_utilized = sum(
+            set(item.context_visible_gold_answers).issubset(
+                item.normalized_predicted_answers
+            )
+            for item in partial_context_results
+        )
+        partial_context_underutilized = (
+            len(partial_context_results) - partial_context_fully_utilized
+        )
+        outcome_names = [
+            "full_retrieval_complete_answer",
+            "full_retrieval_llm_omission",
+            "partial_retrieval_fully_utilized",
+            "partial_retrieval_underutilized",
+            "no_gold_retrieved_no_gold_answered",
+            "correct_without_gold_retrieval",
+        ]
+        outcome_counts = {
+            name: sum(
+                item.retrieval_generation_outcome == name
+                for item in eligible_results
+            )
+            for name in outcome_names
+        }
+
+        return RetrievalConditionedAnswerMetrics(
+            conditioned_evaluated_instances=eligible_count,
+            retrieval_gold_coverage=self._mean(
+                [item.retrieval_gold_coverage for item in eligible_results]
+            ),
+            retrieval_full_gold_coverage_count=len(full_retrieval_results),
+            retrieval_full_gold_coverage_rate=self._safe_divide(
+                len(full_retrieval_results), eligible_count
+            ),
+            reasoning_context_gold_coverage=self._mean(
+                [item.reasoning_context_gold_coverage for item in eligible_results]
+            ),
+            reasoning_context_full_gold_coverage_count=len(full_context_results),
+            reasoning_context_full_gold_coverage_rate=self._safe_divide(
+                len(full_context_results), eligible_count
+            ),
+            retrieved_gold_answer_count=retrieved_gold_answer_count,
+            answered_retrieved_gold_count=answered_retrieved_gold_count,
+            llm_retrieved_gold_utilization=self._optional_divide(
+                answered_retrieved_gold_count,
+                retrieved_gold_answer_count,
+            ),
+            llm_omission_given_full_retrieval_count=full_retrieval_omissions,
+            llm_omission_given_full_retrieval_rate=self._optional_divide(
+                full_retrieval_omissions,
+                len(full_retrieval_results),
+            ),
+            llm_exact_match_given_full_retrieval_count=(
+                full_retrieval_exact_matches
+            ),
+            llm_exact_match_given_full_retrieval=self._optional_divide(
+                full_retrieval_exact_matches,
+                len(full_retrieval_results),
+            ),
+            llm_omission_given_full_context_count=full_context_omissions,
+            llm_omission_given_full_context_rate=self._optional_divide(
+                full_context_omissions,
+                len(full_context_results),
+            ),
+            llm_exact_match_given_full_context_count=full_context_exact_matches,
+            llm_exact_match_given_full_context=self._optional_divide(
+                full_context_exact_matches,
+                len(full_context_results),
+            ),
+            full_retrieval_complete_answer_count=outcome_counts[
+                "full_retrieval_complete_answer"
+            ],
+            full_retrieval_complete_answer_rate=self._safe_divide(
+                outcome_counts["full_retrieval_complete_answer"], eligible_count
+            ),
+            full_retrieval_llm_omission_count=outcome_counts[
+                "full_retrieval_llm_omission"
+            ],
+            full_retrieval_llm_omission_rate=self._safe_divide(
+                outcome_counts["full_retrieval_llm_omission"], eligible_count
+            ),
+            partial_retrieval_fully_utilized_count=outcome_counts[
+                "partial_retrieval_fully_utilized"
+            ],
+            partial_retrieval_fully_utilized_rate=self._safe_divide(
+                outcome_counts["partial_retrieval_fully_utilized"], eligible_count
+            ),
+            partial_retrieval_underutilized_count=outcome_counts[
+                "partial_retrieval_underutilized"
+            ],
+            partial_retrieval_underutilized_rate=self._safe_divide(
+                outcome_counts["partial_retrieval_underutilized"], eligible_count
+            ),
+            full_context_complete_answer_count=full_context_complete_answers,
+            full_context_complete_answer_rate=self._safe_divide(
+                full_context_complete_answers,
+                eligible_count,
+            ),
+            full_context_llm_omission_count=full_context_omissions,
+            full_context_llm_omission_rate=self._safe_divide(
+                full_context_omissions,
+                eligible_count,
+            ),
+            partial_context_fully_utilized_count=(
+                partial_context_fully_utilized
+            ),
+            partial_context_fully_utilized_rate=self._safe_divide(
+                partial_context_fully_utilized,
+                eligible_count,
+            ),
+            partial_context_underutilized_count=partial_context_underutilized,
+            partial_context_underutilized_rate=self._safe_divide(
+                partial_context_underutilized,
+                eligible_count,
+            ),
+            no_gold_retrieved_no_gold_answered_count=outcome_counts[
+                "no_gold_retrieved_no_gold_answered"
+            ],
+            no_gold_retrieved_no_gold_answered_rate=self._safe_divide(
+                outcome_counts["no_gold_retrieved_no_gold_answered"], eligible_count
+            ),
+            correct_without_gold_retrieval_count=outcome_counts[
+                "correct_without_gold_retrieval"
+            ],
+            correct_without_gold_retrieval_rate=self._safe_divide(
+                outcome_counts["correct_without_gold_retrieval"], eligible_count
             ),
         )
 
@@ -496,6 +694,48 @@ class FinalResultsEvaluationService(AbstractService):
             )
         return triples
 
+    def _normalized_context_entities(
+        self,
+        reasoning_row: dict[str, Any],
+    ) -> set[str]:
+        """Return normalized entity names actually exposed in reasoning paths."""
+        subgraph = reasoning_row.get("subgraph")
+        if not isinstance(subgraph, list):
+            raise FinalResultsEvaluationException(
+                f"Reasoning row {reasoning_row.get('instance_index')} is missing subgraph."
+            )
+        entities: set[str] = set()
+        for triple in subgraph:
+            if not isinstance(triple, dict):
+                continue
+            for key in ("source", "target"):
+                entity = self._normalize_answer(str(triple.get(key, "")))
+                if entity:
+                    entities.add(entity)
+        return entities
+
+    @staticmethod
+    def _retrieval_generation_outcome(
+        *,
+        gold_set: set[str],
+        retrieved_gold_set: set[str],
+        predicted_set: set[str],
+    ) -> str:
+        """Classify one instance into a mutually exclusive pipeline outcome."""
+        if not gold_set:
+            return "no_gold_answers"
+        if retrieved_gold_set == gold_set:
+            if gold_set.issubset(predicted_set):
+                return "full_retrieval_complete_answer"
+            return "full_retrieval_llm_omission"
+        if retrieved_gold_set:
+            if retrieved_gold_set.issubset(predicted_set):
+                return "partial_retrieval_fully_utilized"
+            return "partial_retrieval_underutilized"
+        if predicted_set & gold_set:
+            return "correct_without_gold_retrieval"
+        return "no_gold_retrieved_no_gold_answered"
+
     def _extract_explanation_triples(self, explanation: str) -> set[tuple[str, str, str]]:
         triples: set[tuple[str, str, str]] = set()
         for match in self.arrow_triple_pattern.finditer(explanation):
@@ -513,17 +753,21 @@ class FinalResultsEvaluationService(AbstractService):
         return " ".join(triple)
 
     def _prediction_answers(self, answer_row: dict[str, Any]) -> list[str]:
+        structured_answers = answer_row.get("answers")
+        if not isinstance(structured_answers, list) or any(
+            not isinstance(item, str) for item in structured_answers
+        ):
+            raise FinalResultsEvaluationException(
+                "Inference answer row must contain an 'answers' array of strings. "
+                "Rerun inference for artifacts created with the old string format."
+            )
         if answer_row.get("error_message") is not None:
             return []
-
-        raw_answer = str(answer_row.get("answer", ""))
-        if self._normalize_text(raw_answer) in self.unknown_answer_values:
-            return []
-
+        answers = [item.strip() for item in structured_answers if item.strip()]
         return [
-            item.strip()
-            for item in raw_answer.split(",")
-            if item.strip()
+            answer
+            for answer in answers
+            if self._normalize_text(answer) not in self.unknown_answer_values
         ]
 
     def _normalize_answer_set(self, answers: list[str]) -> list[str]:
@@ -532,22 +776,13 @@ class FinalResultsEvaluationService(AbstractService):
     def _normalize_answer_list(self, answers: list[str]) -> list[str]:
         normalized_answers: list[str] = []
         seen_answers: set[str] = set()
-        for answer in self._split_answer_values(answers):
+        for answer in answers:
             normalized_answer = self._normalize_answer(answer)
             if not normalized_answer or normalized_answer in seen_answers:
                 continue
             normalized_answers.append(normalized_answer)
             seen_answers.add(normalized_answer)
         return normalized_answers
-
-    @staticmethod
-    def _split_answer_values(answers: list[str]) -> list[str]:
-        return [
-            part.strip()
-            for answer in answers
-            for part in answer.split(",")
-            if part.strip()
-        ]
 
     def _normalize_answer(self, answer: str) -> str:
         normalized = answer.lower().strip()
@@ -565,37 +800,23 @@ class FinalResultsEvaluationService(AbstractService):
         prediction: EvaluatedAnswerRetrievalInstance,
         k: int,
     ) -> float:
-        if k <= 0 or not prediction.answer_candidates:
-            return 0.0
-
-        candidates = sorted(
-            prediction.answer_candidates,
-            key=lambda candidate: candidate.probability,
-            reverse=True,
-        )[:k]
-        relevances = [1.0 if candidate.is_gold_answer else 0.0 for candidate in candidates]
-        dcg = sum(
-            relevance / math.log2(rank + 2)
-            for rank, relevance in enumerate(relevances)
-        )
-        ideal_relevant_count = min(
-            sum(1 for candidate in prediction.answer_candidates if candidate.is_gold_answer),
-            k,
-        )
-        if ideal_relevant_count <= 0:
-            return 0.0
-
-        idcg = sum(
-            1.0 / math.log2(rank + 2)
-            for rank in range(ideal_relevant_count)
-        )
-        return dcg / idcg
+        return GnnRetrieverResultsService.ndcg_at_k(prediction, k)
 
     @staticmethod
     def _safe_divide(numerator: int | float, denominator: int | float) -> float:
         if denominator == 0:
             return 0.0
 
+        return numerator / denominator
+
+    @staticmethod
+    def _optional_divide(
+        numerator: int | float,
+        denominator: int | float,
+    ) -> float | None:
+        """Divide conditional metrics, preserving an unavailable denominator."""
+        if denominator == 0:
+            return None
         return numerator / denominator
 
     @classmethod
@@ -693,7 +914,7 @@ class FinalResultsEvaluationService(AbstractService):
         return 10
 
     @classmethod
-    def _build_gnn_id(cls, model_config_path: Path) -> str:
+    def _build_gnn_architecture(cls, model_config_path: Path) -> str:
         if not model_config_path.exists():
             for legacy_filename in ["model.config", "gnn_answer_retriever_config.json"]:
                 legacy_config_path = model_config_path.with_name(legacy_filename)
@@ -703,16 +924,10 @@ class FinalResultsEvaluationService(AbstractService):
         if model_config_path.exists():
             try:
                 model_config = cls._load_json_object(model_config_path)
-                training_config = model_config.get("training", {})
-                if not isinstance(training_config, dict):
-                    training_config = {}
-                layers = training_config.get("gnn_layer_count") or model_config.get("gnn_layer_count")
-                hidden = training_config.get("hidden_dimension") or model_config.get("hidden_dimension")
-                if isinstance(layers, int) and isinstance(hidden, int):
-                    return f"{layers}-{hidden}-gnn"
+                return infer_gnn_architecture(model_config)
             except FinalResultsEvaluationException:
                 pass
-        return "unknown-gnn"
+        return "graphsage"
 
     def _create_results_run_directory(self, results_root: Path) -> Path:
         results_root.mkdir(parents=True, exist_ok=True)

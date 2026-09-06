@@ -86,3 +86,24 @@ class SelectionService(AbstractService):
 
             selected_option = option_items[selected_index - 1]
             return value_getter(selected_option)
+
+    def resolve_text(
+        self,
+        provided_value: str | None,
+        prompt: str,
+        invalid_exception_type: type[Exception],
+    ) -> str:
+        """Return a non-empty constructor value or prompt until one is entered."""
+        if provided_value is not None:
+            value = provided_value.strip()
+            if not value:
+                raise invalid_exception_type("The value cannot be empty.")
+            return value
+        while True:
+            try:
+                value = self.input_func(prompt).strip()
+            except (EOFError, KeyboardInterrupt) as error:
+                raise invalid_exception_type("Unable to read interactive input.") from error
+            if value:
+                return value
+            self.output_func("Invalid value. Please enter a non-empty model name.")

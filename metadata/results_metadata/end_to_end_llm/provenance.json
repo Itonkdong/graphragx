@@ -1,0 +1,342 @@
+{
+  "authoritative_groups": [
+    "experiment2*",
+    "experiment2_seed_winners",
+    "experiment2_winners"
+  ],
+  "experiment_file": "/Users/itonkdong/Work/Fax/NLP/project/graphragx/experiments/experiment_2_end_to_end.toml",
+  "explicitly_excluded_superseded_group": "experiment2",
+  "runs": [
+    {
+      "configuration_id": "shortest_path",
+      "experiment_id": "exp2_nbfnet_seed42_deepseek_sp",
+      "inference_lineage_name": "76_recovery_exp1b_nbfnet_seed42_deepseek_sp",
+      "model": "deepseek-v4-flash",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "73s08zbr",
+      "wandb_run_name": "176_20260831_162703_nbfnet_sp_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/73s08zbr"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "experiment_id": "exp2_nbfnet_seed42_deepseek_pcst_constant_l10",
+      "inference_lineage_name": "77_recovery_exp1b_nbfnet_seed42_deepseek_pcst_constant_l10",
+      "model": "deepseek-v4-flash",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "iiim5kf0",
+      "wandb_run_name": "177_20260831_162814_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/iiim5kf0"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "experiment_id": "exp2_nbfnet_seed42_deepseek_pcst_constant_lambda_0p01",
+      "inference_lineage_name": "70_exp1b_nbfnet_seed42_deepseek_pcst_constant_lambda_0p01",
+      "model": "deepseek-v4-flash",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "u3r02esd",
+      "wandb_run_name": "170_20260831_135601_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/u3r02esd"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "experiment_id": "exp2_nbfnet_seed42_deepseek_pcst_semantic_l10",
+      "inference_lineage_name": "78_recovery_exp1b_nbfnet_seed42_deepseek_pcst_semantic_l10",
+      "model": "deepseek-v4-flash",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "2ri4wv8q",
+      "wandb_run_name": "178_20260831_162909_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/2ri4wv8q"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "experiment_id": "exp2_nbfnet_seed42_deepseek_pcst_semantic_lambda_0p01",
+      "inference_lineage_name": "71_exp1b_nbfnet_seed42_deepseek_pcst_semantic_lambda_0p01",
+      "model": "deepseek-v4-flash",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "3i0cla2k",
+      "wandb_run_name": "171_20260831_135724_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/3i0cla2k"
+    },
+    {
+      "configuration_id": "shortest_path",
+      "experiment_id": "exp2_nbfnet_seed1337_deepseek_sp",
+      "inference_lineage_name": "79_recovery_exp1b_nbfnet_seed1337_deepseek_sp",
+      "model": "deepseek-v4-flash",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "dd9ox8rb",
+      "wandb_run_name": "179_20260831_163035_nbfnet_sp_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/dd9ox8rb"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "experiment_id": "exp2_nbfnet_seed1337_deepseek_pcst_constant_l10",
+      "inference_lineage_name": "80_recovery_exp1b_nbfnet_seed1337_deepseek_pcst_constant_l10",
+      "model": "deepseek-v4-flash",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "w38mgfwx",
+      "wandb_run_name": "180_20260831_163149_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/w38mgfwx"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "experiment_id": "exp2_nbfnet_seed1337_deepseek_pcst_constant_lambda_0p01",
+      "inference_lineage_name": "72_exp1b_nbfnet_seed1337_deepseek_pcst_constant_lambda_0p01",
+      "model": "deepseek-v4-flash",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "62pgf4sk",
+      "wandb_run_name": "172_20260831_135942_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/62pgf4sk"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "experiment_id": "exp2_nbfnet_seed1337_deepseek_pcst_semantic_l10",
+      "inference_lineage_name": "81_recovery_exp1b_nbfnet_seed1337_deepseek_pcst_semantic_l10",
+      "model": "deepseek-v4-flash",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "7uah6lgf",
+      "wandb_run_name": "181_20260831_163243_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/7uah6lgf"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "experiment_id": "exp2_nbfnet_seed1337_deepseek_pcst_semantic_lambda_0p01",
+      "inference_lineage_name": "73_exp1b_nbfnet_seed1337_deepseek_pcst_semantic_lambda_0p01",
+      "model": "deepseek-v4-flash",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "jf0x2uj6",
+      "wandb_run_name": "173_20260831_140043_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/jf0x2uj6"
+    },
+    {
+      "configuration_id": "shortest_path",
+      "experiment_id": "exp2_nbfnet_seed2026_deepseek_sp",
+      "inference_lineage_name": "82_recovery_exp1b_nbfnet_seed2026_deepseek_sp",
+      "model": "deepseek-v4-flash",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "68gw24bn",
+      "wandb_run_name": "182_20260831_163407_nbfnet_sp_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/68gw24bn"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "experiment_id": "exp2_nbfnet_seed2026_deepseek_pcst_constant_l10",
+      "inference_lineage_name": "83_recovery_exp1b_nbfnet_seed2026_deepseek_pcst_constant_l10",
+      "model": "deepseek-v4-flash",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "naqs791n",
+      "wandb_run_name": "183_20260831_163526_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/naqs791n"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "experiment_id": "exp2_nbfnet_seed2026_deepseek_pcst_constant_lambda_0p01",
+      "inference_lineage_name": "74_exp1b_nbfnet_seed2026_deepseek_pcst_constant_lambda_0p01",
+      "model": "deepseek-v4-flash",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "wxvnqkiv",
+      "wandb_run_name": "174_20260831_140209_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/wxvnqkiv"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "experiment_id": "exp2_nbfnet_seed2026_deepseek_pcst_semantic_l10",
+      "inference_lineage_name": "84_recovery_exp1b_nbfnet_seed2026_deepseek_pcst_semantic_l10",
+      "model": "deepseek-v4-flash",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "h64217l5",
+      "wandb_run_name": "184_20260831_163618_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/h64217l5"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "experiment_id": "exp2_nbfnet_seed2026_deepseek_pcst_semantic_lambda_0p01",
+      "inference_lineage_name": "75_exp1b_nbfnet_seed2026_deepseek_pcst_semantic_lambda_0p01",
+      "model": "deepseek-v4-flash",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "dzxbyuuj",
+      "wandb_run_name": "175_20260831_140309_nbfnet_pcst_deepseek-v4-flash",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/dzxbyuuj"
+    },
+    {
+      "configuration_id": "shortest_path",
+      "experiment_id": "exp2_nbfnet_seed42_luna_sp",
+      "inference_lineage_name": "85_exp1c_nbfnet_seed42_luna_sp",
+      "model": "gpt-5.6-luna",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "4rnd6y5f",
+      "wandb_run_name": "185_20260831_172206_nbfnet_sp_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/4rnd6y5f"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "experiment_id": "exp2_nbfnet_seed42_luna_pcst_constant_l10",
+      "inference_lineage_name": "86_exp1c_nbfnet_seed42_luna_pcst_constant_l10",
+      "model": "gpt-5.6-luna",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "pc2nr6wz",
+      "wandb_run_name": "186_20260831_173534_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/pc2nr6wz"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "experiment_id": "exp2_nbfnet_seed42_luna_pcst_constant_lambda_0p01",
+      "inference_lineage_name": "87_exp1c_nbfnet_seed42_luna_pcst_constant_lambda_0p01",
+      "model": "gpt-5.6-luna",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "ij8ckjf9",
+      "wandb_run_name": "187_20260831_173940_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/ij8ckjf9"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "experiment_id": "exp2_nbfnet_seed42_luna_pcst_semantic_l10",
+      "inference_lineage_name": "88_exp1c_nbfnet_seed42_luna_pcst_semantic_l10",
+      "model": "gpt-5.6-luna",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "5qb4rpd2",
+      "wandb_run_name": "188_20260831_174327_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/5qb4rpd2"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "experiment_id": "exp2_nbfnet_seed42_luna_pcst_semantic_lambda_0p01",
+      "inference_lineage_name": "89_exp1c_nbfnet_seed42_luna_pcst_semantic_lambda_0p01",
+      "model": "gpt-5.6-luna",
+      "seed": 42,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "5pjxum8a",
+      "wandb_run_name": "189_20260831_174840_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/5pjxum8a"
+    },
+    {
+      "configuration_id": "shortest_path",
+      "experiment_id": "exp2_nbfnet_seed1337_luna_sp",
+      "inference_lineage_name": "90_exp1c_nbfnet_seed1337_luna_sp",
+      "model": "gpt-5.6-luna",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "f1vqgtrv",
+      "wandb_run_name": "190_20260831_175354_nbfnet_sp_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/f1vqgtrv"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "experiment_id": "exp2_nbfnet_seed1337_luna_pcst_constant_l10",
+      "inference_lineage_name": "91_exp1c_nbfnet_seed1337_luna_pcst_constant_l10",
+      "model": "gpt-5.6-luna",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "axrnicp1",
+      "wandb_run_name": "191_20260831_180829_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/axrnicp1"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "experiment_id": "exp2_nbfnet_seed1337_luna_pcst_constant_lambda_0p01",
+      "inference_lineage_name": "92_exp1c_nbfnet_seed1337_luna_pcst_constant_lambda_0p01",
+      "model": "gpt-5.6-luna",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "b4h0r6rg",
+      "wandb_run_name": "192_20260831_181248_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/b4h0r6rg"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "experiment_id": "exp2_nbfnet_seed1337_luna_pcst_semantic_l10",
+      "inference_lineage_name": "93_exp1c_nbfnet_seed1337_luna_pcst_semantic_l10",
+      "model": "gpt-5.6-luna",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "ynyyek0u",
+      "wandb_run_name": "193_20260831_181644_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/ynyyek0u"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "experiment_id": "exp2_nbfnet_seed1337_luna_pcst_semantic_lambda_0p01",
+      "inference_lineage_name": "94_exp1c_nbfnet_seed1337_luna_pcst_semantic_lambda_0p01",
+      "model": "gpt-5.6-luna",
+      "seed": 1337,
+      "wandb_group": "experiment2*",
+      "wandb_run_id": "1cr1ccvk",
+      "wandb_run_name": "194_20260831_182136_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/1cr1ccvk"
+    },
+    {
+      "configuration_id": "shortest_path",
+      "experiment_id": "exp2_nbfnet_seed2026_luna_sp",
+      "inference_lineage_name": "95_exp1c_nbfnet_seed2026_luna_sp",
+      "model": "gpt-5.6-luna",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "do0wyxjk",
+      "wandb_run_name": "195_20260831_182613_nbfnet_sp_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/do0wyxjk"
+    },
+    {
+      "configuration_id": "pcst_constant_1",
+      "experiment_id": "exp2_nbfnet_seed2026_luna_pcst_constant_l10",
+      "inference_lineage_name": "96_exp1c_nbfnet_seed2026_luna_pcst_constant_l10",
+      "model": "gpt-5.6-luna",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "77xfqn5g",
+      "wandb_run_name": "196_20260831_184505_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/77xfqn5g"
+    },
+    {
+      "configuration_id": "pcst_constant_0.01",
+      "experiment_id": "exp2_nbfnet_seed2026_luna_pcst_constant_lambda_0p01",
+      "inference_lineage_name": "97_exp1c_nbfnet_seed2026_luna_pcst_constant_lambda_0p01",
+      "model": "gpt-5.6-luna",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "5wt3hef7",
+      "wandb_run_name": "197_20260831_184939_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/5wt3hef7"
+    },
+    {
+      "configuration_id": "pcst_semantic_1",
+      "experiment_id": "exp2_nbfnet_seed2026_luna_pcst_semantic_l10",
+      "inference_lineage_name": "98_exp1c_nbfnet_seed2026_luna_pcst_semantic_l10",
+      "model": "gpt-5.6-luna",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "ly0j6amt",
+      "wandb_run_name": "198_20260831_185321_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/ly0j6amt"
+    },
+    {
+      "configuration_id": "pcst_semantic_0.01",
+      "experiment_id": "exp2_nbfnet_seed2026_luna_pcst_semantic_lambda_0p01",
+      "inference_lineage_name": "99_exp1c_nbfnet_seed2026_luna_pcst_semantic_lambda_0p01",
+      "model": "gpt-5.6-luna",
+      "seed": 2026,
+      "wandb_group": "experiment2_seed_winners",
+      "wandb_run_id": "lusxx0la",
+      "wandb_run_name": "199_20260831_185740_nbfnet_pcst_gpt-5.6-luna",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/lusxx0la"
+    }
+  ],
+  "token_source": "configs.inference API-reported usage totals"
+}

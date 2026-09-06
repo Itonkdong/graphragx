@@ -7,6 +7,43 @@ import torch.nn.functional as torch_functional
 from torch import Tensor, nn
 
 from pipeline.preparation.models.interfaces import AnswerRetrieverModel
+from pipeline.preparation.helpers.configuration_definitions import (
+    AA_GRAPH_SAGE_ARCHITECTURE_ID,
+    GNN_ARCHITECTURES,
+    GRAPH_SAGE_ARCHITECTURE_ID,
+)
+from pipeline.preparation.helpers.gnn_architecture import import_architecture_callable
+
+
+def build_node_classifier(
+    node_classifier: str,
+    hidden_dimension: int,
+    question_aware_classifier: bool,
+    dropout: float,
+) -> nn.Module:
+    """Build the shared answer-node classifier used by registered architectures."""
+    if question_aware_classifier:
+        return nn.Sequential(
+            nn.Linear(hidden_dimension * 3, hidden_dimension),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dimension, 1),
+        )
+
+    if node_classifier == "linear":
+        return nn.Linear(hidden_dimension, 1)
+
+    if node_classifier == "mlp":
+        layers: list[nn.Module] = [
+            nn.Linear(hidden_dimension, hidden_dimension),
+            nn.ReLU(),
+        ]
+        if dropout > 0:
+            layers.append(nn.Dropout(dropout))
+        layers.append(nn.Linear(hidden_dimension, 1))
+        return nn.Sequential(*layers)
+
+    raise ValueError(f"Unsupported node classifier: {node_classifier}")
 
 
 class WeightedMessagePassingLayer(nn.Module):
@@ -27,7 +64,9 @@ class WeightedMessagePassingLayer(nn.Module):
         source_nodes = edge_index[0].long()
         target_nodes = edge_index[1].long()
         source_messages = self.message_projection(node_features[source_nodes])
-        weighted_messages = source_messages * edge_weight.reshape(-1, 1)
+        weighted_messages = (
+            source_messages * edge_weight.reshape(-1, 1)
+        ).to(dtype=node_features.dtype)
 
         aggregated_messages = torch.zeros_like(node_features)
         aggregated_messages.index_add_(0, target_nodes, weighted_messages)
@@ -115,6 +154,11 @@ class GnnAnswerRetriever(nn.Module, AnswerRetrieverModel):
         edge_weight: Tensor | None = None,
         question_features: Tensor | None = None,
         relation_features: Tensor | None = None,
+        edge_type: Tensor | None = None,
+        edge_norm: Tensor | None = None,
+        active_relation_ids: Tensor | None = None,
+        edge_relation_index: Tensor | None = None,
+        active_relation_offsets: Tensor | None = None,
     ) -> Tensor:
         node_features = self.entity_projection(entity_features)
         projected_question = self._project_question(question_features)
@@ -161,30 +205,12 @@ class GnnAnswerRetriever(nn.Module, AnswerRetrieverModel):
         question_aware_classifier: bool,
         dropout: float,
     ) -> nn.Module:
-        if question_aware_classifier:
-            return nn.Sequential(
-                nn.Linear(hidden_dimension * 3, hidden_dimension),
-                nn.ReLU(),
-                nn.Dropout(dropout),
-                nn.Linear(hidden_dimension, 1),
-            )
-
-        if node_classifier == "linear":
-            return nn.Linear(hidden_dimension, 1)
-
-        if node_classifier == "mlp":
-            layers: list[nn.Module] = [
-                nn.Linear(hidden_dimension, hidden_dimension),
-                nn.ReLU(),
-            ]
-            if dropout > 0:
-                layers.append(nn.Dropout(dropout))
-            layers.append(
-                nn.Linear(hidden_dimension, 1),
-            )
-            return nn.Sequential(*layers)
-
-        raise ValueError(f"Unsupported node classifier: {node_classifier}")
+        return build_node_classifier(
+            node_classifier=node_classifier,
+            hidden_dimension=hidden_dimension,
+            question_aware_classifier=question_aware_classifier,
+            dropout=dropout,
+        )
 
     def _project_question(self, question_features: Tensor | None) -> Tensor | None:
         if self.question_projection is None:
@@ -238,3 +264,88 @@ class GnnAnswerRetriever(nn.Module, AnswerRetrieverModel):
             relation_features,
             dim=1,
         )
+
+
+class GraphSageAnswerRetriever(GnnAnswerRetriever):
+    """Concrete baseline GraphSAGE retriever."""
+
+    def __init__(self, **kwargs):
+        kwargs.update(
+            use_edge_mlp=False,
+            question_aware_classifier=False,
+            add_layer_normalization=False,
+            edge_mlp_hidden_dim=None,
+        )
+        super().__init__(**kwargs)
+        self.gnn_architecture = GRAPH_SAGE_ARCHITECTURE_ID
+
+
+class AdvancedGraphSageAnswerRetriever(GnnAnswerRetriever):
+    """Concrete advanced answer-aware GraphSAGE retriever."""
+
+    def __init__(self, **kwargs):
+        if kwargs.get("node_classifier") == "linear" and kwargs.get(
+            "question_aware_classifier", False
+        ):
+            raise ValueError(
+                "Advance GraphSAGE linear classification requires question-aware "
+                "classification to be disabled."
+            )
+        super().__init__(**kwargs)
+        self.gnn_architecture = AA_GRAPH_SAGE_ARCHITECTURE_ID
+
+
+def build_gnn_answer_retriever(
+    gnn_architecture: str,
+    architecture_options: dict | None = None,
+    **kwargs,
+) -> AnswerRetrieverModel:
+    """Build any registered retriever through its lazy registry callback."""
+    definition = GNN_ARCHITECTURES.get(gnn_architecture)
+    if definition is None:
+        raise ValueError(f"Unsupported GNN architecture: {gnn_architecture}")
+    builder = import_architecture_callable(definition.model_builder_path)
+    return builder(architecture_options=architecture_options or {}, **kwargs)
+
+
+def _shared_model_kwargs(architecture_options: dict, kwargs: dict) -> dict:
+    resolved = dict(kwargs)
+    # Architecture context is consumed by architectures such as R-GCN. Keep
+    # the legacy GraphSAGE constructors byte-for-byte compatible with their
+    # existing argument contract.
+    resolved.pop("architecture_context", None)
+    option_to_argument = {
+        "gnn_hidden_dimension": "hidden_dimension",
+        "gnn_layer_count": "gnn_layer_count",
+        "node_classifier": "node_classifier",
+        "dropout": "dropout",
+    }
+    for option_id, argument_name in option_to_argument.items():
+        if option_id in architecture_options:
+            resolved[argument_name] = architecture_options[option_id]
+    return resolved
+
+
+def build_graphsage_model(
+    *, architecture_options: dict, **kwargs
+) -> GraphSageAnswerRetriever:
+    """Registry callback for baseline GraphSAGE."""
+    return GraphSageAnswerRetriever(
+        **_shared_model_kwargs(architecture_options, kwargs)
+    )
+
+
+def build_aa_graphsage_model(
+    *, architecture_options: dict, **kwargs
+) -> AdvancedGraphSageAnswerRetriever:
+    """Registry callback for Advance GraphSAGE."""
+    resolved = _shared_model_kwargs(architecture_options, kwargs)
+    for option_id in (
+        "use_edge_mlp",
+        "question_aware_classifier",
+        "add_layer_normalization",
+        "edge_mlp_hidden_dim",
+    ):
+        if option_id in architecture_options:
+            resolved[option_id] = architecture_options[option_id]
+    return AdvancedGraphSageAnswerRetriever(**resolved)

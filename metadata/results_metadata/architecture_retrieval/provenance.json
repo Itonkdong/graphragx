@@ -1,0 +1,224 @@
+{
+  "experiment_file": "/home/viktor.kostadinoski/graphragx/experiments/experiment_0_gnn_architectures.toml",
+  "metrics": {
+    "average_candidate_count": "Summary_Plots/retrieval_average_candidate_count",
+    "evaluated_instances": "Summary_Plots/retrieval_evaluated_instances",
+    "hits_at_1": "Summary_Plots/retrieval_hits_at_1",
+    "hits_at_10": "Summary_Plots/retrieval_hits_at_10",
+    "hits_at_5": "Summary_Plots/retrieval_hits_at_5",
+    "hits_at_candidate_limit": "Summary_Plots/retrieval_hits_at_candidate_limit",
+    "ndcg_at_1": "Summary_Plots/ranking_ndcg_at_1",
+    "ndcg_at_10": "Summary_Plots/ranking_ndcg_at_10",
+    "ndcg_at_5": "Summary_Plots/ranking_ndcg_at_5",
+    "ndcg_at_candidate_limit": "Summary_Plots/ranking_ndcg_at_candidate_limit",
+    "retrieval_full_gold_coverage": "Summary_Plots/retrieval_full_gold_coverage_rate",
+    "retrieval_gold_coverage": "Summary_Plots/retrieval_gold_coverage"
+  },
+  "runs": [
+    {
+      "architecture": "graphsage",
+      "evaluation_lineage_name": "97_exp0_graphsage_seed42_retriever",
+      "experiment_id": "exp0_graphsage_seed42",
+      "seed": 42,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "s8pr7uiz",
+      "wandb_run_name": "102_20260829_193251_graphsage",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/s8pr7uiz"
+    },
+    {
+      "architecture": "graphsage",
+      "evaluation_lineage_name": "98_exp0_graphsage_seed1337_retriever",
+      "experiment_id": "exp0_graphsage_seed1337",
+      "seed": 1337,
+      "state": "finished",
+      "wandb_group": "experiment0_seed_winners",
+      "wandb_run_id": "bkxrut37",
+      "wandb_run_name": "103_20260829_194919_graphsage",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/bkxrut37"
+    },
+    {
+      "architecture": "graphsage",
+      "evaluation_lineage_name": "99_exp0_graphsage_seed2026_retriever",
+      "experiment_id": "exp0_graphsage_seed2026",
+      "seed": 2026,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "w5pikbnk",
+      "wandb_run_name": "104_20260829_195110_graphsage",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/w5pikbnk"
+    },
+    {
+      "architecture": "aa-graphsage",
+      "evaluation_lineage_name": "100_exp0_aa_graphsage_seed42_retriever",
+      "experiment_id": "exp0_aa_graphsage_seed42",
+      "seed": 42,
+      "state": "finished",
+      "wandb_group": "experiment0_seed_winners",
+      "wandb_run_id": "q036c6gz",
+      "wandb_run_name": "105_20260829_195345_aa-graphsage",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/q036c6gz"
+    },
+    {
+      "architecture": "aa-graphsage",
+      "evaluation_lineage_name": "101_exp0_aa_graphsage_seed1337_retriever",
+      "experiment_id": "exp0_aa_graphsage_seed1337",
+      "seed": 1337,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "nc87negc",
+      "wandb_run_name": "106_20260829_195618_aa-graphsage",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/nc87negc"
+    },
+    {
+      "architecture": "aa-graphsage",
+      "evaluation_lineage_name": "102_exp0_aa_graphsage_seed2026_retriever",
+      "experiment_id": "exp0_aa_graphsage_seed2026",
+      "seed": 2026,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "ytb558ro",
+      "wandb_run_name": "107_20260829_195847_aa-graphsage",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/ytb558ro"
+    },
+    {
+      "architecture": "rgcn",
+      "evaluation_lineage_name": "112_exp0_rgcn_seed42_retriever",
+      "experiment_id": "exp0_rgcn_seed42",
+      "seed": 42,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "xrpyyyxu",
+      "wandb_run_name": "120_20260830_063300_rgcn",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/xrpyyyxu"
+    },
+    {
+      "architecture": "rgcn",
+      "evaluation_lineage_name": "113_exp0_rgcn_seed1337_retriever",
+      "experiment_id": "exp0_rgcn_seed1337",
+      "seed": 1337,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "c7q6mc1h",
+      "wandb_run_name": "121_20260830_065131_rgcn",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/c7q6mc1h"
+    },
+    {
+      "architecture": "rgcn",
+      "evaluation_lineage_name": "114_exp0_rgcn_seed2026_retriever",
+      "experiment_id": "exp0_rgcn_seed2026",
+      "seed": 2026,
+      "state": "finished",
+      "wandb_group": "experiment0_seed_winners",
+      "wandb_run_id": "u1vsx59v",
+      "wandb_run_name": "122_20260830_071002_rgcn",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/u1vsx59v"
+    },
+    {
+      "architecture": "hgt",
+      "evaluation_lineage_name": "103_exp0_hgt_seed42_retriever",
+      "experiment_id": "exp0_hgt_seed42",
+      "seed": 42,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "3udqdq19",
+      "wandb_run_name": "111_20260829_205549_hgt",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/3udqdq19"
+    },
+    {
+      "architecture": "hgt",
+      "evaluation_lineage_name": "104_exp0_hgt_seed1337_retriever",
+      "experiment_id": "exp0_hgt_seed1337",
+      "seed": 1337,
+      "state": "finished",
+      "wandb_group": "experiment0_seed_winners",
+      "wandb_run_id": "uqlnazak",
+      "wandb_run_name": "112_20260829_214238_hgt",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/uqlnazak"
+    },
+    {
+      "architecture": "hgt",
+      "evaluation_lineage_name": "105_exp0_hgt_seed2026_retriever",
+      "experiment_id": "exp0_hgt_seed2026",
+      "seed": 2026,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "uwcwhkip",
+      "wandb_run_name": "113_20260829_221438_hgt",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/uwcwhkip"
+    },
+    {
+      "architecture": "rearev",
+      "evaluation_lineage_name": "106_exp0_rearev_seed42_retriever",
+      "experiment_id": "exp0_rearev_seed42",
+      "seed": 42,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "kzaqmz0z",
+      "wandb_run_name": "114_20260829_230124_rearev",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/kzaqmz0z"
+    },
+    {
+      "architecture": "rearev",
+      "evaluation_lineage_name": "107_exp0_rearev_seed1337_retriever",
+      "experiment_id": "exp0_rearev_seed1337",
+      "seed": 1337,
+      "state": "finished",
+      "wandb_group": "experiment0_seed_winners",
+      "wandb_run_id": "9d663xm3",
+      "wandb_run_name": "115_20260829_231105_rearev",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/9d663xm3"
+    },
+    {
+      "architecture": "rearev",
+      "evaluation_lineage_name": "108_exp0_rearev_seed2026_retriever",
+      "experiment_id": "exp0_rearev_seed2026",
+      "seed": 2026,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "9s6f5yj7",
+      "wandb_run_name": "116_20260829_232042_rearev",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/9s6f5yj7"
+    },
+    {
+      "architecture": "nbfnet",
+      "evaluation_lineage_name": "109_exp0_nbfnet_seed42_retriever",
+      "experiment_id": "exp0_nbfnet_seed42",
+      "seed": 42,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "xhkqmtj8",
+      "wandb_run_name": "117_20260829_233015_nbfnet",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/xhkqmtj8"
+    },
+    {
+      "architecture": "nbfnet",
+      "evaluation_lineage_name": "110_exp0_nbfnet_seed1337_retriever",
+      "experiment_id": "exp0_nbfnet_seed1337",
+      "seed": 1337,
+      "state": "finished",
+      "wandb_group": "experiment0",
+      "wandb_run_id": "1b810k36",
+      "wandb_run_name": "118_20260829_233430_nbfnet",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/1b810k36"
+    },
+    {
+      "architecture": "nbfnet",
+      "evaluation_lineage_name": "111_exp0_nbfnet_seed2026_retriever",
+      "experiment_id": "exp0_nbfnet_seed2026",
+      "seed": 2026,
+      "state": "finished",
+      "wandb_group": "experiment0_winners",
+      "wandb_run_id": "3e3ewm7y",
+      "wandb_run_name": "119_20260829_233844_nbfnet",
+      "wandb_run_url": "https://wandb.ai/itonkdong-org/graphragx/runs/3e3ewm7y"
+    }
+  ],
+  "selection_rule": "Unique complete run whose configs.runs.evaluation.name equals or ends with the experiment-defined evaluation run name, with matching saved architecture and random seed.",
+  "wandb_groups": [
+    "experiment0",
+    "experiment0_seed_winners",
+    "experiment0_winners"
+  ],
+  "wandb_project": "itonkdong-org/graphragx"
+}

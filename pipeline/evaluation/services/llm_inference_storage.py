@@ -16,7 +16,8 @@ from helpers.constants import (
     LLM_INFERENCE_CONFIG_FILENAME,
     LLM_INFERENCE_REASONING_FILENAME,
 )
-from helpers.path_serialization import make_project_paths_relative
+from helpers.path_serialization import make_project_paths_relative, project_absolute_path
+from pipeline.preparation.helpers.gnn_architecture import infer_gnn_architecture
 from pipeline.evaluation.models import (
     GeneratedAnswerForPrediction,
     GeneratedFinalAnswersBatch,
@@ -193,6 +194,7 @@ class LlmInferenceStorageService(AbstractService):
                     triple.model_dump(mode="json")
                     for triple in item.reasoning_subgraph_triples
                 ],
+                "construction": item.evidence_construction.model_dump(mode="json"),
                 "analytics": LlmInferenceStorageService._build_reasoning_analytics(item),
             }
             for item in payload.answers.items
@@ -239,6 +241,9 @@ class LlmInferenceStorageService(AbstractService):
             "has_gold_answer_candidate": any(
                 candidate in item.a_entity for candidate in item.answer_candidates
             ),
+            "candidate_evidence_coverage": (
+                item.evidence_construction.candidate_evidence_coverage
+            ),
         }
 
     @staticmethod
@@ -251,7 +256,8 @@ class LlmInferenceStorageService(AbstractService):
                 "gold_answers": item.a_entity,
                 "answer_candidates": item.answer_candidates,
                 "model_id": item.model_id,
-                "answer": item.answer,
+                "llm_provider": item.llm_provider,
+                "answers": item.answers,
                 "explanation": item.explanation,
                 "raw_response": item.raw_response,
                 "prompt_tokens": item.prompt_tokens,
@@ -281,8 +287,14 @@ class LlmInferenceStorageService(AbstractService):
         )
         total_tokens = sum(item.total_tokens for item in answers.items)
         total_cost = sum(item.estimated_cost_usd for item in answers.items)
+        evaluation_config_path = evaluation_run_directory / "evaluation_config.json"
+        gnn_architecture = cls._load_inference_architecture(evaluation_config_path)
+        relation_vocabulary_path = cls._load_relation_vocabulary_path(
+            evaluation_config_path
+        )
         return {
             "dataset_id": answers.dataset_id,
+            "gnn_architecture": gnn_architecture,
             "run_name": run.inference_run_name,
             "run_number": run.inference_run_number,
             "evaluation_config": {
@@ -291,25 +303,161 @@ class LlmInferenceStorageService(AbstractService):
                     answers.evaluation_run_name
                 ),
                 "full_config_path": str(
-                    evaluation_run_directory
-                    / "evaluation_config.json"
+                    evaluation_config_path
                 ),
                 "predictions_path": str(
                     evaluation_run_directory
                     / "predictions.jsonl"
                 ),
+                **(
+                    {"relation_vocabulary_path": str(relation_vocabulary_path)}
+                    if relation_vocabulary_path is not None
+                    else {}
+                ),
             },
             "inference": {
                 "model_id": answers.model_id,
+                "llm_provider": answers.llm_provider,
+                "reasoning_effort": answers.reasoning_effort,
+                "generate_explanation": answers.generate_explanation,
+                **(
+                    {"batch_size": answers.inference_batch_size}
+                    if answers.inference_batch_size is not None
+                    else {}
+                ),
+                "parallel_calls": answers.inference_parallel_calls,
                 "total_requests": len(answers.items),
                 "total_prompt_tokens": total_prompt_tokens,
                 "total_completion_tokens": total_completion_tokens,
                 "total_tokens": total_tokens,
                 "total_cost_usd": round(total_cost, 8),
+                "evidence_subgraph": answers.evidence_subgraph,
+                "evidence_metrics": cls._build_evidence_metrics(answers),
             },
             "successful_answers": answers.successful_answers,
             "failed_answers": answers.failed_answers,
         }
+
+    @staticmethod
+    def _build_evidence_metrics(
+        answers: GeneratedFinalAnswersBatch,
+    ) -> dict[str, float | int]:
+        """Aggregate evidence size, coverage, timing, and PCST objective values."""
+        items = answers.items
+        count = len(items)
+        if count == 0:
+            return {
+                "average_subgraph_triples": 0.0,
+                "average_distinct_nodes": 0.0,
+                "average_candidate_evidence_coverage": 0.0,
+                "candidate_reduction_percentage": 0.0,
+                "empty_subgraph_count": 0,
+                "empty_subgraph_rate": 0.0,
+                "average_construction_time_ms": 0.0,
+            }
+
+        constructions = [item.evidence_construction for item in items]
+        distinct_node_counts = [
+            len({
+                node
+                for triple in item.reasoning_subgraph_triples
+                for node in (triple.source, triple.target)
+            })
+            for item in items
+        ]
+        empty_count = sum(
+            not item.reasoning_subgraph_triples for item in items
+        )
+        found_candidates = sum(item.found_reasoning_paths for item in items)
+        missing_candidates = sum(item.missing_reasoning_paths for item in items)
+        total_candidates = found_candidates + missing_candidates
+        metrics: dict[str, float | int] = {
+            "average_subgraph_triples": sum(
+                len(item.reasoning_subgraph_triples) for item in items
+            ) / count,
+            "average_distinct_nodes": sum(distinct_node_counts) / count,
+            "average_candidate_evidence_coverage": sum(
+                construction.candidate_evidence_coverage
+                for construction in constructions
+            ) / count,
+            "candidate_reduction_percentage": (
+                100.0 * missing_candidates / total_candidates
+                if total_candidates
+                else 0.0
+            ),
+            "empty_subgraph_count": empty_count,
+            "empty_subgraph_rate": empty_count / count,
+            "average_construction_time_ms": sum(
+                construction.construction_time_ms
+                for construction in constructions
+            ) / count,
+        }
+        pcst = [
+            construction
+            for construction in constructions
+            if construction.strategy == "pcst"
+        ]
+        if pcst:
+            metrics.update(
+                average_collected_prize=sum(
+                    item.collected_prize for item in pcst
+                ) / len(pcst),
+                average_edge_cost=sum(
+                    item.total_edge_cost for item in pcst
+                ) / len(pcst),
+                average_objective=sum(item.objective for item in pcst) / len(pcst),
+            )
+        return metrics
+
+    @staticmethod
+    def _load_inference_architecture(evaluation_config_path: Path) -> str:
+        try:
+            evaluation_config = json.loads(
+                evaluation_config_path.read_text(encoding="utf-8")
+            )
+            if not isinstance(evaluation_config, dict):
+                return "graphsage"
+            model_reference = evaluation_config.get("model_config", {})
+            model_config_value = (
+                model_reference.get("full_config_path")
+                if isinstance(model_reference, dict)
+                else None
+            )
+            if isinstance(model_config_value, str):
+                model_config = json.loads(
+                    project_absolute_path(model_config_value).read_text(encoding="utf-8")
+                )
+                if isinstance(model_config, dict):
+                    return infer_gnn_architecture(model_config)
+            explicit = evaluation_config.get("gnn_architecture")
+            if isinstance(explicit, str):
+                return explicit
+        except (OSError, ValueError, json.JSONDecodeError):
+            pass
+        return "graphsage"
+
+    @staticmethod
+    def _load_relation_vocabulary_path(
+        evaluation_config_path: Path,
+    ) -> Path | None:
+        """Resolve an optional R-GCN vocabulary reference for inference lineage."""
+        try:
+            evaluation_config = json.loads(
+                evaluation_config_path.read_text(encoding="utf-8")
+            )
+            model_reference = evaluation_config.get("model_config", {})
+            value = (
+                model_reference.get("relation_vocabulary_path")
+                if isinstance(model_reference, dict)
+                else None
+            )
+            if isinstance(value, str):
+                path = project_absolute_path(value)
+                if path.exists():
+                    return path
+        except (OSError, ValueError, json.JSONDecodeError):
+            pass
+        return None
 
     def _create_inference_run_directory(
         self,

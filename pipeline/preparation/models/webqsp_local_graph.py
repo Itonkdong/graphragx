@@ -68,6 +68,8 @@ class PreparedWebQSPGraphDataset(StepResult):
     entity_mapping_summary: WebQSPEntityMappingSummary = Field(
         default_factory=WebQSPEntityMappingSummary
     )
+    source_fingerprints: dict[str, str] = Field(default_factory=dict)
+    entity_mapping_sha256: str | None = Field(default=None)
     cache_directory: Path = Field(..., description="Processed dataset cache directory.")
 
     @property

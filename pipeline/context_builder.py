@@ -16,10 +16,14 @@ from pipeline.evaluation.steps.final_results_evaluation import (
     ComputeFinalResultsStep,
 )
 from pipeline.evaluation.steps.llm_inference import (
+    BuildEvidenceSubgraphsBatchStep,
+    BuildEvidenceSubgraphsContext,
     BuildReasoningSamplesFromGnnEvaluationContext,
     BuildReasoningSamplesFromGnnEvaluationStep,
     GenerateAndSaveFinalAnswersBatchesContext,
     GenerateAndSaveFinalAnswersBatchesStep,
+    SaveEvidenceSubgraphsContext,
+    SaveEvidenceSubgraphsStep,
 )
 from pipeline.models import PipelineResultBank
 from pipeline.evaluation.models import GnnAnswerRetrieverEvaluationResult
@@ -37,6 +41,10 @@ from pipeline.preparation.steps.gnn_answer_retriever_training import (
     TrainGnnAnswerRetrieverContext,
     TrainGnnAnswerRetrieverStep,
 )
+from pipeline.preparation.steps.gnn_training_data_preparation import (
+    PrepareGnnTrainingDataContext,
+    PrepareGnnTrainingDataStep,
+)
 
 
 class StepContextBuilder:
@@ -50,11 +58,14 @@ class StepContextBuilder:
         ] = {
             BuildWebQSPLocalGraphsStep: self._create_build_webqsp_local_graphs_context,
             BuildGnnAnswerRetrieverStep: self._create_gnn_answer_retriever_context,
+            PrepareGnnTrainingDataStep: self._create_prepare_gnn_training_data_context,
             TrainGnnAnswerRetrieverStep: self._create_train_gnn_answer_retriever_context,
             EvaluateGnnAnswerRetrieverStep: self._create_evaluate_gnn_answer_retriever_context,
             BuildReasoningSamplesFromGnnEvaluationStep: (
                 self._create_build_reasoning_samples_from_gnn_context
             ),
+            BuildEvidenceSubgraphsBatchStep: self._create_evidence_subgraphs_context,
+            SaveEvidenceSubgraphsStep: self._create_save_evidence_subgraphs_context,
             GenerateAndSaveFinalAnswersBatchesStep: (
                 self._create_generate_and_save_final_answers_batches_context
             ),
@@ -132,6 +143,23 @@ class StepContextBuilder:
             ),
         )
 
+    def _create_prepare_gnn_training_data_context(
+        self,
+        result: StepResult | None,
+        outcome: bool,
+        exception: PipelineException,
+    ) -> PrepareGnnTrainingDataContext:
+        """Create the context required by GNN training-data preparation."""
+        return PrepareGnnTrainingDataContext(
+            result=result,
+            outcome=outcome,
+            exception=exception,
+            prepared_dataset=self.get_required_result(PreparedWebQSPGraphDataset),
+            pipeline_configuration=self.get_required_result(
+                BuiltPipelineConfiguration
+            ),
+        )
+
     def _create_evaluate_gnn_answer_retriever_context(
         self,
         result: StepResult | None,
@@ -171,6 +199,40 @@ class StepContextBuilder:
     ) -> GenerateAndSaveFinalAnswersBatchesContext:
         """Create the context required by batched LLM inference."""
         return GenerateAndSaveFinalAnswersBatchesContext(
+            result=result,
+            outcome=outcome,
+            exception=exception,
+            pipeline_configuration=self.get_required_result(
+                BuiltPipelineConfiguration
+            ),
+        )
+
+    def _create_save_evidence_subgraphs_context(
+        self,
+        result: StepResult | None,
+        outcome: bool,
+        exception: PipelineException,
+    ) -> SaveEvidenceSubgraphsContext:
+        return SaveEvidenceSubgraphsContext(
+            result=result,
+            outcome=outcome,
+            exception=exception,
+            pipeline_configuration=self.get_required_result(
+                BuiltPipelineConfiguration
+            ),
+            gnn_evaluation_result=self.get_required_result(
+                GnnAnswerRetrieverEvaluationResult
+            ),
+        )
+
+    def _create_evidence_subgraphs_context(
+        self,
+        result: StepResult | None,
+        outcome: bool,
+        exception: PipelineException,
+    ) -> BuildEvidenceSubgraphsContext:
+        """Create the context required by strategy-aware evidence construction."""
+        return BuildEvidenceSubgraphsContext(
             result=result,
             outcome=outcome,
             exception=exception,

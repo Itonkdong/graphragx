@@ -1,0 +1,49 @@
+[project]
+name = "graphragx"
+version = "0.1.0"
+description = "A GNN-RAG pipeline for knowledge-graph question answering on WebQSP."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = "MIT"
+authors = [
+    { name = "Viktor Kostadinoski" },
+]
+dependencies = [
+    "datasets",
+    "langchain-openai>=1,<2",
+    "numpy>=1.26,<2",
+    "openai",
+    "pcst-fast==1.0.10",
+    "pydantic",
+    "python-dotenv",
+    "qdrant-client",
+    "torch",
+    "transformers>=4.57,<5",
+    "wandb",
+]
+
+[project.scripts]
+graphragx = "main:main"
+graphragx-experiments = "scripts.experiments.run_experiments:main"
+
+[build-system]
+requires = ["setuptools>=77,<85"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "matplotlib",
+    "pytest",
+    "reportlab",
+    "torch-geometric",
+]
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["helpers*", "pipeline*", "scripts*"]

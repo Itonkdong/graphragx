@@ -70,6 +70,13 @@ class ComputeFinalResultsStep(
         )
         return FinalResultsEvaluationResult(
             dataset_id=inference_run.dataset_id,
+            gnn_architecture=context.gnn_evaluation_result.gnn_architecture,
+            subgraph_algorithm=str(
+                inference_run.evidence_subgraph.get("algorithm", "shortest_path")
+            ),
+            model_run_name=context.gnn_evaluation_result.model_run_name,
+            evaluation_run_name=context.gnn_evaluation_result.evaluation_run_name,
+            inference_run_name=inference_run.inference_run_name,
             results_run_directory=outcome.storage_result.results_run_directory,
             results_run_name=outcome.storage_result.results_run_name,
             results_run_number=outcome.storage_result.results_run_number,

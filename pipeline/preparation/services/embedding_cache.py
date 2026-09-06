@@ -66,6 +66,7 @@ class WebQSPEmbeddingCacheService(AbstractService):
         model_id: str,
         vocabulary: dict[str, int],
         dataset_id: str = WEBQSP_DATASET_ID,
+        ensure_collection: bool = True,
     ) -> TextEmbeddingCache:
         """Return the entity/node embedding cache handle for a model."""
         return self._load_cache(
@@ -73,6 +74,7 @@ class WebQSPEmbeddingCacheService(AbstractService):
             model_id=model_id,
             cache_kind="nodes",
             vocabulary=vocabulary,
+            ensure_collection=ensure_collection,
         )
 
     def load_relation_cache(
@@ -81,6 +83,7 @@ class WebQSPEmbeddingCacheService(AbstractService):
         model_id: str,
         vocabulary: dict[str, int],
         dataset_id: str = WEBQSP_DATASET_ID,
+        ensure_collection: bool = True,
     ) -> TextEmbeddingCache:
         """Return the relation embedding cache handle for a model."""
         return self._load_cache(
@@ -88,6 +91,7 @@ class WebQSPEmbeddingCacheService(AbstractService):
             model_id=model_id,
             cache_kind="relations",
             vocabulary=vocabulary,
+            ensure_collection=ensure_collection,
         )
 
     def load_question_cache(
@@ -96,6 +100,7 @@ class WebQSPEmbeddingCacheService(AbstractService):
         model_id: str,
         vocabulary: dict[str, int],
         dataset_id: str = WEBQSP_DATASET_ID,
+        ensure_collection: bool = True,
     ) -> TextEmbeddingCache:
         """Return the question embedding cache handle for a model."""
         return self._load_cache(
@@ -103,6 +108,7 @@ class WebQSPEmbeddingCacheService(AbstractService):
             model_id=model_id,
             cache_kind="questions",
             vocabulary=vocabulary,
+            ensure_collection=ensure_collection,
         )
 
     def ensure_embeddings(
@@ -163,6 +169,13 @@ class WebQSPEmbeddingCacheService(AbstractService):
                 f"batch={batch_index}/{total_batches} upserted={len(batch_texts)} "
                 f"collection={cache.collection_name}"
             )
+
+    def ensure_cache_available(self, cache: TextEmbeddingCache) -> None:
+        """Create the backing Qdrant collection only when remote access is needed."""
+        self._ensure_collection(
+            collection_name=cache.collection_name,
+            vector_size=cache.vector_size,
+        )
 
     def upsert_embeddings(
         self,
@@ -328,10 +341,15 @@ class WebQSPEmbeddingCacheService(AbstractService):
         model_id: str,
         cache_kind: str,
         vocabulary: dict[str, int],
+        ensure_collection: bool,
     ) -> TextEmbeddingCache:
         vector_size = self._vector_size_for_model(model_id)
         collection_name = self.collection_name_for_model(model_id)
-        self._ensure_collection(collection_name=collection_name, vector_size=vector_size)
+        if ensure_collection:
+            self._ensure_collection(
+                collection_name=collection_name,
+                vector_size=vector_size,
+            )
         return TextEmbeddingCache(
             dataset_id=dataset_id,
             model_id=model_id,

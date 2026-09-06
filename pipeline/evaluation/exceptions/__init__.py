@@ -2,6 +2,7 @@
 
 from pipeline.evaluation.exceptions.exceptions import (
     FinalResultsEvaluationException,
+    InsufficientLlmCreditsException,
     InvalidEvaluationSampleException,
     LlmAnswerGenerationException,
     ShortestPathExtractionException,
@@ -9,6 +10,7 @@ from pipeline.evaluation.exceptions.exceptions import (
 
 __all__ = [
     "FinalResultsEvaluationException",
+    "InsufficientLlmCreditsException",
     "InvalidEvaluationSampleException",
     "LlmAnswerGenerationException",
     "ShortestPathExtractionException",

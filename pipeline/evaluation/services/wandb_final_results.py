@@ -13,6 +13,13 @@ from pydantic import BaseModel, Field
 from helpers.logging_config import get_logger
 from helpers.path_serialization import project_absolute_path
 from pipeline.evaluation.models import FinalResultsEvaluationResult
+from pipeline.preparation.helpers.gnn_architecture import infer_gnn_architecture
+from pipeline.evaluation.services.model_config_normalization import (
+    normalize_model_config,
+)
+from pipeline.evaluation.services.wandb_experiment import (
+    WandbExperimentCoordinator,
+)
 from pipeline.services import AbstractService
 
 logger = get_logger(__name__)
@@ -46,7 +53,47 @@ class WandbFinalResultsLoggingService(AbstractService):
     table_key = "Per_Instance_Metrics/per_instance_results"
     aggregate_table_key = "Summary_Metrics/aggregate_metrics"
     summary_plot_prefix = "Summary_Plots"
-    artifact_type = "evaluation-results"
+    artifact_type = "final-results"
+    retrieval_conditioned_metric_keys = (
+        "conditioned_evaluated_instances",
+        "retrieval_gold_coverage",
+        "retrieval_full_gold_coverage_count",
+        "retrieval_full_gold_coverage_rate",
+        "reasoning_context_gold_coverage",
+        "reasoning_context_full_gold_coverage_count",
+        "reasoning_context_full_gold_coverage_rate",
+        "retrieved_gold_answer_count",
+        "answered_retrieved_gold_count",
+        "llm_retrieved_gold_utilization",
+        "llm_omission_given_full_retrieval_count",
+        "llm_omission_given_full_retrieval_rate",
+        "llm_exact_match_given_full_retrieval_count",
+        "llm_exact_match_given_full_retrieval",
+        "llm_omission_given_full_context_count",
+        "llm_omission_given_full_context_rate",
+        "llm_exact_match_given_full_context_count",
+        "llm_exact_match_given_full_context",
+        "full_retrieval_complete_answer_count",
+        "full_retrieval_complete_answer_rate",
+        "full_retrieval_llm_omission_count",
+        "full_retrieval_llm_omission_rate",
+        "partial_retrieval_fully_utilized_count",
+        "partial_retrieval_fully_utilized_rate",
+        "partial_retrieval_underutilized_count",
+        "partial_retrieval_underutilized_rate",
+        "full_context_complete_answer_count",
+        "full_context_complete_answer_rate",
+        "full_context_llm_omission_count",
+        "full_context_llm_omission_rate",
+        "partial_context_fully_utilized_count",
+        "partial_context_fully_utilized_rate",
+        "partial_context_underutilized_count",
+        "partial_context_underutilized_rate",
+        "no_gold_retrieved_no_gold_answered_count",
+        "no_gold_retrieved_no_gold_answered_rate",
+        "correct_without_gold_retrieval_count",
+        "correct_without_gold_retrieval_rate",
+    )
     source_path_keys = {
         "answers_path",
         "reasoning_path",
@@ -76,6 +123,11 @@ class WandbFinalResultsLoggingService(AbstractService):
         "ndcg_at_10",
         "ndcg_at_candidate_limit",
         "answer_error_message",
+        "retrieval_gold_coverage",
+        "reasoning_context_gold_coverage",
+        "llm_retrieved_gold_utilization",
+        "retrieval_generation_outcome",
+        "retrieved_candidates",
     ]
 
     def log_final_results(
@@ -89,6 +141,12 @@ class WandbFinalResultsLoggingService(AbstractService):
             results_config = self._load_json_object(final_result.results_config_path)
             retrieval_metrics = self._load_json_object(
                 final_result.retrieval_metrics_path
+            )
+            # Legacy retrieval metric files predate this scalar; the final
+            # result still carries the same evaluated-instance denominator.
+            retrieval_metrics.setdefault(
+                "evaluated_instances",
+                final_result.evaluated_instances,
             )
             reasoning_metrics = self._load_json_object(
                 final_result.reasoning_metrics_path
@@ -110,6 +168,37 @@ class WandbFinalResultsLoggingService(AbstractService):
                 results_config=results_config,
             )
             run_name = final_result.results_run_name
+            architecture_name = results_config.get("gnn_architecture")
+            if (
+                isinstance(architecture_name, str)
+                and architecture_name
+                and not run_name.endswith(f"_{architecture_name}")
+            ):
+                run_name = f"{run_name}_{architecture_name}"
+            inference_config = wandb_config.get("configs", {}).get("inference", {})
+            if not isinstance(inference_config, dict):
+                inference_config = {}
+            evidence_configuration = wandb_config.get("configs", {}).get(
+                "evidence", {}
+            )
+            evidence_algorithm = (
+                evidence_configuration.get("algorithm")
+                if isinstance(evidence_configuration, dict)
+                else None
+            )
+            run_name = WandbExperimentCoordinator.build_inference_run_name(
+                run_name,
+                evidence_algorithm=(
+                    str(evidence_algorithm)
+                    if isinstance(evidence_algorithm, str)
+                    else None
+                ),
+                model_id=(
+                    str(inference_config["model_id"])
+                    if isinstance(inference_config.get("model_id"), str)
+                    else None
+                ),
+            )
             tags = self._build_tags(results_config)
 
             with wandb.init(
@@ -129,8 +218,8 @@ class WandbFinalResultsLoggingService(AbstractService):
                 payload = {
                     self.table_key: table,
                     self.aggregate_table_key: aggregate_table,
-                    **self.build_summary_plot_metrics(scalar_metrics),
                 }
+                summary_metrics = self.build_summary_plot_metrics(scalar_metrics)
                 run_summary_plot_metrics = self.build_run_summary_plot_metrics(
                     scalar_metrics=scalar_metrics,
                     wandb_config=wandb_config,
@@ -138,8 +227,12 @@ class WandbFinalResultsLoggingService(AbstractService):
                 loss_points = self.build_training_loss_points(
                     wandb_config.get("configs", {}).get("model", {})
                 )
-                if run_summary_plot_metrics:
-                    run.log(run_summary_plot_metrics)
+                aggregate_metrics = {
+                    **run_summary_plot_metrics,
+                    **summary_metrics,
+                }
+                if aggregate_metrics:
+                    run.log(aggregate_metrics)
                 if loss_points:
                     for point in loss_points:
                         run.log(
@@ -154,7 +247,6 @@ class WandbFinalResultsLoggingService(AbstractService):
                 self._add_artifact_files(
                     artifact=artifact,
                     final_result=final_result,
-                    results_config=results_config,
                 )
                 run.log_artifact(artifact)
                 return WandbFinalResultsLogResult(
@@ -177,17 +269,29 @@ class WandbFinalResultsLoggingService(AbstractService):
     ) -> dict[str, float | int]:
         """Build WandB-safe scalar metric names."""
         mappings = {
+            "retrieval_evaluated_instances": retrieval_metrics.get(
+                "evaluated_instances"
+            ),
             "retrieval_hits_at_1": retrieval_metrics.get("hits_at_1"),
+            "retrieval_hits_at_1_count": retrieval_metrics.get("hits_at_1_count"),
             "retrieval_hits_at_5": retrieval_metrics.get("hits_at_5"),
+            "retrieval_hits_at_5_count": retrieval_metrics.get("hits_at_5_count"),
             "retrieval_hits_at_10": retrieval_metrics.get("hits_at_10"),
+            "retrieval_hits_at_10_count": retrieval_metrics.get("hits_at_10_count"),
             "retrieval_hits_at_candidate_limit": retrieval_metrics.get(
                 "hits_at_candidate_limit"
+            ),
+            "retrieval_hits_at_candidate_limit_count": retrieval_metrics.get(
+                "hits_at_candidate_limit_count"
             ),
             "retrieval_average_candidate_count": retrieval_metrics.get(
                 "average_candidate_count"
             ),
             "retrieval_missing_gold_in_graph_count": retrieval_metrics.get(
                 "missing_gold_in_graph_count"
+            ),
+            "retrieval_skipped_missing_gold_in_graph_count": retrieval_metrics.get(
+                "skipped_missing_gold_in_graph_count"
             ),
             "answer_accuracy": reasoning_metrics.get("accuracy"),
             "answer_hit_rate": reasoning_metrics.get("hit_rate"),
@@ -201,13 +305,25 @@ class WandbFinalResultsLoggingService(AbstractService):
             "grounding_fully_grounded_explanation_rate": reasoning_metrics.get(
                 "fully_grounded_explanation_rate"
             ),
-            "ranking_ndcg_at_1": reasoning_metrics.get("ndcg_at_1"),
-            "ranking_ndcg_at_5": reasoning_metrics.get("ndcg_at_5"),
-            "ranking_ndcg_at_10": reasoning_metrics.get("ndcg_at_10"),
-            "ranking_ndcg_at_candidate_limit": reasoning_metrics.get(
-                "ndcg_at_candidate_limit"
+            "ranking_ndcg_at_1": retrieval_metrics.get(
+                "ndcg_at_1", reasoning_metrics.get("ndcg_at_1")
+            ),
+            "ranking_ndcg_at_5": retrieval_metrics.get(
+                "ndcg_at_5", reasoning_metrics.get("ndcg_at_5")
+            ),
+            "ranking_ndcg_at_10": retrieval_metrics.get(
+                "ndcg_at_10", reasoning_metrics.get("ndcg_at_10")
+            ),
+            "ranking_ndcg_at_candidate_limit": retrieval_metrics.get(
+                "ndcg_at_candidate_limit",
+                reasoning_metrics.get("ndcg_at_candidate_limit"),
             ),
         }
+        for key in cls.retrieval_conditioned_metric_keys:
+            value = reasoning_metrics.get(key)
+            if not isinstance(value, int | float):
+                value = retrieval_metrics.get(key)
+            mappings[key] = value
         return {
             key: value
             for key, value in mappings.items()
@@ -244,6 +360,7 @@ class WandbFinalResultsLoggingService(AbstractService):
     ) -> dict[str, float | int]:
         """Build curated run-summary metrics for WandB history plots."""
         run_summary_keys = {
+            "retrieval_evaluated_instances": "retrieval_evaluated_instances",
             "retrieval_hits_at_1": "retrieval_hits_at_1",
             "retrieval_hits_at_10": "retrieval_hits_at_10",
             "retrieval_hits_at_candidate_limit": "retrieval_hits_at_candidate_limit",
@@ -252,6 +369,62 @@ class WandbFinalResultsLoggingService(AbstractService):
             "ranking_ndcg_at_10": "ranking_ndcg_at_10",
             "grounding_grounded_explanation_rate": "grounded_explanation_rate",
         }
+        run_summary_keys.update(
+            {
+                "retrieval_gold_coverage": "retrieval_gold_coverage",
+                "retrieval_full_gold_coverage_rate": (
+                    "retrieval_full_gold_coverage"
+                ),
+                "reasoning_context_gold_coverage": (
+                    "reasoning_context_gold_coverage"
+                ),
+                "reasoning_context_full_gold_coverage_rate": (
+                    "reasoning_context_full_gold_coverage"
+                ),
+                "llm_exact_match_given_full_context": (
+                    "llm_exact_match_given_full_context"
+                ),
+                "llm_omission_given_full_context_rate": (
+                    "llm_omission_given_full_context"
+                ),
+                "llm_exact_match_given_full_retrieval": (
+                    "llm_exact_match_given_full_retrieval"
+                ),
+                "llm_omission_given_full_retrieval_rate": (
+                    "llm_omission_given_full_retrieval"
+                ),
+                "full_retrieval_complete_answer_rate": (
+                    "full_retrieval_complete_answer"
+                ),
+                "full_retrieval_llm_omission_rate": (
+                    "full_retrieval_llm_omission"
+                ),
+                "partial_retrieval_fully_utilized_rate": (
+                    "partial_retrieval_fully_utilized"
+                ),
+                "partial_retrieval_underutilized_rate": (
+                    "partial_retrieval_underutilized"
+                ),
+                "full_context_complete_answer_rate": (
+                    "full_context_complete_answer"
+                ),
+                "full_context_llm_omission_rate": (
+                    "full_context_llm_omission"
+                ),
+                "partial_context_fully_utilized_rate": (
+                    "partial_context_fully_utilized"
+                ),
+                "partial_context_underutilized_rate": (
+                    "partial_context_underutilized"
+                ),
+                "no_gold_retrieved_no_gold_answered_rate": (
+                    "no_gold_retrieved_no_gold_answered"
+                ),
+                "correct_without_gold_retrieval_rate": (
+                    "correct_without_gold_retrieval"
+                ),
+            }
+        )
         return {
             f"{cls.run_summary_prefix}/{target_key}": scalar_metrics[source_key]
             for source_key, target_key in run_summary_keys.items()
@@ -263,7 +436,10 @@ class WandbFinalResultsLoggingService(AbstractService):
         model_config: dict[str, Any],
     ) -> list[dict[str, float | int]]:
         """Build scalar loss history points for WandB logging."""
-        loss_history = model_config.get("loss_history")
+        training = model_config.get("training", {})
+        if not isinstance(training, dict):
+            training = {}
+        loss_history = training.get("loss_history") or model_config.get("loss_history")
         if not isinstance(loss_history, list):
             return []
 
@@ -287,8 +463,11 @@ class WandbFinalResultsLoggingService(AbstractService):
         results_config: dict[str, Any],
         per_instance_rows: list[dict[str, Any]],
     ) -> list[list[Any]]:
-        """Build WandB table rows, adding explanations from answers.jsonl."""
+        """Build final-result rows with the GNN candidates from predictions."""
         answers_by_index = self._load_answers_by_index(results_config)
+        retrieved_candidates_by_index = self._load_retrieved_candidates_by_index(
+            results_config
+        )
         table_rows: list[list[Any]] = []
         for row in per_instance_rows:
             instance_index = row.get("instance_index")
@@ -316,9 +495,49 @@ class WandbFinalResultsLoggingService(AbstractService):
                     row.get("ndcg_at_10", 0.0),
                     row.get("ndcg_at_candidate_limit", 0.0),
                     row.get("answer_error_message"),
+                    row.get("retrieval_gold_coverage", 0.0),
+                    row.get("reasoning_context_gold_coverage", 0.0),
+                    row.get("llm_retrieved_gold_utilization"),
+                    row.get("retrieval_generation_outcome", ""),
+                    self._format_table_cell(
+                        retrieved_candidates_by_index.get(instance_index, [])
+                    ),
                 ]
             )
         return table_rows
+
+    @classmethod
+    def _load_retrieved_candidates_by_index(
+        cls,
+        results_config: dict[str, Any],
+    ) -> dict[int, list[str]]:
+        """Load only ranked candidate node names from the retriever predictions."""
+        predictions_path_value = cls._result_artifact_path(
+            results_config,
+            "predictions_path",
+        )
+        if not isinstance(predictions_path_value, str):
+            return {}
+        predictions_path = project_absolute_path(predictions_path_value)
+        if not predictions_path.exists():
+            return {}
+
+        candidates_by_index: dict[int, list[str]] = {}
+        try:
+            prediction_rows = cls._load_jsonl_objects(predictions_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return {}
+        for prediction in prediction_rows:
+            instance_index = prediction.get("instance_index")
+            raw_candidates = prediction.get("answer_candidates", [])
+            if not isinstance(instance_index, int) or not isinstance(raw_candidates, list):
+                continue
+            candidates_by_index[instance_index] = [
+                str(candidate["node"])
+                for candidate in raw_candidates
+                if isinstance(candidate, dict) and candidate.get("node") is not None
+            ]
+        return candidates_by_index
 
     @classmethod
     def _format_table_cell(cls, value: Any) -> Any:
@@ -359,6 +578,12 @@ class WandbFinalResultsLoggingService(AbstractService):
                 **inference_payload,
                 "total_instances": inference_config["total_instances"],
             }
+        evidence_payload = inference_payload.get("evidence_subgraph")
+        inference_payload = {
+            key: value
+            for key, value in inference_payload.items()
+            if key not in {"evidence_metrics", "evidence_subgraph"}
+        }
 
         model_run_name = model_ref.get("model_run_name") or results_config.get("model_run_name")
         model_run_number = self._int_or_none(model_ref.get("model_run_number")) or self._extract_run_number(model_run_name)
@@ -370,8 +595,12 @@ class WandbFinalResultsLoggingService(AbstractService):
         return self._stringify_paths(
             {
                 "dataset_id": results_config.get("dataset_id"),
+                **(
+                    {"llm_provider": results_config["llm_provider"]}
+                    if results_config.get("llm_provider")
+                    else {}
+                ),
                 "model_id": results_config.get("model_id"),
-                "gnn_id": results_config.get("gnn_id"),
                 "runs": {
                     "model": {
                         "name": model_run_name,
@@ -393,6 +622,11 @@ class WandbFinalResultsLoggingService(AbstractService):
                 "configs": {
                     "model": model_config,
                     "evaluation": evaluation_config.get("evaluation", {}),
+                    **(
+                        {"evidence": evidence_payload}
+                        if isinstance(evidence_payload, dict)
+                        else {}
+                    ),
                     "inference": inference_payload,
                 },
                 "source_paths": source_paths,
@@ -447,7 +681,11 @@ class WandbFinalResultsLoggingService(AbstractService):
         if isinstance(model_config_path_value, str):
             model_config_path = project_absolute_path(model_config_path_value)
             if model_config_path.exists():
-                return self._load_json_object(model_config_path)
+                return normalize_model_config(
+                    self._without_wandb_tracking(
+                        self._load_json_object(model_config_path)
+                    )
+                )
 
         model_run_directory = results_config.get("model_run_directory")
         if isinstance(model_run_directory, str):
@@ -458,13 +696,26 @@ class WandbFinalResultsLoggingService(AbstractService):
             ]:
                 model_config_path = project_absolute_path(model_run_directory) / filename
                 if model_config_path.exists():
-                    return self._load_json_object(model_config_path)
+                    return normalize_model_config(
+                        self._without_wandb_tracking(
+                            self._load_json_object(model_config_path)
+                        )
+                    )
 
         model_configuration = evaluation_config.get("model_configuration")
         if isinstance(model_configuration, dict):
-            return model_configuration
+            return normalize_model_config(
+                self._without_wandb_tracking(model_configuration)
+            )
 
         return {}
+
+    @staticmethod
+    def _without_wandb_tracking(config: dict[str, Any]) -> dict[str, Any]:
+        """Keep persisted lineage metadata out of the user-facing Config tab."""
+        cleaned = dict(config)
+        cleaned.pop("wandb", None)
+        return cleaned
 
     @classmethod
     def _build_source_paths(cls, results_config: dict[str, Any]) -> dict[str, str]:
@@ -504,27 +755,37 @@ class WandbFinalResultsLoggingService(AbstractService):
     @classmethod
     def _build_tags(cls, results_config: dict[str, Any]) -> list[str]:
         tags = ["graphragx"]
-        for key in ["dataset_id", "model_id"]:
+        for key in ["dataset_id", "llm_provider", "model_id"]:
             value = results_config.get(key)
             if value:
                 tags.append(str(value))
-        if results_config.get("gnn_id"):
-            tags.append(str(results_config["gnn_id"]))
+        architecture = results_config.get("gnn_architecture")
+        if architecture:
+            tags.append(str(architecture))
 
         model_config_path = cls._result_config_path(results_config, "model_config_path")
         if isinstance(model_config_path, str):
             try:
-                model_config = cls._load_json_object(project_absolute_path(model_config_path))
-                for key in [
-                    "entity_embedding_model",
-                    "question_embedding_model",
-                    "relation_embedding_model",
-                ]:
-                    embedding_model_id = model_config.get(key)
-                    if embedding_model_id:
-                        tags.append(str(embedding_model_id))
-                if model_config.get("trained_instances") is not None:
-                    tags.append(f"trained_instances:{model_config['trained_instances']}")
+                model_config = normalize_model_config(
+                    cls._load_json_object(project_absolute_path(model_config_path))
+                )
+                if not architecture:
+                    tags.append(infer_gnn_architecture(model_config))
+                embedding_model_id = model_config.get("embedding_model")
+                if embedding_model_id:
+                    tags.append(str(embedding_model_id))
+                training = model_config.get("training", {})
+                trained_instances = (
+                    training.get("trained_instances")
+                    if isinstance(training, dict)
+                    else None
+                )
+                if isinstance(trained_instances, dict):
+                    trained_instances = trained_instances.get("count")
+                if trained_instances is None:
+                    trained_instances = model_config.get("trained_instances")
+                if trained_instances is not None:
+                    tags.append(f"trained_instances:{trained_instances}")
             except (OSError, ValueError, json.JSONDecodeError):
                 pass
 
@@ -583,16 +844,11 @@ class WandbFinalResultsLoggingService(AbstractService):
         cls,
         artifact: Any,
         final_result: FinalResultsEvaluationResult,
-        results_config: dict[str, Any],
     ) -> None:
+        """Upload only final-result-owned files; upstream artifacts remain references."""
         for path in sorted(final_result.results_run_directory.iterdir()):
             if path.is_file():
                 artifact.add_file(str(path), name=f"results/{path.name}")
-
-        for value in cls._build_source_paths(results_config).values():
-            path = project_absolute_path(value)
-            if path.exists() and path.is_file():
-                artifact.add_file(str(path), name=f"sources/{path.name}")
 
     @staticmethod
     def _artifact_name(results_run_name: str) -> str:
