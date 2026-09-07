@@ -1,0 +1,1186 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/8y1q2y",
+    "id": "8y1q2y",
+    "slide": 8,
+    "layoutId": "fbd9f837-0d2b-4749-876e-2796e8b3a549",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "51ea0a3f-bb00-4608-abfc-608373d6ea41",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "fbd9f837-0d2b-4749-876e-2796e8b3a549",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "51ea0a3f-bb00-4608-abfc-608373d6ea41",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "51ea0a3f-bb00-4608-abfc-608373d6ea41",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/adgr2hcn",
+      "id": "1",
+      "bbox": [
+        40,
+        60,
+        250,
+        70
+      ],
+      "geometry": "rect",
+      "text": "Локален граф",
+      "textPreview": "Локален граф",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#4F86C6",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Локален граф"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Локален граф",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#4F86C6",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Локален граф",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#4F86C6",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/hg7adcby",
+      "id": "2",
+      "bbox": [
+        345,
+        60,
+        250,
+        70
+      ],
+      "geometry": "rect",
+      "text": "Пребарани\nентитети-кандидати",
+      "textPreview": "Пребарани | ентитети-кандидати",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#D97942",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Пребарани"
+          },
+          {
+            "index": 2,
+            "text": "ентитети-кандидати"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Пребарани",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#D97942",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Пребарани",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#D97942",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "ентитети-кандидати",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#D97942",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "ентитети-кандидати",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#D97942",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wfy947ut",
+      "id": "3",
+      "bbox": [
+        660,
+        60,
+        250,
+        70
+      ],
+      "geometry": "rect",
+      "text": "Доказен контекст",
+      "textPreview": "Доказен контекст",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#398D84",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Доказен контекст"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Доказен контекст",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#398D84",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Доказен контекст",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#398D84",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/naps72tw",
+      "id": "4",
+      "bbox": [
+        965,
+        60,
+        250,
+        70
+      ],
+      "geometry": "rect",
+      "text": "Одговор од LLM",
+      "textPreview": "Одговор од LLM",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#8064A2",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Одговор од LLM"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Одговор од LLM",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#8064A2",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Одговор од LLM",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#8064A2",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/m9wryxcb",
+      "id": "5",
+      "bbox": [
+        160,
+        168,
+        10,
+        10
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#A9B4BE",
+      "lineColor": "#A9B4BE",
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9c7a9cb2",
+      "id": "6",
+      "bbox": [
+        465,
+        168,
+        10,
+        10
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#A9B4BE",
+      "lineColor": "#A9B4BE",
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/8by907uh",
+      "id": "7",
+      "bbox": [
+        780,
+        168,
+        10,
+        10
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#A9B4BE",
+      "lineColor": "#A9B4BE",
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/r69s36tg",
+      "id": "8",
+      "bbox": [
+        1085,
+        168,
+        10,
+        10
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#A9B4BE",
+      "lineColor": "#A9B4BE",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/650ba1cv",
+      "id": "9",
+      "bbox": [
+        170,
+        173,
+        295,
+        0
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#A9B4BE",
+      "lineWidth": 3
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wn25kj6d",
+      "id": "10",
+      "bbox": [
+        475,
+        173,
+        305,
+        0
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#A9B4BE",
+      "lineWidth": 3
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xob6t47y",
+      "id": "11",
+      "bbox": [
+        790,
+        173,
+        295,
+        0
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#A9B4BE",
+      "lineWidth": 3
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/alkni9on",
+      "id": "12",
+      "bbox": [
+        73,
+        318,
+        24,
+        24
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF2FB",
+      "lineColor": "#4F86C6",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bmtorep8",
+      "id": "13",
+      "bbox": [
+        138,
+        263,
+        24,
+        24
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/oj25gz6h",
+      "id": "14",
+      "bbox": [
+        208,
+        308,
+        24,
+        24
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9kb6p472",
+      "id": "15",
+      "bbox": [
+        253,
+        373,
+        24,
+        24
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF6EE",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/mh0nepob",
+      "id": "16",
+      "bbox": [
+        244,
+        364,
+        42,
+        42
+      ],
+      "geometry": "ellipse",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ni9onupw",
+      "id": "17",
+      "bbox": [
+        153,
+        393,
+        24,
+        24
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0fi5cf6l",
+      "id": "18",
+      "bbox": [
+        93.49,
+        283.49,
+        48.03,
+        38.03
+      ],
+      "verticalFlip": true,
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/1gr6lk7q",
+      "id": "19",
+      "bbox": [
+        158.49,
+        283.49,
+        53.03,
+        28.03
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/h0zutwvi",
+      "id": "20",
+      "bbox": [
+        228.49,
+        328.49,
+        28.03,
+        48.03
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/gzqd0rex",
+      "id": "21",
+      "bbox": [
+        173.49,
+        328.49,
+        38.03,
+        68.03
+      ],
+      "horizontalFlip": true,
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2
+    },
+    {
+      "order": 22,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/vyhcrmdc",
+      "id": "22",
+      "bbox": [
+        93.49,
+        338.49,
+        63.03,
+        58.03
+      ],
+      "horizontalFlip": true,
+      "verticalFlip": true,
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2
+    },
+    {
+      "order": 23,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ux8vyhwr",
+      "id": "23",
+      "bbox": [
+        394,
+        245,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFF4DF",
+      "lineColor": "#E5A23C",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 24,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/tczupcv6",
+      "id": "24",
+      "bbox": [
+        440,
+        247,
+        125,
+        22
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFF4DF",
+      "lineWidth": 0
+    },
+    {
+      "order": 25,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/8bqdw7e1",
+      "id": "25",
+      "bbox": [
+        394,
+        313,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF6EE",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 26,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7axcn2dg",
+      "id": "26",
+      "bbox": [
+        385,
+        304,
+        44,
+        44
+      ],
+      "geometry": "ellipse",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 27,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/69obuxwv",
+      "id": "27",
+      "bbox": [
+        440,
+        315,
+        107,
+        22
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#EAF6EE",
+      "lineWidth": 0
+    },
+    {
+      "order": 28,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dsje1gvq",
+      "id": "28",
+      "bbox": [
+        394,
+        381,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFF4DF",
+      "lineColor": "#E5A23C",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 29,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/c7ad8bu5",
+      "id": "29",
+      "bbox": [
+        440,
+        383,
+        89,
+        22
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFF4DF",
+      "lineWidth": 0
+    },
+    {
+      "order": 30,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ad4rmdcn",
+      "id": "30",
+      "bbox": [
+        682,
+        357,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF2FB",
+      "lineColor": "#4F86C6",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 31,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bedsvyt8",
+      "id": "31",
+      "bbox": [
+        773,
+        293,
+        24,
+        24
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 32,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wfm9o3ut",
+      "id": "32",
+      "bbox": [
+        862,
+        342,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF6EE",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 33,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xgvax8by",
+      "id": "33",
+      "bbox": [
+        853,
+        333,
+        44,
+        44
+      ],
+      "geometry": "ellipse",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 34,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/m9kritcb",
+      "id": "34",
+      "bbox": [
+        704.19,
+        313.49,
+        72.32,
+        47.32
+      ],
+      "verticalFlip": true,
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2.8
+    },
+    {
+      "order": 35,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/natsrytw",
+      "id": "35",
+      "bbox": [
+        793.49,
+        313.49,
+        72.32,
+        32.32
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 2
+    },
+    {
+      "order": 36,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/obm9k3uh",
+      "id": "36",
+      "bbox": [
+        1066,
+        301,
+        48,
+        48
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFF4DF",
+      "lineColor": "#E5A23C",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 37,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9cvat8b2",
+      "id": "37",
+      "bbox": [
+        995,
+        356,
+        190,
+        36
+      ],
+      "geometry": "rect",
+      "text": "вратен одговор",
+      "textPreview": "вратен одговор",
+      "resolvedFontSize": 19,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 19,
+        "typeface": "Arial",
+        "color": "#263746",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "вратен одговор"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "вратен одговор",
+          "resolvedTextStyle": {
+            "fontSize": 19,
+            "typeface": "Arial",
+            "color": "#263746",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "вратен одговор",
+              "fontSize": 19,
+              "typeface": "Arial",
+              "color": "#263746",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 38,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/65obuxsv",
+      "id": "38",
+      "bbox": [
+        640,
+        500,
+        290,
+        42
+      ],
+      "geometry": "rect",
+      "text": "точниот ентитет е присутен",
+      "textPreview": "точниот ентитет е присутен",
+      "resolvedFontSize": 20.56,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 21,
+        "typeface": "Arial",
+        "color": "#4E9B69",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 0.98,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "точниот ентитет е"
+          },
+          {
+            "index": 2,
+            "text": "присутен"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "точниот ентитет е присутен",
+          "resolvedTextStyle": {
+            "fontSize": 21,
+            "typeface": "Arial",
+            "color": "#4E9B69",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "точниот ентитет е присутен",
+              "fontSize": 21,
+              "typeface": "Arial",
+              "color": "#4E9B69",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 39,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/76xs3itg",
+      "id": "39",
+      "bbox": [
+        980,
+        500,
+        220,
+        42
+      ],
+      "geometry": "rect",
+      "text": "но не е вратен",
+      "textPreview": "но не е вратен",
+      "resolvedFontSize": 21,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 21,
+        "typeface": "Arial",
+        "color": "#8064A2",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "но не е вратен"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "но не е вратен",
+          "resolvedTextStyle": {
+            "fontSize": 21,
+            "typeface": "Arial",
+            "color": "#8064A2",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "но не е вратен",
+              "fontSize": 21,
+              "typeface": "Arial",
+              "color": "#8064A2",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 40,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rydozuxw",
+      "id": "40",
+      "bbox": [
+        290,
+        620,
+        700,
+        42
+      ],
+      "geometry": "rect",
+      "text": "Загубата може да настане и по пребарувањето",
+      "textPreview": "Загубата може да настане и по пребарувањето",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 26,
+        "typeface": "Arial",
+        "color": "#263746",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Загубата може да настане и по пребарувањето"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Загубата може да настане и по пребарувањето",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "typeface": "Arial",
+            "color": "#263746",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Загубата може да настане и по пребарувањето",
+              "fontSize": 26,
+              "typeface": "Arial",
+              "color": "#263746",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

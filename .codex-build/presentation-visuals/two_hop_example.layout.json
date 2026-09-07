@@ -1,0 +1,1145 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/nym5y5",
+    "id": "nym5y5",
+    "slide": 1,
+    "layoutId": "fbd9f837-0d2b-4749-876e-2796e8b3a549",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "51ea0a3f-bb00-4608-abfc-608373d6ea41",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "fbd9f837-0d2b-4749-876e-2796e8b3a549",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "51ea0a3f-bb00-4608-abfc-608373d6ea41",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "51ea0a3f-bb00-4608-abfc-608373d6ea41",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/h4napsfq",
+      "id": "1",
+      "bbox": [
+        92,
+        372,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#F7F9FB",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/u1crudgf",
+      "id": "2",
+      "bbox": [
+        142,
+        487,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#F7F9FB",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/f25snix0",
+      "id": "3",
+      "bbox": [
+        322,
+        532,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#F7F9FB",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sfu9s3y9",
+      "id": "4",
+      "bbox": [
+        1067,
+        457,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#F7F9FB",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/t03al8fu",
+      "id": "5",
+      "bbox": [
+        1152,
+        367,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#F7F9FB",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6dcrqdg3",
+      "id": "6",
+      "bbox": [
+        105,
+        398,
+        40.81,
+        92.81
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 1.5
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7elsjixo",
+      "id": "7",
+      "bbox": [
+        168,
+        500,
+        154,
+        45
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 1.5
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/kbu9o3yd",
+      "id": "8",
+      "bbox": [
+        1089.19,
+        389.19,
+        66.62,
+        71.62
+      ],
+      "verticalFlip": true,
+      "geometry": "straightConnector1",
+      "lineColor": "#DDE3E8",
+      "lineWidth": 1.5
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5c3ah8fy",
+      "id": "9",
+      "bbox": [
+        150,
+        42,
+        980,
+        82
+      ],
+      "geometry": "roundRect",
+      "text": "Who did Viggo Mortensen play in The Lord of the Rings?",
+      "textPreview": "Who did Viggo Mortensen play in The Lord of the Rings?",
+      "resolvedFontSize": 25,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 25,
+        "typeface": "Arial",
+        "color": "#263746",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Who did Viggo Mortensen play in The Lord of the Rings?"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Who did Viggo Mortensen play in The Lord of the Rings?",
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "typeface": "Arial",
+            "color": "#263746",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Who did Viggo Mortensen play in The Lord of the Rings?",
+              "fontSize": 25,
+              "typeface": "Arial",
+              "color": "#263746",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "fillColor": "#EAF2FB",
+      "lineColor": "#4F86C6",
+      "lineWidth": 2
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xkfmtg3a",
+      "id": "10",
+      "bbox": [
+        450,
+        8,
+        380,
+        30
+      ],
+      "geometry": "rect",
+      "text": "Прашање од WebQSP",
+      "textPreview": "Прашање од WebQSP",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 16,
+        "typeface": "Arial",
+        "color": "#4F86C6",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Прашање од WebQSP"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Прашање од WebQSP",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "typeface": "Arial",
+            "color": "#4F86C6",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Прашање од WebQSP",
+              "fontSize": 16,
+              "typeface": "Arial",
+              "color": "#4F86C6",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wj6l0b2p",
+      "id": "11",
+      "bbox": [
+        223,
+        313,
+        54,
+        54
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF2FB",
+      "lineColor": "#4F86C6",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bid4r6l4",
+      "id": "12",
+      "bbox": [
+        145,
+        374,
+        210,
+        36
+      ],
+      "geometry": "rect",
+      "text": "Viggo Mortensen",
+      "textPreview": "Viggo Mortensen",
+      "resolvedFontSize": 21,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 21,
+        "typeface": "Arial",
+        "color": "#263746",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Viggo Mortensen"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Viggo Mortensen",
+          "resolvedTextStyle": {
+            "fontSize": 21,
+            "typeface": "Arial",
+            "color": "#263746",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Viggo Mortensen",
+              "fontSize": 21,
+              "typeface": "Arial",
+              "color": "#263746",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ah43y1kj",
+      "id": "13",
+      "bbox": [
+        596,
+        316,
+        48,
+        48
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9gvmpw3y",
+      "id": "14",
+      "bbox": [
+        530,
+        371,
+        180,
+        36
+      ],
+      "geometry": "rect",
+      "text": "настап / улога",
+      "textPreview": "настап / улога",
+      "resolvedFontSize": 20,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 20,
+        "typeface": "Arial",
+        "color": "#263746",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "настап / улога"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "настап / улога",
+          "resolvedTextStyle": {
+            "fontSize": 20,
+            "typeface": "Arial",
+            "color": "#263746",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "настап / улога",
+              "fontSize": 20,
+              "typeface": "Arial",
+              "color": "#263746",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ofmlwb2d",
+      "id": "15",
+      "bbox": [
+        973,
+        313,
+        54,
+        54
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF6EE",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ned4n6ls",
+      "id": "16",
+      "bbox": [
+        964,
+        304,
+        72,
+        72
+      ],
+      "geometry": "ellipse",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/md43u1kn",
+      "id": "17",
+      "bbox": [
+        930,
+        374,
+        140,
+        36
+      ],
+      "geometry": "rect",
+      "text": "Aragorn",
+      "textPreview": "Aragorn",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 22,
+        "typeface": "Arial",
+        "color": "#4E9B69",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Aragorn"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Aragorn",
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Arial",
+            "color": "#4E9B69",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Aragorn",
+              "fontSize": 22,
+              "typeface": "Arial",
+              "color": "#4E9B69",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/1cvmlw32",
+      "id": "18",
+      "bbox": [
+        598,
+        548,
+        44,
+        44
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#F7F9FB",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0b2lsr2h",
+      "id": "19",
+      "bbox": [
+        495,
+        599,
+        250,
+        36
+      ],
+      "geometry": "rect",
+      "text": "The Lord of the Rings",
+      "textPreview": "The Lord of the Rings",
+      "resolvedFontSize": 20,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 20,
+        "typeface": "Arial",
+        "color": "#263746",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The Lord of the Rings"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The Lord of the Rings",
+          "resolvedTextStyle": {
+            "fontSize": 20,
+            "typeface": "Arial",
+            "color": "#263746",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The Lord of the Rings",
+              "fontSize": 20,
+              "typeface": "Arial",
+              "color": "#263746",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sv6l8rad",
+      "id": "20",
+      "bbox": [
+        277,
+        340,
+        319,
+        0
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 3
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dwfm1wby",
+      "id": "21",
+      "bbox": [
+        644,
+        340,
+        329,
+        0
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 3
+    },
+    {
+      "order": 22,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6to36hs7",
+      "id": "22",
+      "bbox": [
+        620,
+        364,
+        0,
+        184
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#398D84",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 23,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rux4zmts",
+      "id": "23",
+      "bbox": [
+        350,
+        274,
+        180,
+        28
+      ],
+      "geometry": "rect",
+      "text": "film.actor.film",
+      "textPreview": "film.actor.film",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#263746",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "film.actor.film"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "film.actor.film",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#263746",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "film.actor.film",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#263746",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 24,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4r6l4ra1",
+      "id": "24",
+      "bbox": [
+        716,
+        274,
+        265,
+        28
+      ],
+      "geometry": "rect",
+      "text": "film.performance.character",
+      "textPreview": "film.performance.character",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#263746",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "film.performance.character"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "film.performance.character",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#263746",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "film.performance.character",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#263746",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 25,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5sfmxwbm",
+      "id": "25",
+      "bbox": [
+        645,
+        455,
+        230,
+        28
+      ],
+      "geometry": "rect",
+      "text": "film.performance.film",
+      "textPreview": "film.performance.film",
+      "resolvedFontSize": 17,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 17,
+        "typeface": "Arial",
+        "color": "#398D84",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "film.performance.film"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "film.performance.film",
+          "resolvedTextStyle": {
+            "fontSize": 17,
+            "typeface": "Arial",
+            "color": "#398D84",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "film.performance.film",
+              "fontSize": 17,
+              "typeface": "Arial",
+              "color": "#398D84",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 26,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ip432hsb",
+      "id": "26",
+      "bbox": [
+        155,
+        415,
+        190,
+        30
+      ],
+      "geometry": "rect",
+      "text": "почетен ентитет",
+      "textPreview": "почетен ентитет",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 16,
+        "typeface": "Arial",
+        "color": "#4F86C6",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "почетен ентитет"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "почетен ентитет",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "typeface": "Arial",
+            "color": "#4F86C6",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "почетен ентитет",
+              "fontSize": 16,
+              "typeface": "Arial",
+              "color": "#4F86C6",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 27,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jqx4vmtg",
+      "id": "27",
+      "bbox": [
+        910,
+        415,
+        180,
+        30
+      ],
+      "geometry": "rect",
+      "text": "точен одговор",
+      "textPreview": "точен одговор",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 16,
+        "typeface": "Arial",
+        "color": "#4E9B69",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "точен одговор"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "точен одговор",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "typeface": "Arial",
+            "color": "#4E9B69",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "точен одговор",
+              "fontSize": 16,
+              "typeface": "Arial",
+              "color": "#4E9B69",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 28,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/onq5gbal",
+      "id": "28",
+      "bbox": [
+        445,
+        655,
+        350,
+        34
+      ],
+      "geometry": "rect",
+      "text": "две последователни релации",
+      "textPreview": "две последователни релации",
+      "resolvedFontSize": 21,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 21,
+        "typeface": "Arial",
+        "color": "#263746",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "две последователни релации"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "две последователни релации",
+          "resolvedTextStyle": {
+            "fontSize": 21,
+            "typeface": "Arial",
+            "color": "#263746",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "две последователни релации",
+              "fontSize": 21,
+              "typeface": "Arial",
+              "color": "#263746",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}
