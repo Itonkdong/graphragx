@@ -57,7 +57,7 @@ The research questions are introduced near the beginning and answered directly n
 - G-Retriever: PCST-based selection of compact evidence from textual graphs
 - The remaining need for a controlled comparison of substantially different GNN architectures, evidence-construction strategies and language models in one staged framework
 
-**Visual:** Use a concise comparison based on the descriptions and citations already present in the thesis. Keep it subordinate to the spoken explanation.
+**Slide treatment:** Do not create or use a dedicated illustration. Present GNN-RAG and G-Retriever through concise native text, followed by one clearly separated statement of the research gap.
 
 **Main message:** Previous work establishes the core ideas, while this thesis evaluates how the choices in all three stages affect retrieval, context and final answer quality.
 
@@ -273,6 +273,8 @@ $$
 $$
 
 **Example:** If a question has three correct answers and two are retrieved, its gold coverage is $2/3$, but it does not count as fully covered.
+
+**Slide treatment:** Do not create or use a dedicated illustration. Explain Hits and nDCG with concise native text and present only the two project-specific coverage formulas.
 
 ## Part III: Experimental results
 
