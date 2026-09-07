@@ -35,7 +35,7 @@ ENV HOME=/home/graphragx \
     PATH=/app/.venv/bin:$PATH \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    WANDB_DIR=/app/wandb
+    WANDB_DIR=/app
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.32 /uv /uvx /bin/
 

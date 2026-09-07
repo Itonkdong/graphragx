@@ -36,7 +36,7 @@ The following host paths are mounted into the application container:
 | `data/` | `/app/data` | prepared WebQSP data and run artifacts |
 | `metadata/` | `/app/metadata` | generated figures, tables, and result metadata |
 | `.experiment-runs/` | `/app/.experiment-runs` | resumable manifest state |
-| `wandb/` | `/app/wandb` | local W&B files and offline runs |
+| `wandb/` | `/app/wandb` | local W&B files and offline runs; W&B creates this directory beneath `/app` |
 
 On Linux, set `GRAPHRAGX_UID` and `GRAPHRAGX_GID` in `.env` to the output of
 `id -u` and `id -g` if the defaults do not match the current account. The image
