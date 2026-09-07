@@ -40,7 +40,7 @@ services:
       - ./data:/app/data
       - ./metadata:/app/metadata
       - ./.experiment-runs:/app/.experiment-runs
-      - ./wandb:/app/wandb
+      - ./wandb:/home/graphragx/wandb
       - huggingface_cache:/cache/huggingface
     command: ["graphragx-experiments", "experiments/example.toml"]
 

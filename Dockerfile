@@ -35,7 +35,7 @@ ENV HOME=/home/graphragx \
     PATH=/app/.venv/bin:$PATH \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    WANDB_DIR=/app
+    WANDB_DIR=/home/graphragx
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.32 /uv /uvx /bin/
 
@@ -64,13 +64,13 @@ RUN mkdir -p \
         /app/data \
         /app/metadata \
         /app/.experiment-runs \
-        /app/wandb \
+        /home/graphragx/wandb \
         /cache/huggingface \
     && chown -R graphragx:graphragx \
         /app/data \
         /app/metadata \
         /app/.experiment-runs \
-        /app/wandb \
+        /home/graphragx/wandb \
         /cache/huggingface
 
 USER graphragx
