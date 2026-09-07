@@ -1,7 +1,7 @@
 {
   "schemaVersion": "presentation-finalization.v1",
-  "finalSha256": "5ac13582b1b38f9eb32ab7acaf5610ac21bca8fd478bffd4d0e4837c39e24c0a",
-  "byteCount": 45755,
+  "finalSha256": "1751e2cf62d142414526b0fc5d1855ce67c10db041c5876be0d8655ef1428902",
+  "byteCount": 45630,
   "packageIntegrity": {
     "chart_count": 0,
     "claim_boundary": "Structural package checks only; no slide text, notes, formulas, chart values, or native PowerPoint execution were inspected.",
@@ -19,13 +19,13 @@
     "finding_count": 0,
     "findings": [],
     "font_policy": {
-      "checked_text_script_count": 104,
+      "checked_text_script_count": 103,
       "native_font_rendering_verified": false,
       "observed_font_families": [
         "Arial"
       ],
       "observed_font_use_counts": {
-        "Arial": 104
+        "Arial": 103
       },
       "passed": true,
       "performed": true
@@ -49,13 +49,13 @@
     "exitCode": 0,
     "findingCount": 0,
     "fontPolicy": {
-      "checked_text_script_count": 104,
+      "checked_text_script_count": 103,
       "native_font_rendering_verified": false,
       "observed_font_families": [
         "Arial"
       ],
       "observed_font_use_counts": {
-        "Arial": 104
+        "Arial": 103
       },
       "passed": true,
       "performed": true
@@ -69,13 +69,13 @@
     "scriptFonts": {},
     "referenceSha256": null,
     "referenceFontsVerifiedInEncodedText": false,
-    "checked_text_script_count": 104,
+    "checked_text_script_count": 103,
     "native_font_rendering_verified": false,
     "observed_font_families": [
       "Arial"
     ],
     "observed_font_use_counts": {
-      "Arial": 104
+      "Arial": 103
     },
     "passed": true,
     "performed": true
@@ -84,7 +84,7 @@
     "performed": true,
     "passed": true,
     "slideCount": 8,
-    "sha256": "5ac13582b1b38f9eb32ab7acaf5610ac21bca8fd478bffd4d0e4837c39e24c0a",
+    "sha256": "1751e2cf62d142414526b0fc5d1855ce67c10db041c5876be0d8655ef1428902",
     "runtimeNodeModules": "/Users/itonkdong/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
     "nodeExecutable": "/Users/itonkdong/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
   },
@@ -112,7 +112,7 @@
     "native_chart_count": 0,
     "native_powerpoint_verified": false,
     "passed": true,
-    "presentation_sha256": "5ac13582b1b38f9eb32ab7acaf5610ac21bca8fd478bffd4d0e4837c39e24c0a",
+    "presentation_sha256": "1751e2cf62d142414526b0fc5d1855ce67c10db041c5876be0d8655ef1428902",
     "schema_version": "presentation-native-chart-titles.v1",
     "slide_count": 8,
     "source_text_emitted": false,

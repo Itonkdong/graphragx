@@ -357,9 +357,9 @@ function architectureOverview(slide) {
   for (let i = 0; i < anchors.length - 1; i += 1) {
     arrowBetween(slide, anchors[i], anchors[i + 1], { color: C.line, width: 3 });
   }
-  miniNeighborhood(slide, centers[0], 300, C.blue);
-  miniRelational(slide, centers[1], 300);
-  miniAdaptive(slide, centers[2], 300);
+  miniNeighborhood(slide, centers[0], 270, C.blue);
+  miniRelational(slide, centers[1], 270);
+  miniAdaptive(slide, centers[2], 270);
   miniPath(slide, centers[3], 300);
 
   const labels = [
@@ -379,15 +379,6 @@ function architectureOverview(slide) {
       color: C.ink,
     });
   });
-  text(
-    slide,
-    "Од локална агрегација кон расудување по патеки условени од прашањето",
-    170,
-    620,
-    940,
-    40,
-    { size: 24, bold: true, color: C.ink },
-  );
 }
 
 function aggregationGraph(slide, cx, cy, advanced = false) {
