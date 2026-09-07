@@ -14,10 +14,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        GRAPHRAGX_UID: "${GRAPHRAGX_UID:-1000}"
+        GRAPHRAGX_GID: "${GRAPHRAGX_GID:-1000}"
     image: graphragx:local
     depends_on:
       - qdrant
-    user: "${GRAPHRAGX_UID:-1000}:${GRAPHRAGX_GID:-1000}"
     environment:
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       DEEPSEEK_API_KEY: "${DEEPSEEK_API_KEY:-}"

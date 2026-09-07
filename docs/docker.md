@@ -38,9 +38,11 @@ The following host paths are mounted into the application container:
 | `.experiment-runs/` | `/app/.experiment-runs` | resumable manifest state |
 | `wandb/` | `/app/wandb` | local W&B files and offline runs |
 
-On Linux, set `GRAPHRAGX_UID` and `GRAPHRAGX_GID` in `.env` to `id -u` and
-`id -g` if the defaults do not match the current account. This keeps generated
-files writable outside the container.
+On Linux, set `GRAPHRAGX_UID` and `GRAPHRAGX_GID` in `.env` to the output of
+`id -u` and `id -g` if the defaults do not match the current account. The image
+creates a real `graphragx` account with those IDs, which keeps generated files
+writable outside the container and allows background services such as W&B to
+resolve the current user. Rebuild the image whenever either value changes.
 
 ## Override the default command
 
