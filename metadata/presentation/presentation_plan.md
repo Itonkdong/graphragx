@@ -8,7 +8,7 @@ The presentation should explain the problem clearly within the first two minutes
 2. How much can the evidence subgraph be reduced without losing relevant information?
 3. Why does preserving a correct entity in the context still not guarantee that the LLM will return it?
 
-The research questions are introduced near the beginning and answered directly near the end. The main presentation contains 21 slides and targets approximately 18 minutes and 10 seconds, leaving a safety margin within the 20-minute limit.
+The research questions are introduced near the beginning and answered directly near the end. The main presentation contains 22 slides and targets approximately 18 minutes and 35 seconds, leaving a safety margin within the 20-minute limit.
 
 ## Part I: Problem and research questions
 
@@ -41,15 +41,31 @@ The research questions are introduced near the beginning and answered directly n
 - The expected answer entity
 - A visual indication that the answer must be found together with the facts connecting it to the question
 
-**Suggested example:** „Во која временска зона се наоѓа Кливленд, Охајо?“ with „Кливленд“ as the seed entity and „Eastern Time Zone“ as the answer.
+**Example requirement:** Use a verified WebQSP example in which the correct answer is exactly two hops away from the seed entity. Show both relations and the intermediate entity clearly. Select the exact question and path from the experiment artifacts when preparing the slide so that the example corresponds to an actual evaluated instance.
 
 **Main message:** The system must identify the answer among many graph entities and preserve enough relational evidence to justify it.
 
-### Slide 3: Архитектура на системот
+### Slide 3: Сродни пристапи и истражувачка празнина
 
-**Target time:** 0:50
+**Target time:** 0:35
 
-**Purpose:** Explain the complete task before introducing technical details.
+**Purpose:** Position the thesis relative to the most relevant previous work before presenting the proposed system.
+
+**Include:**
+
+- GNN-RAG: GNN retrieval followed by shortest-path evidence and LLM reasoning
+- G-Retriever: PCST-based selection of compact evidence from textual graphs
+- The remaining need for a controlled comparison of substantially different GNN architectures, evidence-construction strategies and language models in one staged framework
+
+**Visual:** Use a concise comparison based on the descriptions and citations already present in the thesis. Keep it subordinate to the spoken explanation.
+
+**Main message:** Previous work establishes the core ideas, while this thesis evaluates how the choices in all three stages affect retrieval, context and final answer quality.
+
+### Slide 4: Архитектура на системот
+
+**Target time:** 0:45
+
+**Purpose:** Explain the complete system after establishing what previous approaches already provide.
 
 **Include:**
 
@@ -59,25 +75,11 @@ The research questions are introduced near the beginning and answered directly n
 - Evidence-subgraph construction
 - LLM-based final answer generation
 
-**Visual:** Use a presentation-adapted version of the system overview figure.
+**Visual:** Use the system overview figure from the thesis. Do not replace it with a separately designed pipeline illustration. Adapt only its placement and scale to fit the slide.
 
 **Main message:** The system contains three measurable transitions: retrieval, evidence construction and answer generation.
 
-By the end of this slide, approximately 1 minute and 50 seconds into the talk, the audience should understand what the system does.
-
-### Slide 4: Сродни пристапи и истражувачка празнина
-
-**Target time:** 0:50
-
-**Purpose:** Position the thesis relative to the most relevant previous work.
-
-**Include:**
-
-- GNN-RAG: GNN retrieval followed by shortest-path evidence and LLM reasoning
-- G-Retriever: PCST-based selection of compact evidence from textual graphs
-- The remaining need for a controlled comparison of substantially different GNN architectures, evidence-construction strategies and language models in one staged framework
-
-**Main message:** Previous work establishes the core ideas, while this thesis evaluates how the choices in all three stages affect retrieval, context and final answer quality.
+By the end of this slide, approximately two minutes into the talk, the audience should understand what the system does.
 
 ### Slide 5: Истражувачки прашања
 
@@ -130,6 +132,8 @@ By the end of this slide, approximately 1 minute and 50 seconds into the talk, t
 
 **Visual:** Present the architectures as a conceptual progression from neighborhood aggregation to relation-aware processing, adaptive reasoning and question-conditioned path propagation.
 
+**Adaptation note:** Briefly state that the architectures were integrated or adapted to solve the same answer-retrieval problem. Explain the specific adaptation on the corresponding architecture slide rather than listing all modifications here.
+
 ### Slide 8: GraphSAGE и Advance GraphSAGE
 
 **Target time:** 0:35
@@ -141,6 +145,10 @@ By the end of this slide, approximately 1 minute and 50 seconds into the talk, t
 - GraphSAGE aggregates information from neighboring entities
 - Edge messages are weighted according to question-relation similarity
 - Advance GraphSAGE learns this weighting and additionally uses reverse edges, residual connections, layer normalization and a question-conditioned classifier
+
+**Visual:** Show the same small graph twice. For GraphSAGE, use weighted incoming neighborhood messages. For Advance GraphSAGE, emphasize the learned question-relation gate, reverse edges, residual connection and question-conditioned output score.
+
+**Adaptations in this thesis:** GraphSAGE uses external entity and relation representations and question-relation cosine weights. Advance GraphSAGE replaces the fixed weighting with a learned gate and adds the architectural components listed above.
 
 **Essential formula:**
 
@@ -161,6 +169,10 @@ $$
 - R-GCN applies transformations that depend on the relation type
 - Basis decomposition controls the number of parameters
 - HGT uses relation-dependent multi-head attention to assign different importance to neighboring entities and relations
+
+**Visual:** Use one common relation-colored graph. For R-GCN, show a different transformation for each relation type. For HGT, show relation-dependent attention with visibly different message weights.
+
+**Adaptations in this thesis:** R-GCN uses categorical relation identifiers, separate original and reverse relations, and the common node-ranking classifier. HGT operates on one node type, entity, while retaining its relation-dependent transformations and attention mechanism.
 
 **Possible formulas:**
 
@@ -189,6 +201,8 @@ $$
 - Iterative graph reasoning
 - Revision of the instructions based on information found in the preceding iteration
 
+**Adaptation in this thesis:** ReaRev retains its question-answering formulation and frozen MiniLM encoder, while its output probabilities are integrated with the same candidate-selection and evaluation procedure used for the other architectures.
+
 **Essential formula:**
 
 $$
@@ -212,6 +226,10 @@ $$
 - Question-conditioned relation representations
 - Propagation of information along relational paths
 - Independent sigmoid scores suitable for questions with multiple correct answers
+
+**Visual:** Show layered propagation from the seed entity through competing relational paths. Highlight the path whose relation messages align with the question and terminate at a highly ranked answer candidate.
+
+**Adaptation in this thesis:** The original link-prediction query relation is replaced with a natural-language question representation. The model supports multiple seed entities and produces independent answer probabilities for every node.
 
 **Essential formulas:**
 
@@ -313,6 +331,13 @@ c(e)=\max\!\left(\varepsilon,\lambda\left(1-\cos(q,r_e)\right)\right)
 $$
 
 **Visual:** Apply both methods to the same small candidate graph.
+
+Show two explicit visualizations side by side:
+
+- **Union of shortest paths:** highlight every shortest path from the seed entities to each reachable candidate and show their combined set of triples.
+- **PCST:** use the same underlying graph, candidate prizes and edge costs, then highlight the smaller rooted structure selected by the objective.
+
+The side-by-side views should make it possible to explain both algorithms visually before discussing the formulas.
 
 ### Slide 15: Метрики за доказниот контекст
 
@@ -432,11 +457,11 @@ $$
 
 ## Part IV: Answers and conclusion
 
-### Slide 20: Одговори на истражувачките прашања
+### Slide 20: Заклучоци
 
 **Target time:** 1:30
 
-**Purpose:** Return to the three questions from Slide 5 and answer each directly.
+**Purpose:** Return to the three questions from Slide 5, answer each directly and state the overall conclusion.
 
 **Answer 1: Architecture choice**
 
@@ -454,9 +479,21 @@ The two language models perform similarly with shortest-path evidence. GPT-5.6 L
 
 > Успешното одговарање не зависи само од пронаоѓањето на точниот ентитет, туку и од зачувувањето и искористувањето на релациите што објаснуваат зошто тој ентитет е точниот одговор.
 
-**Future direction:** Briefly mention a hybrid evidence strategy that retains PCST compactness while guaranteeing complete and interpretable relational paths for the most important candidates.
+### Slide 21: Идни подобрувања
 
-### Slide 21: Ви благодарам
+**Target time:** 0:45
+
+**Purpose:** Present the most meaningful continuation of the work without weakening the conclusion.
+
+**Include:**
+
+- A hybrid evidence strategy that retains PCST compactness while guaranteeing complete and interpretable relational paths for the most important candidates
+- Joint optimization of the retriever and evidence-construction stage so that the selected paths are directly useful to the language model
+- Evaluation on additional datasets, longer reasoning paths and more language models
+
+**Main message:** The next step is to optimize evidence for both compactness and interpretability by the language model, rather than considering entity coverage alone.
+
+### Slide 22: Ви благодарам
 
 **Target time:** 0:15
 
@@ -475,13 +512,13 @@ The two language models perform similarly with shortest-path evidence. GPT-5.6 L
 
 | Part | Slides | Target time |
 |---|---:|---:|
-| Problem and research questions | 1–5 | 3:20 |
+| Problem and research questions | 1–5 | 3:00 |
 | Methodology | 6–12 | 4:30 |
 | Experimental results | 13–19 | 8:35 |
-| Answers and closing | 20–21 | 1:45 |
-| **Total** | **21** | **18:10** |
+| Conclusions and closing | 20–22 | 2:30 |
+| **Total** | **22** | **18:35** |
 
-The remaining 1 minute and 50 seconds provide a safety margin for transitions, pauses and small deviations during delivery.
+The remaining 1 minute and 25 seconds provide a safety margin for transitions, pauses and small deviations during delivery.
 
 ## Formula policy
 
@@ -497,8 +534,11 @@ The remaining 1 minute and 50 seconds provide a safety margin for transitions, p
 - Use a 16:9 layout.
 - Keep slide titles in Macedonian and without trailing periods.
 - Use blue for input, orange for retrieval, green for evidence construction and purple for answer generation.
-- Reuse the visual language of the thesis architecture figures, but adapt complex figures for projection and presentation distance.
-- Avoid screenshots of thesis pages.
+- Use the figures already present in the thesis as the primary presentation visuals. Preserve their data, labels, color semantics and analytical meaning.
+- Reuse the thesis system overview directly on Slide 4 and reuse or carefully adapt the thesis result figures for Slides 13, 16, 18 and 19.
+- Create new explanatory architecture diagrams only where the thesis does not contain a corresponding visual. Base them strictly on the mechanisms and adaptations documented in the thesis, and use the same graph symbols and colors as the thesis figures.
+- Do not introduce redesigned result visualizations that could imply findings different from those presented in the thesis.
+- Avoid screenshots of complete thesis pages. Use the original figure assets from the thesis metadata folders.
 - Prefer one principal visual or chart per slide.
 - Label important values directly on result charts where possible.
 - Keep equations large and explain only the terms needed for the slide's main point.
@@ -506,7 +546,7 @@ The remaining 1 minute and 50 seconds provide a safety margin for transitions, p
 
 ## Backup slides
 
-The following slides should appear after Slide 21 and should not count toward the timed presentation:
+The following slides should appear after Slide 22 and should not count toward the timed presentation:
 
 1. Full architecture comparison table
 2. Complete architecture characteristics table
@@ -516,4 +556,3 @@ The following slides should appear after Slide 21 and should not count toward th
 6. Exact definitions and denominators of all metrics
 7. Training configuration and filtering rules
 8. Limitations and architecture adaptations
-
