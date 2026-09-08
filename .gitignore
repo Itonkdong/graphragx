@@ -80,3 +80,4 @@ qdrant_data_backup.tar.gz
 .experiment-runs/*
 !.experiment-runs/.gitkeep
 agents_metadata/
+.codex-build/
