@@ -457,6 +457,8 @@ $$
 
 **Main message:** Preserving the correct entity is insufficient. The LLM also needs relational triples that make the connection between the question and the answer clear.
 
+**Visual:** Reuse the thesis figure `metadata/figures/system_architecture/information_flow.png`. The generated `information_loss_pipeline.png` remains available, but is not used in the presentation.
+
 ## Part IV: Answers and conclusion
 
 ### Slide 20: Заклучоци
@@ -503,7 +505,7 @@ The two language models perform similarly with shortest-path evidence. GPT-5.6 L
 
 **Include:**
 
-- „Ви благодарам за вниманието“
+- „Ви благодарам“
 - „Прашања?“
 - Candidate name
 - Optional repository link or QR code

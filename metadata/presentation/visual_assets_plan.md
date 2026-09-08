@@ -200,13 +200,15 @@ The corresponding generation code should be placed under `scripts/results/` and 
 
 **Main visual message:** The shortest-path union prioritizes complete connectivity to all reachable candidates, while PCST trades candidate prizes against edge costs to construct a smaller context.
 
-### 8. Information-loss pipeline
+### 8. Information-loss pipeline — retained but not selected
 
-**Presentation slide:** 19, „Каде се губи информацијата?“
+**Presentation slide:** Not used. Slide 19 reuses the thesis `information_flow` figure instead.
 
 **Files:** `evidence/information_loss_pipeline.pdf` and `evidence/information_loss_pipeline.png`
 
-**Purpose:** Summarize the central end-to-end finding by showing where information is preserved or lost.
+**Status:** The generated asset remains in the repository for reference, but it is not selected for the final presentation because the existing thesis figure communicates the information flow more clearly.
+
+**Original purpose:** Summarize the central end-to-end finding by showing where information is preserved or lost.
 
 **Content:**
 
@@ -234,7 +236,7 @@ The following assets already exist and should not be recreated unless their text
 | 16 | `metadata/figures/evidence_subgraphs/evidence_pcst_lambda_sensitivity.pdf` |
 | 18 | `metadata/figures/end_to_end_llm/end_to_end_llm_quality_tokens.pdf` |
 | 17 or 19, if needed | `metadata/figures/end_to_end_llm/end_to_end_context_outcomes.pdf` |
-| 19, as structural reference | `metadata/figures/system_architecture/information_flow.pdf` |
+| 19 | `metadata/figures/system_architecture/information_flow.pdf` |
 
 The selected result-figure variants should be confirmed during slide construction according to readability at presentation scale.
 

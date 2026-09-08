@@ -199,6 +199,28 @@ function relationLabel(slide, value, left, top, width, options = {}) {
   });
 }
 
+function relationTagNearLink(slide, value, fromX, fromY, toX, toY, options = {}) {
+  const t = options.t ?? 0.35;
+  const dx = toX - fromX;
+  const dy = toY - fromY;
+  const length = Math.hypot(dx, dy) || 1;
+  const side = options.side ?? 1;
+  const offset = options.offset ?? 28;
+  const width = options.width ?? 48;
+  const height = options.height ?? 32;
+  const centerX = fromX + dx * t + (-dy / length) * offset * side;
+  const centerY = fromY + dy * t + (dx / length) * offset * side;
+  return box(slide, value, centerX - width / 2, centerY - height / 2, width, height, {
+    fill: C.white,
+    stroke: "none",
+    lineWidth: 0,
+    size: options.size ?? 20,
+    bold: true,
+    color: options.color ?? C.muted,
+    radius: 3,
+  });
+}
+
 function sectionLabel(slide, value, left, top, width, color = C.ink) {
   text(slide, value, left, top, width, 42, { size: 27, bold: true, color });
 }
@@ -403,20 +425,12 @@ function aggregationGraph(slide, cx, cy, advanced = false) {
         arrow: true,
       });
     }
-    const labelPositions = [
-      [x + 40, y - 32],
-      [x + 55, y + 10],
-      [x + 26, y - 82],
-    ];
-    const [labelX, labelY] = labelPositions[index];
-    box(slide, label, labelX, labelY, 48, 30, {
-      fill: C.white,
-      stroke: "none",
-      lineWidth: 0,
-      size: 17,
-      bold: true,
+    const labelSides = [-1, 1, 1];
+    relationTagNearLink(slide, label, x, y, cx, cy, {
+      t: 0.45,
+      side: labelSides[index],
+      offset: 28,
       color,
-      radius: 4,
     });
   });
   const score = box(slide, "оценка", cx + 90, cy - 26, 105, 52, {
@@ -468,7 +482,7 @@ function graphsageComparison(slide) {
     size: 20,
     bold: true,
   });
-  const gate = box(slide, "научен gate  α(q, r)", 898, 105, 230, 52, {
+  const gate = box(slide, "научен gate α(q, r)", 898, 105, 230, 52, {
     fill: C.retrievalLight,
     stroke: C.retrieval,
     size: 19,
@@ -487,11 +501,11 @@ function graphsageComparison(slide) {
 function rgcnHalf(slide, cx, cy) {
   const target = node(slide, cx + 135, cy, { radius: 24, fill: C.white, stroke: C.retrieval });
   const specs = [
-    [cx - 150, cy - 110, C.blue, "r₁", "Wᵣ₁"],
-    [cx - 170, cy + 25, C.candidate, "r₂", "Wᵣ₂"],
-    [cx - 80, cy + 150, C.teal, "r₃", "Wᵣ₃"],
+    [cx - 150, cy - 110, C.blue, "r₁", "Wᵣ₁", -1],
+    [cx - 170, cy + 25, C.candidate, "r₂", "Wᵣ₂", 1],
+    [cx - 80, cy + 150, C.teal, "r₃", "Wᵣ₃", 1],
   ];
-  specs.forEach(([x, y, color, rel, transform], idx) => {
+  specs.forEach(([x, y, color, rel, transform, relSide], idx) => {
     const n = node(slide, x, y, { radius: 18, fill: C.light, stroke: color });
     const tx = cx - 10;
     const ty = cy - 86 + idx * 82;
@@ -504,33 +518,36 @@ function rgcnHalf(slide, cx, cy) {
     });
     link(slide, n, op, { color, width: 2.5 });
     link(slide, op, target, { color, width: 3 });
-    relationLabel(slide, rel, x + 35, y - 22, 44, { size: 17, bold: true, color });
+    relationTagNearLink(slide, rel, x, y, tx + 37, ty + 21, {
+      t: 0.3,
+      side: relSide,
+      offset: 28,
+      color,
+    });
   });
 }
 
 function hgtHalf(slide, cx, cy) {
   const target = node(slide, cx + 105, cy, { radius: 24, fill: C.white, stroke: C.purple });
   const specs = [
-    [cx - 150, cy - 115, C.blue, "r₁", 5.5, "α₁"],
-    [cx - 170, cy + 30, C.candidate, "r₂", 2, "α₂"],
-    [cx - 75, cy + 150, C.teal, "r₃", 4, "α₃"],
+    [cx - 150, cy - 115, C.blue, "r₁", 5.5, "α₁", -1, 34],
+    [cx - 170, cy + 30, C.candidate, "r₂", 2, "α₂", 1, 28],
+    [cx - 75, cy + 150, C.teal, "r₃", 4, "α₃", 1, 30],
   ];
-  specs.forEach(([x, y, color, rel, width, alpha]) => {
+  specs.forEach(([x, y, color, rel, width, alpha, relSide, relOffset]) => {
     const n = node(slide, x, y, { radius: 18, fill: C.light, stroke: color });
     link(slide, n, target, { color, width });
-    relationLabel(slide, rel, x + 35, y - 22, 44, { size: 17, bold: true, color });
+    relationTagNearLink(slide, rel, x, y, cx + 105, cy, {
+      t: 0.26,
+      side: relSide,
+      offset: relOffset,
+      color,
+    });
     relationLabel(slide, alpha, (x + cx + 105) / 2 - 18, (y + cy) / 2 - 35, 46, {
       size: 18,
       bold: true,
       color,
     });
-  });
-  box(slide, "multi-head attention", cx - 40, cy + 205, 250, 45, {
-    fill: C.purpleLight,
-    stroke: C.purple,
-    size: 18,
-    bold: true,
-    color: C.purple,
   });
 }
 
@@ -545,7 +562,7 @@ function rgcnHgtComparison(slide) {
     bold: true,
     color: C.retrieval,
   });
-  text(slide, "Релациски зависна тежина на вниманието", 705, 610, 465, 40, {
+  text(slide, "Релациски зависен attention", 705, 610, 465, 40, {
     size: 22,
     bold: true,
     color: C.purple,
@@ -553,7 +570,7 @@ function rgcnHgtComparison(slide) {
 }
 
 function rearevCycle(slide) {
-  const question = box(slide, "Прашање", 70, 275, 165, 70, {
+  const question = box(slide, "Прашање", 70, 302.5, 165, 70, {
     fill: C.blueLight,
     stroke: C.blue,
     size: 23,
@@ -681,7 +698,7 @@ function evidenceGraph(slide, offsetX, selectedEdges, options = {}) {
     [offsetX + 385, 485],
     [offsetX + 175, 500],
   ];
-  const edges = [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5], [5, 6], [6, 0], [1, 6]];
+  const edges = [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5], [5, 6], [1, 6]];
   const nodes = pts.map(([x, y], i) => {
     let fill = C.white;
     let stroke = C.muted;
@@ -716,7 +733,7 @@ function evidenceComparison(slide) {
   sectionLabel(slide, "PCST", 760, 48, 420, C.teal);
   shape(slide, "line", 638, 55, 2, 585, "none", C.inactive, 2);
 
-  evidenceGraph(slide, 20, [0, 1, 2, 3, 4, 5, 6, 7]);
+  evidenceGraph(slide, 20, [0, 1, 2, 3, 4, 5, 6]);
   evidenceGraph(slide, 665, [0, 1, 2, 3], { fadeNodes: [5, 6] });
 
   text(slide, "Се задржува патека до секој достижен кандидат", 80, 575, 500, 55, {

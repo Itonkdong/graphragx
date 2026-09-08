@@ -1,291 +1,288 @@
-{"kind":"deck","id":"pr/odlfzh","name":"Deck"}
-{"kind":"layout","layoutId":"35767640-82e4-4bb7-93ab-b0f7f4d94814","name":"Master","type":"master"}
-{"kind":"layout","layoutId":"26c66a18-b0cc-4ff9-9209-eaeb5371a999","name":"Title Slide","type":"title"}
-{"kind":"slide","id":"sl/s8sv0u","slide":1,"title":"Who did Viggo Mortensen play in The Lord of the Rings?","textShapes":12}
-{"kind":"shape","id":"sh/5436tgj2","slide":1,"bbox":[92,372,26,26]}
-{"kind":"shape","id":"sh/i1c7y10r","slide":1,"bbox":[142,487,26,26]}
-{"kind":"shape","id":"sh/32lor61c","slide":1,"bbox":[322,532,26,26]}
-{"kind":"shape","id":"sh/gfu5wril","slide":1,"bbox":[1067,457,26,26]}
-{"kind":"shape","id":"sh/hg36pwj6","slide":1,"bbox":[1152,367,26,26]}
-{"kind":"shape","id":"sh/udsnu10f","slide":1,"bbox":[105,398,40.81,92.81]}
-{"kind":"shape","id":"sh/velon610","slide":1,"bbox":[168,500,154,45]}
-{"kind":"shape","id":"sh/8ba5srip","slide":1,"bbox":[1089.19,389.19,66.62,71.62]}
-{"kind":"textbox","id":"sh/tcj6lwju","slide":1,"text":"Who did Viggo Mortensen play in The Lord of the Rings?","textPreview":"Who did Viggo Mortensen play in The Lord of the Rings?","textChars":54,"textLines":1,"bbox":[150,42,980,82]}
-{"kind":"textbox","id":"sh/18vitcbq","slide":1,"text":"Прашање од WebQSP","textPreview":"Прашање од WebQSP","textChars":17,"textLines":1,"bbox":[450,8,380,30]}
-{"kind":"shape","id":"sh/072hkral","slide":1,"bbox":[223,313,54,54]}
-{"kind":"textbox","id":"sh/fmt0rmt0","slide":1,"text":"Viggo Mortensen","textPreview":"Viggo Mortensen","textChars":15,"textLines":1,"bbox":[145,374,210,36]}
-{"kind":"shape","id":"sh/elkzihsf","slide":1,"bbox":[596,316,48,48]}
-{"kind":"textbox","id":"sh/dkbipcbu","slide":1,"text":"настап / улога","textPreview":"настап / улога","textChars":14,"textLines":1,"bbox":[530,371,180,36]}
-{"kind":"shape","id":"sh/sj2hg7u9","slide":1,"bbox":[973,313,54,54]}
-{"kind":"shape","id":"sh/rit0n2to","slide":1,"bbox":[964,304,72,72]}
-{"kind":"textbox","id":"sh/qhkzexc3","slide":1,"text":"Aragorn","textPreview":"Aragorn","textChars":7,"textLines":1,"bbox":[930,374,140,36]}
-{"kind":"shape","id":"sh/5gbilsby","slide":1,"bbox":[598,548,44,44]}
-{"kind":"textbox","id":"sh/4fihc7ud","slide":1,"text":"The Lord of the Rings","textPreview":"The Lord of the Rings","textChars":21,"textLines":1,"bbox":[495,599,250,36]}
-{"kind":"shape","id":"sh/wzm1s729","slide":1,"bbox":[277,340,319,0]}
-{"kind":"shape","id":"sh/x0vi1cje","slide":1,"bbox":[644,340,329,0]}
-{"kind":"shape","id":"sh/ax4zqxk3","slide":1,"bbox":[620,364,0,184]}
-{"kind":"textbox","id":"sh/vyd0z21o","slide":1,"text":"film.actor.film","textPreview":"film.actor.film","textChars":15,"textLines":1,"bbox":[350,274,180,28]}
-{"kind":"textbox","id":"sh/8vmhon2x","slide":1,"text":"film.performance.character","textPreview":"film.performance.character","textChars":26,"textLines":1,"bbox":[716,274,265,28]}
-{"kind":"textbox","id":"sh/9wvixsji","slide":1,"text":"film.performance.film","textPreview":"film.performance.film","textChars":21,"textLines":1,"bbox":[645,455,230,28]}
-{"kind":"textbox","id":"sh/mtkzmdkr","slide":1,"text":"почетен ентитет","textPreview":"почетен ентитет","textChars":15,"textLines":1,"bbox":[155,415,190,30]}
-{"kind":"textbox","id":"sh/nud0vi1c","slide":1,"text":"точен одговор","textPreview":"точен одговор","textChars":13,"textLines":1,"bbox":[910,415,180,30]}
-{"kind":"textbox","id":"sh/sr610ri1","slide":1,"text":"две последователни релации","textPreview":"две последователни релации","textChars":26,"textLines":1,"bbox":[445,655,350,34]}
-{"kind":"notes","id":"nt/s8sv0u","slide":1,"text":""}
-{"kind":"slide","id":"sl/xj3n71","slide":2,"title":"i₁  i₂","textShapes":10}
-{"kind":"shape","id":"sh/vu9ori5s","slide":2,"bbox":[158,341,14,14]}
-{"kind":"shape","id":"sh/wvi50nmd","slide":2,"bbox":[468,341,14,14]}
-{"kind":"shape","id":"sh/hwb6t8ny","slide":2,"bbox":[783,341,14,14]}
-{"kind":"shape","id":"sh/ixkn2d4j","slide":2,"bbox":[1093,341,14,14]}
-{"kind":"shape","id":"sh/jytovi54","slide":2,"bbox":[172,348,296,0]}
-{"kind":"shape","id":"sh/4z254nmp","slide":2,"bbox":[482,348,301,0]}
-{"kind":"shape","id":"sh/50b6xsna","slide":2,"bbox":[797,348,296,0]}
-{"kind":"shape","id":"sh/y1gnqt4f","slide":2,"bbox":[148,253,34,34]}
-{"kind":"shape","id":"sh/z2p4jy50","slide":2,"bbox":[87,204,24,24]}
-{"kind":"shape","id":"sh/zy14vido","slide":2,"bbox":[73,303,24,24]}
-{"kind":"shape","id":"sh/yxsn2dw3","slide":2,"bbox":[227,264,24,24]}
-{"kind":"shape","id":"sh/l0jmxsvu","slide":2,"bbox":[107.49,224.49,45.49,33.49]}
-{"kind":"shape","id":"sh/0za54ne9","slide":2,"bbox":[93.49,282.02,59.49,24.49]}
-{"kind":"shape","id":"sh/buh4rids","slide":2,"bbox":[182,270,45,6]}
-{"kind":"shape","id":"sh/qt83ydw7","slide":2,"bbox":[458,253,34,34]}
-{"kind":"shape","id":"sh/dwzmtsvi","slide":2,"bbox":[385,216,24,24]}
-{"kind":"shape","id":"sh/cvq50ned","slide":2,"bbox":[405.49,236.49,57.49,21.49]}
-{"kind":"shape","id":"sh/36h4nyxg","slide":2,"bbox":[385,306,24,24]}
-{"kind":"shape","id":"sh/25o3utwv","slide":2,"bbox":[405.49,282.02,57.49,27.49]}
-{"kind":"shape","id":"sh/61on6tg3","slide":2,"bbox":[538,248,24,24]}
-{"kind":"shape","id":"sh/72xofyh8","slide":2,"bbox":[492,260,46,10]}
-{"kind":"textbox","id":"sh/s36583yt","slide":2,"text":"i₁  i₂","textPreview":"i₁  i₂","textChars":6,"textLines":1,"bbox":[735,188,110,42]}
-{"kind":"textbox","id":"sh/t4f6h8ze","slide":2,"text":"GNN","textPreview":"GNN","textChars":3,"textLines":1,"bbox":[735,273,110,55]}
-{"kind":"shape","id":"sh/eponadgz","slide":2,"bbox":[790,230,0,43]}
-{"kind":"shape","id":"sh/fqhojihk","slide":2,"bbox":[845,209,0,91.5]}
-{"kind":"shape","id":"sh/grq5c3y5","slide":2,"bbox":[995,287,26,26]}
-{"kind":"shape","id":"sh/1sz6l8zq","slide":2,"bbox":[1060,250,24,24]}
-{"kind":"shape","id":"sh/2t8nedgv","slide":2,"bbox":[1124,293,24,24]}
-{"kind":"shape","id":"sh/3uhonihg","slide":2,"bbox":[1185,249,26,26]}
-{"kind":"shape","id":"sh/x03itgnu","slide":2,"bbox":[1176,240,44,44]}
-{"kind":"shape","id":"sh/czuh0bmp","slide":2,"bbox":[1017.19,270.49,46.32,20.32]}
-{"kind":"shape","id":"sh/bylgr654","slide":2,"bbox":[1080.49,270.49,47.03,26.03]}
-{"kind":"shape","id":"sh/axczy14j","slide":2,"bbox":[1144.49,271.19,44.32,25.32]}
-{"kind":"textbox","id":"sh/l4nixgn6","slide":2,"text":"Агрегација на\nсоседството","textPreview":"Агрегација на | соседството","textChars":25,"textLines":2,"bbox":[35,420,260,72]}
-{"kind":"textbox","id":"sh/k3eh4bml","slide":2,"text":"GraphSAGE","textPreview":"GraphSAGE","textChars":9,"textLines":1,"bbox":[35,500,260,72]}
-{"kind":"textbox","id":"sh/z250vq50","slide":2,"text":"Релациско\nмоделирање","textPreview":"Релациско | моделирање","textChars":20,"textLines":2,"bbox":[345,420,260,72]}
-{"kind":"textbox","id":"sh/y1cz2l4f","slide":2,"text":"Advance GraphSAGE\nR-GCN · HGT","textPreview":"Advance GraphSAGE | R-GCN · HGT","textChars":29,"textLines":2,"bbox":[345,500,260,72]}
-{"kind":"textbox","id":"sh/9sni10n2","slide":2,"text":"Приспособливо\nрасудување","textPreview":"Приспособливо | расудување","textChars":24,"textLines":2,"bbox":[660,420,260,72]}
-{"kind":"textbox","id":"sh/8reh8vmh","slide":2,"text":"ReaRev","textPreview":"ReaRev","textChars":6,"textLines":1,"bbox":[660,500,260,72]}
-{"kind":"textbox","id":"sh/4nil0z6p","slide":2,"text":"Расудување по\nрелациски патеки","textPreview":"Расудување по | релациски патеки","textChars":30,"textLines":2,"bbox":[970,420,260,72]}
-{"kind":"textbox","id":"sh/5or2t47a","slide":2,"text":"NBFNet","textPreview":"NBFNet","textChars":6,"textLines":1,"bbox":[970,500,260,72]}
-{"kind":"notes","id":"nt/xj3n71","slide":2,"text":""}
-{"kind":"slide","id":"sl/8ato7q","slide":3,"title":"GraphSAGE","textShapes":17}
-{"kind":"textbox","id":"sh/wbu94r6t","slide":3,"text":"GraphSAGE","textPreview":"GraphSAGE","textChars":9,"textLines":1,"bbox":[130,45,420,42]}
-{"kind":"textbox","id":"sh/balsvm58","slide":3,"text":"Advance GraphSAGE","textPreview":"Advance GraphSAGE","textChars":17,"textLines":1,"bbox":[705,45,420,42]}
-{"kind":"shape","id":"sh/a9cr2hon","slide":3,"bbox":[638,55,2,585]}
-{"kind":"textbox","id":"sh/50na1wna","slide":3,"text":"прашање  q","textPreview":"прашање  q","textChars":10,"textLines":1,"bbox":[165,105,180,52]}
-{"kind":"textbox","id":"sh/kze98rmp","slide":3,"text":"cos(q, r)","textPreview":"cos(q, r)","textChars":9,"textLines":1,"bbox":[365,105,150,52]}
-{"kind":"shape","id":"sh/jy5szm5k","slide":3,"bbox":[345,131,20,0]}
-{"kind":"shape","id":"sh/ixwr6h4z","slide":3,"bbox":[317,327,46,46]}
-{"kind":"shape","id":"sh/t4na5wnm","slide":3,"bbox":[162,227,36,36]}
-{"kind":"shape","id":"sh/s3e9cbm1","slide":3,"bbox":[192.73,257.73,131.01,76.01]}
-{"kind":"textbox","id":"sh/eh4n21sb","slide":3,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[220,213,48,30]}
-{"kind":"shape","id":"sh/z2dovm9w","slide":3,"bbox":[137,372,36,36]}
-{"kind":"shape","id":"sh/03654rah","slide":3,"bbox":[173,350,144,40]}
-{"kind":"textbox","id":"sh/l4f6xwr2","slide":3,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[210,400,48,30]}
-{"kind":"shape","id":"sh/m5on61sn","slide":3,"bbox":[337,467,36,36]}
-{"kind":"shape","id":"sh/n6xoz698","slide":3,"bbox":[340,373,15,94]}
-{"kind":"textbox","id":"sh/87658bad","slide":3,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[381,403,48,30]}
-{"kind":"textbox","id":"sh/98f61gry","slide":3,"text":"оценка","textPreview":"оценка","textChars":6,"textLines":1,"bbox":[430,324,105,52]}
-{"kind":"shape","id":"sh/29knuhs3","slide":3,"bbox":[363,350,67,0]}
-{"kind":"textbox","id":"sh/3at4n29o","slide":3,"text":"Фиксно семантичко пондерирање","textPreview":"Фиксно семантичко пондерирање","textChars":29,"textLines":1,"bbox":[145,600,400,38]}
-{"kind":"textbox","id":"sh/7e9kvipg","slide":3,"text":"прашање  q","textPreview":"прашање  q","textChars":10,"textLines":1,"bbox":[703,105,180,52]}
-{"kind":"textbox","id":"sh/6d0j2d8v","slide":3,"text":"научен gate  α(q, r)","textPreview":"научен gate  α(q, r)","textChars":20,"textLines":1,"bbox":[898,105,230,52]}
-{"kind":"shape","id":"sh/tgr2x87m","slide":3,"bbox":[883,131,15,0]}
-{"kind":"shape","id":"sh/sfil43q1","slide":3,"bbox":[892,327,46,46]}
-{"kind":"shape","id":"sh/jqpkrypk","slide":3,"bbox":[737,227,36,36]}
-{"kind":"shape","id":"sh/ipgjyt8z","slide":3,"bbox":[767.73,257.73,131.01,76.01]}
-{"kind":"shape","id":"sh/5sr2t87q","slide":3,"bbox":[767.73,257.73,131.01,76.01]}
-{"kind":"textbox","id":"sh/kry103q5","slide":3,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[795,213,48,30]}
-{"kind":"shape","id":"sh/3mtk32po","slide":3,"bbox":[712,372,36,36]}
-{"kind":"shape","id":"sh/2lk3ax83","slide":3,"bbox":[748,350,144,40]}
-{"kind":"shape","id":"sh/0ruhof6l","slide":3,"bbox":[748,350,144,40]}
-{"kind":"textbox","id":"sh/ls3ixkn6","slide":3,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[785,400,48,30]}
-{"kind":"shape","id":"sh/ypczmpov","slide":3,"bbox":[912,467,36,36]}
-{"kind":"shape","id":"sh/zqlgvu50","slide":3,"bbox":[915,373,15,94]}
-{"kind":"shape","id":"sh/8vehsz6x","slide":3,"bbox":[915,373,15,94]}
-{"kind":"textbox","id":"sh/9wni14ni","slide":3,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[956,403,48,30]}
-{"kind":"textbox","id":"sh/mtwzqpor","slide":3,"text":"оценка","textPreview":"оценка","textChars":6,"textLines":1,"bbox":[1005,324,105,52]}
-{"kind":"shape","id":"sh/nu50zu5c","slide":3,"bbox":[938,350,67,0]}
-{"kind":"textbox","id":"sh/wjehwz6t","slide":3,"text":"residual","textPreview":"residual","textChars":8,"textLines":1,"bbox":[880,540,120,38]}
-{"kind":"shape","id":"sh/xk7i54ne","slide":3,"bbox":[1000,376,57.5,183]}
-{"kind":"textbox","id":"sh/hgvqp07i","slide":3,"text":"Пондерирање научено за конкретното прашање","textPreview":"Пондерирање научено за конкретното прашање","textChars":42,"textLines":1,"bbox":[705,600,450,38]}
-{"kind":"notes","id":"nt/8ato7q","slide":3,"text":""}
-{"kind":"slide","id":"sl/nqo6lm","slide":4,"title":"R-GCN","textShapes":17}
-{"kind":"textbox","id":"sh/jux0naxo","slide":4,"text":"R-GCN","textPreview":"R-GCN","textChars":5,"textLines":1,"bbox":[145,45,420,42]}
-{"kind":"textbox","id":"sh/kv61wfe9","slide":4,"text":"HGT","textPreview":"HGT","textChars":3,"textLines":1,"bbox":[730,45,420,42]}
-{"kind":"shape","id":"sh/lgzipkfu","slide":4,"bbox":[638,55,2,585]}
-{"kind":"shape","id":"sh/6h8jypwf","slide":4,"bbox":[461,311,48,48]}
-{"kind":"shape","id":"sh/7ih0ruxk","slide":4,"bbox":[182,207,36,36]}
-{"kind":"textbox","id":"sh/8jq10ze5","slide":4,"text":"Wᵣ₁","textPreview":"Wᵣ₁","textChars":3,"textLines":1,"bbox":[340,249,74,42]}
-{"kind":"shape","id":"sh/tkzitkfq","slide":4,"bbox":[218,225,122,45]}
-{"kind":"shape","id":"sh/2l4zmlwv","slide":4,"bbox":[414,270,54.03,48.03]}
-{"kind":"textbox","id":"sh/nmd0fqxg","slide":4,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[235,203,44,28]}
-{"kind":"shape","id":"sh/fyhovap4","slide":4,"bbox":[162,342,36,36]}
-{"kind":"textbox","id":"sh/ed8n258j","slide":4,"text":"Wᵣ₂","textPreview":"Wᵣ₂","textChars":3,"textLines":1,"bbox":[340,331,74,42]}
-{"kind":"shape","id":"sh/10z6xk7a","slide":4,"bbox":[198,352,142,8]}
-{"kind":"shape","id":"sh/0zq54fqp","slide":4,"bbox":[414,335,47,17]}
-{"kind":"textbox","id":"sh/rahorqp8","slide":4,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[215,338,44,28]}
-{"kind":"shape","id":"sh/q9onyl8n","slide":4,"bbox":[252,467,36,36]}
-{"kind":"textbox","id":"sh/dcz6t07e","slide":4,"text":"Wᵣ₃","textPreview":"Wᵣ₃","textChars":3,"textLines":1,"bbox":[340,413,74,42]}
-{"kind":"shape","id":"sh/sbq50vqt","slide":4,"bbox":[282.73,434,57.27,38.27]}
-{"kind":"shape","id":"sh/36x4nqpw","slide":4,"bbox":[414,351.97,54.03,82.03]}
-{"kind":"textbox","id":"sh/i5onul8r","slide":4,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[305,463,44,28]}
-{"kind":"shape","id":"sh/61476lsj","slide":4,"bbox":[1011,311,48,48]}
-{"kind":"shape","id":"sh/72xozq94","slide":4,"bbox":[762,202,36,36]}
-{"kind":"shape","id":"sh/836p8ba9","slide":4,"bbox":[798,220,220.03,98.03]}
-{"kind":"textbox","id":"sh/t4f61gru","slide":4,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[815,198,44,28]}
-{"kind":"textbox","id":"sh/u5o7alsf","slide":4,"text":"α₁","textPreview":"α₁","textChars":2,"textLines":1,"bbox":[889.5,242.5,46,28]}
-{"kind":"shape","id":"sh/v6xo3q90","slide":4,"bbox":[742,347,36,36]}
-{"kind":"shape","id":"sh/g76pcval","slide":4,"bbox":[778,335,233,30]}
-{"kind":"textbox","id":"sh/h8f650r6","slide":4,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[795,343,44,28]}
-{"kind":"textbox","id":"sh/i9o7e5sr","slide":4,"text":"α₂","textPreview":"α₂","textChars":2,"textLines":1,"bbox":[879.5,315,46,28]}
-{"kind":"shape","id":"sh/3aho7a9w","slide":4,"bbox":[837,467,36,36]}
-{"kind":"shape","id":"sh/d4jax4be","slide":4,"bbox":[867.73,351.97,150.3,120.3]}
-{"kind":"textbox","id":"sh/s3a94zut","slide":4,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[890,463,44,28]}
-{"kind":"textbox","id":"sh/r21svut8","slide":4,"text":"α₃","textPreview":"α₃","textChars":2,"textLines":1,"bbox":[927,375,46,28]}
-{"kind":"textbox","id":"sh/q18r2pcn","slide":4,"text":"multi-head attention","textPreview":"multi-head attention","textChars":20,"textLines":1,"bbox":[890,540,250,45]}
-{"kind":"textbox","id":"sh/1sja14ba","slide":4,"text":"Трансформација според типот на релацијата","textPreview":"Трансформација според типот на релацијата","textChars":41,"textLines":1,"bbox":[110,610,460,40]}
-{"kind":"textbox","id":"sh/0ra98zup","slide":4,"text":"Релациски зависна тежина на вниманието","textPreview":"Релациски зависна тежина на вниманието","textChars":38,"textLines":1,"bbox":[705,610,465,40]}
-{"kind":"notes","id":"nt/nqo6lm","slide":4,"text":""}
-{"kind":"slide","id":"sl/hwygo4","slide":5,"title":"Прашање","textShapes":8}
-{"kind":"textbox","id":"sh/0zedcrap","slide":5,"text":"Прашање","textPreview":"Прашање","textChars":7,"textLines":1,"bbox":[70,275,165,70]}
-{"kind":"textbox","id":"sh/zy5c3mt4","slide":5,"text":"Инструкции\ni₁   i₂   i₃","textPreview":"Инструкции | i₁   i₂   i₃","textChars":23,"textLines":2,"bbox":[320,100,220,105]}
-{"kind":"textbox","id":"sh/yxwvahsz","slide":5,"text":"Расудување\nнад графот","textPreview":"Расудување | над графот","textChars":21,"textLines":2,"bbox":[535,285,220,105]}
-{"kind":"textbox","id":"sh/dw3u1cbe","slide":5,"text":"Собрана\nинформација","textPreview":"Собрана | информација","textChars":19,"textLines":2,"bbox":[820,465,210,100]}
-{"kind":"textbox","id":"sh/cvud87at","slide":5,"text":"Ревизија на\nинструкциите","textPreview":"Ревизија на | инструкциите","textChars":24,"textLines":2,"bbox":[990,100,220,105]}
-{"kind":"shape","id":"sh/bulczmt8","slide":5,"bbox":[235,152.5,85,157.5]}
-{"kind":"shape","id":"sh/qtcb6hsn","slide":5,"bbox":[430,205,105,132.5]}
-{"kind":"shape","id":"sh/xs7edgbi","slide":5,"bbox":[645,390,175,125]}
-{"kind":"shape","id":"sh/wrydkbax","slide":5,"bbox":[1030,205,70,310]}
-{"kind":"shape","id":"sh/2x0vypon","slide":5,"bbox":[540,152.5,450,0]}
-{"kind":"shape","id":"sh/3y9w7a58","slide":5,"bbox":[485,520,30,30]}
-{"kind":"shape","id":"sh/4zid0f6t","slide":5,"bbox":[567,552,26,26]}
-{"kind":"shape","id":"sh/p0re9kne","slide":5,"bbox":[645,505,30,30]}
-{"kind":"shape","id":"sh/u9gvu5or","slide":5,"bbox":[636,496,48,48]}
-{"kind":"shape","id":"sh/fapc3apw","slide":5,"bbox":[515,535,55.81,20.81]}
-{"kind":"shape","id":"sh/gbydwf6h","slide":5,"bbox":[589.19,530.61,60.2,25.2]}
-{"kind":"textbox","id":"sh/hcru5k72","slide":5,"text":"итерација  t","textPreview":"итерација  t","textChars":12,"textLines":1,"bbox":[500,455,160,32]}
-{"kind":"textbox","id":"sh/e5kv69ov","slide":5,"text":"следна итерација","textPreview":"следна итерација","textChars":16,"textLines":1,"bbox":[670,105,190,34]}
-{"kind":"textbox","id":"sh/z6twfu5g","slide":5,"text":"Инструкциите се менуваат според информацијата откриена во графот","textPreview":"Инструкциите се менуваат според информацијата откриена во графот","textChars":64,"textLines":1,"bbox":[225,635,830,38]}
-{"kind":"notes","id":"nt/hwygo4","slide":5,"text":""}
-{"kind":"slide","id":"sl/pnl4qc","slide":6,"title":"l = 0","textShapes":15}
-{"kind":"textbox","id":"sh/oj21wrat","slide":6,"text":"l = 0","textPreview":"l = 0","textChars":5,"textLines":1,"bbox":[65,55,170,36]}
-{"kind":"textbox","id":"sh/3it036to","slide":6,"text":"l = 1","textPreview":"l = 1","textChars":5,"textLines":1,"bbox":[345,55,170,36]}
-{"kind":"textbox","id":"sh/2hkju1s3","slide":6,"text":"l = 2","textPreview":"l = 2","textChars":5,"textLines":1,"bbox":[625,55,170,36]}
-{"kind":"textbox","id":"sh/x8vi9gbq","slide":6,"text":"Оценки","textPreview":"Оценки","textChars":6,"textLines":1,"bbox":[905,55,170,36]}
-{"kind":"shape","id":"sh/c7m10ba5","slide":6,"bbox":[125,315,50,50]}
-{"kind":"textbox","id":"sh/b6d076tk","slide":6,"text":"почетен ентитет","textPreview":"почетен ентитет","textChars":15,"textLines":1,"bbox":[55,372,190,36]}
-{"kind":"textbox","id":"sh/q54jy1sz","slide":6,"text":"q","textPreview":"q","textChars":1,"textLines":1,"bbox":[95,170,110,60]}
-{"kind":"textbox","id":"sh/tcrixcb6","slide":6,"text":"иницијализација","textPreview":"иницијализација","textChars":15,"textLines":1,"bbox":[75,235,150,32]}
-{"kind":"shape","id":"sh/sbiho7a1","slide":6,"bbox":[412,217,36,36]}
-{"kind":"shape","id":"sh/at8n29s3","slide":6,"bbox":[412,427,36,36]}
-{"kind":"shape","id":"sh/vuh4ve9o","slide":6,"bbox":[692,267,36,36]}
-{"kind":"shape","id":"sh/wvq54jat","slide":6,"bbox":[692,452,36,36]}
-{"kind":"shape","id":"sh/xwjmxore","slide":6,"bbox":[965,235,50,50]}
-{"kind":"shape","id":"sh/ixsn69sz","slide":6,"bbox":[956,226,68,68]}
-{"kind":"textbox","id":"sh/jy14ze9k","slide":6,"text":"точен одговор","textPreview":"точен одговор","textChars":13,"textLines":1,"bbox":[905,292,170,36]}
-{"kind":"shape","id":"sh/kza58ja5","slide":6,"bbox":[967,447,46,46]}
-{"kind":"textbox","id":"sh/50jm1orq","slide":6,"text":"друг кандидат","textPreview":"друг кандидат","textChars":13,"textLines":1,"bbox":[905,500,170,36]}
-{"kind":"shape","id":"sh/61snatsb","slide":6,"bbox":[175,235,237,105]}
-{"kind":"shape","id":"sh/rm143y9w","slide":6,"bbox":[448,235,244,50]}
-{"kind":"shape","id":"sh/3ql4rypo","slide":6,"bbox":[728,260,237,25]}
-{"kind":"shape","id":"sh/2pc3yt83","slide":6,"bbox":[175,340,237,105]}
-{"kind":"shape","id":"sh/ps3mt87u","slide":6,"bbox":[448,445,244,25]}
-{"kind":"shape","id":"sh/orul03q9","slide":6,"bbox":[728,470,239,0]}
-{"kind":"shape","id":"sh/f214nyps","slide":6,"bbox":[442.73,247.73,254.54,209.54]}
-{"kind":"textbox","id":"sh/e1s3ut87","slide":6,"text":"wᵣ₁(q)","textPreview":"wᵣ₁(q)","textChars":6,"textLines":1,"bbox":[255,225,120,28]}
-{"kind":"textbox","id":"sh/1o3mpo7y","slide":6,"text":"wᵣ₂(q)","textPreview":"wᵣ₂(q)","textChars":6,"textLines":1,"bbox":[535,205,120,28]}
-{"kind":"textbox","id":"sh/gnulwjqd","slide":6,"text":"wᵣ₃(q)","textPreview":"wᵣ₃(q)","textChars":6,"textLines":1,"bbox":[815,190,120,28]}
-{"kind":"textbox","id":"sh/7y1kjepg","slide":6,"text":"висока","textPreview":"висока","textChars":6,"textLines":1,"bbox":[1070,230,130,50]}
-{"kind":"textbox","id":"sh/6xs3q98b","slide":6,"text":"ниска","textPreview":"ниска","textChars":5,"textLines":1,"bbox":[1070,440,130,50]}
-{"kind":"textbox","id":"sh/w3610f6t","slide":6,"text":"Патеките и релациите се условени од прашањето","textPreview":"Патеките и релациите се условени од прашањето","textChars":45,"textLines":1,"bbox":[260,625,760,40]}
-{"kind":"notes","id":"nt/pnl4qc","slide":6,"text":""}
-{"kind":"slide","id":"sl/4vjvmn","slide":7,"title":"Унија на најкратки патеки","textShapes":6}
-{"kind":"textbox","id":"sh/lsvu107u","slide":7,"text":"Унија на најкратки патеки","textPreview":"Унија на најкратки патеки","textChars":25,"textLines":1,"bbox":[75,48,500,42]}
-{"kind":"textbox","id":"sh/ypkb6loj","slide":7,"text":"PCST","textPreview":"PCST","textChars":4,"textLines":1,"bbox":[760,48,420,42]}
-{"kind":"shape","id":"sh/zqdszqp4","slide":7,"bbox":[638,55,2,585]}
-{"kind":"shape","id":"sh/8vmtcv6l","slide":7,"bbox":[63,338,34,34]}
-{"kind":"shape","id":"sh/9wvu5076","slide":7,"bbox":[178,218,34,34]}
-{"kind":"shape","id":"sh/mt4ba5of","slide":7,"bbox":[293,313,34,34]}
-{"kind":"shape","id":"sh/nudc3qp0","slide":7,"bbox":[413,188,34,34]}
-{"kind":"shape","id":"sh/oz2t0b6h","slide":7,"bbox":[523,303,34,34]}
-{"kind":"shape","id":"sh/p0batg7m","slide":7,"bbox":[514,294,52,52]}
-{"kind":"shape","id":"sh/x8fm1o3y","slide":7,"bbox":[388,468,34,34]}
-{"kind":"shape","id":"sh/cn658jmd","slide":7,"bbox":[178,483,34,34]}
-{"kind":"shape","id":"sh/bmd4zel8","slide":7,"bbox":[92.02,247.02,90.96,95.96]}
-{"kind":"shape","id":"sh/al4n6t4n","slide":7,"bbox":[207.02,247.02,90.96,70.96]}
-{"kind":"shape","id":"sh/lcfm583a","slide":7,"bbox":[322.02,217.02,95.96,100.96]}
-{"kind":"shape","id":"sh/kb65c3mp","slide":7,"bbox":[442.02,217.02,85.96,90.96]}
-{"kind":"shape","id":"sh/zax43yl4","slide":7,"bbox":[322.02,342.02,70.96,130.96]}
-{"kind":"shape","id":"sh/y9onat4j","slide":7,"bbox":[212,485,176,15]}
-{"kind":"shape","id":"sh/9gzm9836","slide":7,"bbox":[92.02,367.02,90.96,120.96]}
-{"kind":"shape","id":"sh/8fq5g3ml","slide":7,"bbox":[195,252,0,231]}
-{"kind":"shape","id":"sh/sjypcrux","slide":7,"bbox":[708,338,34,34]}
-{"kind":"shape","id":"sh/tk76lwbi","slide":7,"bbox":[823,218,34,34]}
-{"kind":"shape","id":"sh/6hw7ahcr","slide":7,"bbox":[938,313,34,34]}
-{"kind":"shape","id":"sh/7i5ojmtc","slide":7,"bbox":[1058,188,34,34]}
-{"kind":"shape","id":"sh/gnypgrut","slide":7,"bbox":[1168,303,34,34]}
-{"kind":"shape","id":"sh/ho7qpwbe","slide":7,"bbox":[1159,294,52,52]}
-{"kind":"shape","id":"sh/ulg7ehc3","slide":7,"bbox":[1033,468,34,34]}
-{"kind":"shape","id":"sh/fmponmto","slide":7,"bbox":[823,483,34,34]}
-{"kind":"shape","id":"sh/wrep47up","slide":7,"bbox":[737.02,247.02,90.96,95.96]}
-{"kind":"shape","id":"sh/xsn6dsba","slide":7,"bbox":[852.02,247.02,90.96,70.96]}
-{"kind":"shape","id":"sh/z6tsjads","slide":7,"bbox":[967.02,217.02,95.96,100.96]}
-{"kind":"shape","id":"sh/e5kra5w7","slide":7,"bbox":[1087.02,217.02,85.96,90.96]}
-{"kind":"shape","id":"sh/l8bal0vy","slide":7,"bbox":[967.02,342.02,70.96,130.96]}
-{"kind":"shape","id":"sh/0729cfed","slide":7,"bbox":[857,485,176,15]}
-{"kind":"shape","id":"sh/ritsfqdw","slide":7,"bbox":[737.02,367.02,90.96,120.96]}
-{"kind":"shape","id":"sh/qh0r6lwb","slide":7,"bbox":[840,252,0,231]}
-{"kind":"textbox","id":"sh/dkbah0vm","slide":7,"text":"Се задржува патека до секој достижен кандидат","textPreview":"Се задржува патека до секој достижен кандидат","textChars":45,"textLines":1,"bbox":[80,575,500,55]}
-{"kind":"textbox","id":"sh/cj298ve1","slide":7,"text":"Наградите на јазлите се споредуваат со трошоците на рабовите","textPreview":"Наградите на јазлите се споредуваат со трошоците на рабовите","textChars":60,"textLines":1,"bbox":[700,565,520,70]}
-{"kind":"textbox","id":"sh/3e9sbqdk","slide":7,"text":"повеќе тројки","textPreview":"повеќе тројки","textChars":13,"textLines":1,"bbox":[205,645,230,42]}
-{"kind":"textbox","id":"sh/2d0r2lwz","slide":7,"text":"компактен подграф","textPreview":"компактен подграф","textChars":17,"textLines":1,"bbox":[840,645,265,42]}
-{"kind":"notes","id":"nt/4vjvmn","slide":7,"text":""}
-{"kind":"slide","id":"sl/kro51z","slide":8,"title":"Локален граф","textShapes":8}
-{"kind":"textbox","id":"sh/gbu50vmx","slide":8,"text":"Локален граф","textPreview":"Локален граф","textChars":12,"textLines":1,"bbox":[40,60,250,70]}
-{"kind":"textbox","id":"sh/fal4rqlc","slide":8,"text":"Пребарани\nентитети-кандидати","textPreview":"Пребарани | ентитети-кандидати","textChars":28,"textLines":2,"bbox":[345,60,250,70]}
-{"kind":"textbox","id":"sh/e9cnyl4r","slide":8,"text":"Доказен контекст","textPreview":"Доказен контекст","textChars":16,"textLines":1,"bbox":[660,60,250,70]}
-{"kind":"textbox","id":"sh/t8jmpg3m","slide":8,"text":"Одговор од LLM","textPreview":"Одговор од LLM","textChars":14,"textLines":1,"bbox":[965,60,250,70]}
-{"kind":"shape","id":"sh/s7alwbm1","slide":8,"bbox":[160,168,10,10]}
-{"kind":"shape","id":"sh/r614n6lg","slide":8,"bbox":[465,168,10,10]}
-{"kind":"shape","id":"sh/65s3u14v","slide":8,"bbox":[780,168,10,10]}
-{"kind":"shape","id":"sh/54jmlw3a","slide":8,"bbox":[1085,168,10,10]}
-{"kind":"shape","id":"sh/4jalsbmp","slide":8,"bbox":[170,173,295,0]}
-{"kind":"shape","id":"sh/mtwr614j","slide":8,"bbox":[475,173,305,0]}
-{"kind":"shape","id":"sh/nupsf6lo","slide":8,"bbox":[790,173,295,0]}
-{"kind":"shape","id":"sh/ovy98bm9","slide":8,"bbox":[73,318,24,24]}
-{"kind":"shape","id":"sh/9w7ahg3u","slide":8,"bbox":[138,263,24,24]}
-{"kind":"shape","id":"sh/e5wr2h47","slide":8,"bbox":[208,308,24,24]}
-{"kind":"shape","id":"sh/f65sbmls","slide":8,"bbox":[253,373,24,24]}
-{"kind":"shape","id":"sh/07e94rmd","slide":8,"bbox":[244,364,42,42]}
-{"kind":"shape","id":"sh/1snadw3y","slide":8,"bbox":[153,393,24,24]}
-{"kind":"shape","id":"sh/q1cryh4b","slide":8,"bbox":[93.49,283.49,48.03,38.03]}
-{"kind":"shape","id":"sh/r2587m5w","slide":8,"bbox":[158.49,283.49,53.03,28.03]}
-{"kind":"shape","id":"sh/v61ofi1o","slide":8,"bbox":[228.49,328.49,28.03,48.03]}
-{"kind":"shape","id":"sh/u5s76dk3","slide":8,"bbox":[173.49,328.49,38.03,68.03]}
-{"kind":"shape","id":"sh/h8j6hsje","slide":8,"bbox":[93.49,338.49,63.03,58.03]}
-{"kind":"shape","id":"sh/g7ap8n2t","slide":8,"bbox":[394,245,26,26]}
-{"kind":"shape","id":"sh/3aloji1k","slide":8,"bbox":[440,247,125,22]}
-{"kind":"shape","id":"sh/i9s7adkz","slide":8,"bbox":[394,313,26,26]}
-{"kind":"shape","id":"sh/5c36lsjq","slide":8,"bbox":[385,304,44,44]}
-{"kind":"shape","id":"sh/4bupcn25","slide":8,"bbox":[440,315,107,22]}
-{"kind":"shape","id":"sh/jeho7ylg","slide":8,"bbox":[394,381,26,26]}
-{"kind":"shape","id":"sh/yd8nytkv","slide":8,"bbox":[440,383,89,22]}
-{"kind":"shape","id":"sh/ojml8zit","slide":8,"bbox":[682,357,26,26]}
-{"kind":"shape","id":"sh/9kfm14jy","slide":8,"bbox":[773,293,24,24]}
-{"kind":"shape","id":"sh/mh436p0n","slide":8,"bbox":[862,342,26,26]}
-{"kind":"shape","id":"sh/nid4zu18","slide":8,"bbox":[853,333,44,44]}
-{"kind":"shape","id":"sh/0fml4fih","slide":8,"bbox":[704.19,313.49,72.32,47.32]}
-{"kind":"shape","id":"sh/1gvmxkj2","slide":8,"bbox":[793.49,313.49,72.32,32.32]}
-{"kind":"shape","id":"sh/ed432p0b","slide":8,"bbox":[1066,301,48,48]}
-{"kind":"textbox","id":"sh/zed4va1w","slide":8,"text":"вратен одговор","textPreview":"вратен одговор","textChars":14,"textLines":1,"bbox":[995,356,190,36]}
-{"kind":"textbox","id":"sh/kbqlgjil","slide":8,"text":"точниот ентитет е присутен","textPreview":"точниот ентитет е присутен","textChars":26,"textLines":1,"bbox":[640,500,290,42]}
-{"kind":"textbox","id":"sh/lczm9oz6","slide":8,"text":"но не е вратен","textPreview":"но не е вратен","textChars":14,"textLines":1,"bbox":[980,500,220,42]}
-{"kind":"textbox","id":"sh/hwri1gzy","slide":8,"text":"Загубата може да настане и по пребарувањето","textPreview":"Загубата може да настане и по пребарувањето","textChars":43,"textLines":1,"bbox":[290,620,700,42]}
-{"kind":"notes","id":"nt/kro51z","slide":8,"text":""}
+{"kind":"deck","id":"pr/076o6j","name":"Deck"}
+{"kind":"layout","layoutId":"51b30ed0-a35a-4846-8c4c-24b18cb59191","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"f5186981-081e-4fb3-b4cc-bac259ed4a09","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/8wz8of","slide":1,"title":"Who did Viggo Mortensen play in The Lord of the Rings?","textShapes":12}
+{"kind":"shape","id":"sh/kfa1gvi1","slide":1,"bbox":[92,372,26,26]}
+{"kind":"shape","id":"sh/je10nqhg","slide":1,"bbox":[142,487,26,26]}
+{"kind":"shape","id":"sh/yd8ze50v","slide":1,"bbox":[322,532,26,26]}
+{"kind":"shape","id":"sh/xczil0za","slide":1,"bbox":[1067,457,26,26]}
+{"kind":"shape","id":"sh/wbqhcvip","slide":1,"bbox":[1152,367,26,26]}
+{"kind":"shape","id":"sh/bah0jqhk","slide":1,"bbox":[105,398,40.81,92.81]}
+{"kind":"shape","id":"sh/a98zal0z","slide":1,"bbox":[168,500,154,45]}
+{"kind":"shape","id":"sh/98zihgze","slide":1,"bbox":[1089.19,389.19,66.62,71.62]}
+{"kind":"textbox","id":"sh/onqh8bit","slide":1,"text":"Who did Viggo Mortensen play in The Lord of the Rings?","textPreview":"Who did Viggo Mortensen play in The Lord of the Rings?","textChars":54,"textLines":1,"bbox":[150,42,980,82]}
+{"kind":"textbox","id":"sh/y1gfqhcj","slide":1,"text":"Прашање од WebQSP","textPreview":"Прашање од WebQSP","textChars":17,"textLines":1,"bbox":[450,8,380,30]}
+{"kind":"shape","id":"sh/z2pwjmto","slide":1,"bbox":[223,313,54,54]}
+{"kind":"textbox","id":"sh/k3yxsru9","slide":1,"text":"Viggo Mortensen","textPreview":"Viggo Mortensen","textChars":15,"textLines":1,"bbox":[145,374,210,36]}
+{"kind":"shape","id":"sh/l47ylwbu","slide":1,"bbox":[596,316,48,48]}
+{"kind":"textbox","id":"sh/axwfmhc7","slide":1,"text":"настап / улога","textPreview":"настап / улога","textChars":14,"textLines":1,"bbox":[530,371,180,36]}
+{"kind":"shape","id":"sh/by5wfmts","slide":1,"bbox":[973,313,54,54]}
+{"kind":"shape","id":"sh/czexorud","slide":1,"bbox":[964,304,72,72]}
+{"kind":"textbox","id":"sh/x0nehwby","slide":1,"text":"Aragorn","textPreview":"Aragorn","textChars":7,"textLines":1,"bbox":[930,374,140,36]}
+{"kind":"shape","id":"sh/29cfixcb","slide":1,"bbox":[598,548,44,44]}
+{"kind":"textbox","id":"sh/na5wb2tw","slide":1,"text":"The Lord of the Rings","textPreview":"The Lord of the Rings","textChars":21,"textLines":1,"bbox":[495,599,250,36]}
+{"kind":"shape","id":"sh/re1cjy9o","slide":1,"bbox":[277,340,319,0]}
+{"kind":"shape","id":"sh/qdsbqts3","slide":1,"bbox":[644,340,329,0]}
+{"kind":"shape","id":"sh/dgjul8re","slide":1,"bbox":[620,364,0,184]}
+{"kind":"textbox","id":"sh/sfats3at","slide":1,"text":"film.actor.film","textPreview":"film.actor.film","textChars":15,"textLines":1,"bbox":[350,274,180,28]}
+{"kind":"textbox","id":"sh/f2lcni9k","slide":1,"text":"film.performance.character","textPreview":"film.performance.character","textChars":26,"textLines":1,"bbox":[716,274,265,28]}
+{"kind":"textbox","id":"sh/ehsvudsz","slide":1,"text":"film.performance.film","textPreview":"film.performance.film","textChars":21,"textLines":1,"bbox":[645,455,230,28]}
+{"kind":"textbox","id":"sh/143upsrq","slide":1,"text":"почетен ентитет","textPreview":"почетен ентитет","textChars":15,"textLines":1,"bbox":[155,415,190,30]}
+{"kind":"textbox","id":"sh/03udwna5","slide":1,"text":"точен одговор","textPreview":"точен одговор","textChars":13,"textLines":1,"bbox":[910,415,180,30]}
+{"kind":"textbox","id":"sh/v6hcbe9g","slide":1,"text":"две последователни релации","textPreview":"две последователни релации","textChars":26,"textLines":1,"bbox":[445,655,350,34]}
+{"kind":"notes","id":"nt/8wz8of","slide":1,"text":""}
+{"kind":"slide","id":"sl/8x1beb","slide":2,"title":"i₁  i₂","textShapes":10}
+{"kind":"shape","id":"sh/udg72hc7","slide":2,"bbox":[158,341,14,14]}
+{"kind":"shape","id":"sh/hg76xwbi","slide":2,"bbox":[468,341,14,14]}
+{"kind":"shape","id":"sh/gfyp4rud","slide":2,"bbox":[783,341,14,14]}
+{"kind":"shape","id":"sh/3ip8z6to","slide":2,"bbox":[1093,341,14,14]}
+{"kind":"shape","id":"sh/ihg761c3","slide":2,"bbox":[172,348,296,0]}
+{"kind":"shape","id":"sh/54rq1wbu","slide":2,"bbox":[482,348,301,0]}
+{"kind":"shape","id":"sh/43yp8bu9","slide":2,"bbox":[797,348,296,0]}
+{"kind":"shape","id":"sh/r69836t0","slide":2,"bbox":[148,253,34,34]}
+{"kind":"shape","id":"sh/q507a1cf","slide":2,"bbox":[87,204,24,24]}
+{"kind":"shape","id":"sh/4zutw76l","slide":2,"bbox":[73,303,24,24]}
+{"kind":"shape","id":"sh/503u5cn6","slide":2,"bbox":[227,264,24,24]}
+{"kind":"shape","id":"sh/ixcbuxof","slide":2,"bbox":[107.49,224.49,45.49,33.49]}
+{"kind":"shape","id":"sh/jylc32p0","slide":2,"bbox":[93.49,282.02,59.49,24.49]}
+{"kind":"shape","id":"sh/s3et076x","slide":2,"bbox":[182,270,45,6]}
+{"kind":"shape","id":"sh/donu9cni","slide":2,"bbox":[458,253,34,34]}
+{"kind":"shape","id":"sh/q1wbyhor","slide":2,"bbox":[385,216,24,24]}
+{"kind":"shape","id":"sh/r25c725c","slide":2,"bbox":[405.49,236.49,57.49,21.49]}
+{"kind":"shape","id":"sh/0ret4r6t","slide":2,"bbox":[385,306,24,24]}
+{"kind":"shape","id":"sh/1s7udwne","slide":2,"bbox":[405.49,282.02,57.49,27.49]}
+{"kind":"shape","id":"sh/9o3uxwfi","slide":2,"bbox":[538,248,24,24]}
+{"kind":"shape","id":"sh/onutoryx","slide":2,"bbox":[492,260,46,10]}
+{"kind":"textbox","id":"sh/nm1cvmxc","slide":2,"text":"i₁  i₂","textPreview":"i₁  i₂","textChars":6,"textLines":1,"bbox":[735,188,110,42]}
+{"kind":"textbox","id":"sh/mlsbmhgr","slide":2,"text":"GNN","textPreview":"GNN","textChars":3,"textLines":1,"bbox":[735,273,110,55]}
+{"kind":"shape","id":"sh/xc3u1wfu","slide":2,"bbox":[790,230,0,43]}
+{"kind":"shape","id":"sh/wbutsry9","slide":2,"bbox":[845,209,0,91.5]}
+{"kind":"shape","id":"sh/balczmxo","slide":2,"bbox":[995,287,26,26]}
+{"kind":"shape","id":"sh/a9cbqhg3","slide":2,"bbox":[1060,250,24,24]}
+{"kind":"shape","id":"sh/dgjapsfa","slide":2,"bbox":[1124,293,24,24]}
+{"kind":"shape","id":"sh/cfqtg7yp","slide":2,"bbox":[1185,249,26,26]}
+{"kind":"shape","id":"sh/i94za9sb","slide":2,"bbox":[1176,240,44,44]}
+{"kind":"shape","id":"sh/jax03e9w","slide":2,"bbox":[1017.19,270.49,46.32,20.32]}
+{"kind":"shape","id":"sh/4b6hcjah","slide":2,"bbox":[1080.49,270.49,47.03,26.03]}
+{"kind":"shape","id":"sh/5cfi5or2","slide":2,"bbox":[1144.49,271.19,44.32,25.32]}
+{"kind":"textbox","id":"sh/6doze9sn","slide":2,"text":"Агрегација на\nсоседството","textPreview":"Агрегација на | соседството","textChars":25,"textLines":2,"bbox":[35,420,260,72]}
+{"kind":"textbox","id":"sh/rex07e98","slide":2,"text":"GraphSAGE","textPreview":"GraphSAGE","textChars":9,"textLines":1,"bbox":[35,500,260,72]}
+{"kind":"textbox","id":"sh/sf6hgjad","slide":2,"text":"Релациско\nмоделирање","textPreview":"Релациско | моделирање","textChars":20,"textLines":2,"bbox":[345,420,260,72]}
+{"kind":"textbox","id":"sh/tgfi9ory","slide":2,"text":"Advance GraphSAGE\nR-GCN · HGT","textPreview":"Advance GraphSAGE | R-GCN · HGT","textChars":29,"textLines":2,"bbox":[345,500,260,72]}
+{"kind":"textbox","id":"sh/mhkz2ps3","slide":2,"text":"Приспособливо\nрасудување","textPreview":"Приспособливо | расудување","textChars":24,"textLines":2,"bbox":[660,420,260,72]}
+{"kind":"textbox","id":"sh/7itgvu9o","slide":2,"text":"ReaRev","textPreview":"ReaRev","textChars":6,"textLines":1,"bbox":[660,500,260,72]}
+{"kind":"textbox","id":"sh/nelwzqls","slide":2,"text":"Расудување по\nрелациски патеки","textPreview":"Расудување по | релациски патеки","textChars":30,"textLines":2,"bbox":[970,420,260,72]}
+{"kind":"textbox","id":"sh/mdcfqlk7","slide":2,"text":"NBFNet","textPreview":"NBFNet","textChars":6,"textLines":1,"bbox":[970,500,260,72]}
+{"kind":"notes","id":"nt/8x1beb","slide":2,"text":""}
+{"kind":"slide","id":"sl/y8d63d","slide":3,"title":"GraphSAGE","textShapes":17}
+{"kind":"textbox","id":"sh/md4zy1k3","slide":3,"text":"GraphSAGE","textPreview":"GraphSAGE","textChars":9,"textLines":1,"bbox":[130,45,420,42]}
+{"kind":"textbox","id":"sh/9gvy9w3u","slide":3,"text":"Advance GraphSAGE","textPreview":"Advance GraphSAGE","textChars":17,"textLines":1,"bbox":[705,45,420,42]}
+{"kind":"shape","id":"sh/ofmh0r29","slide":3,"bbox":[638,55,2,585]}
+{"kind":"textbox","id":"sh/zatg3mls","slide":3,"text":"прашање  q","textPreview":"прашање  q","textChars":10,"textLines":1,"bbox":[165,105,180,52]}
+{"kind":"textbox","id":"sh/e9kfuhk7","slide":3,"text":"cos(q, r)","textPreview":"cos(q, r)","textChars":9,"textLines":1,"bbox":[365,105,150,52]}
+{"kind":"shape","id":"sh/1cby5w3i","slide":3,"bbox":[345,131,20,0]}
+{"kind":"shape","id":"sh/0b2xwr2x","slide":3,"bbox":[317,327,46,46]}
+{"kind":"shape","id":"sh/j6xgfqlw","slide":3,"bbox":[162,227,36,36]}
+{"kind":"shape","id":"sh/y5oz6lkb","slide":3,"bbox":[192.73,257.73,131.01,76.01]}
+{"kind":"textbox","id":"sh/kvaxkzy9","slide":3,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[243.36,252.84,48,32]}
+{"kind":"shape","id":"sh/lwjed4fu","slide":3,"bbox":[137,372,36,36]}
+{"kind":"shape","id":"sh/ytsfipgj","slide":3,"bbox":[173,350,144,40]}
+{"kind":"textbox","id":"sh/zu1wbuxo","slide":3,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[220.17,383.37,48,32]}
+{"kind":"shape","id":"sh/crqxgfyd","slide":3,"bbox":[337,467,36,36]}
+{"kind":"shape","id":"sh/xsze9kfy","slide":3,"bbox":[340,373,15,94]}
+{"kind":"textbox","id":"sh/a58fe5g7","slide":3,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[352.08,405.16,48,32]}
+{"kind":"textbox","id":"sh/bqhw7axs","slide":3,"text":"оценка","textPreview":"оценка","textChars":6,"textLines":1,"bbox":[430,324,105,52]}
+{"kind":"shape","id":"sh/o3qxcfy1","slide":3,"bbox":[363,350,67,0]}
+{"kind":"textbox","id":"sh/p4ze5kfm","slide":3,"text":"Фиксно семантичко пондерирање","textPreview":"Фиксно семантичко пондерирање","textChars":29,"textLines":1,"bbox":[145,600,400,38]}
+{"kind":"textbox","id":"sh/587mtc3e","slide":3,"text":"прашање  q","textPreview":"прашање  q","textChars":10,"textLines":1,"bbox":[703,105,180,52]}
+{"kind":"textbox","id":"sh/4nylk7mt","slide":3,"text":"научен gate α(q, r)","textPreview":"научен gate α(q, r)","textChars":19,"textLines":1,"bbox":[898,105,230,52]}
+{"kind":"shape","id":"sh/3mp4r2l8","slide":3,"bbox":[883,131,15,0]}
+{"kind":"shape","id":"sh/ilg3ix4n","slide":3,"bbox":[892,327,46,46]}
+{"kind":"shape","id":"sh/hk7mps32","slide":3,"bbox":[737,227,36,36]}
+{"kind":"shape","id":"sh/gjelgnmh","slide":3,"bbox":[767.73,257.73,131.01,76.01]}
+{"kind":"shape","id":"sh/vi54nilc","slide":3,"bbox":[767.73,257.73,131.01,76.01]}
+{"kind":"textbox","id":"sh/uhw3ex4r","slide":3,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[818.36,252.84,48,32]}
+{"kind":"shape","id":"sh/1grm1w3m","slide":3,"bbox":[712,372,36,36]}
+{"kind":"shape","id":"sh/0filsrm1","slide":3,"bbox":[748,350,144,40]}
+{"kind":"shape","id":"sh/ylcjmtkj","slide":3,"bbox":[748,350,144,40]}
+{"kind":"textbox","id":"sh/zml0vy14","slide":3,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[795.17,383.37,48,32]}
+{"kind":"shape","id":"sh/knu1oj29","slide":3,"bbox":[912,467,36,36]}
+{"kind":"shape","id":"sh/lo3ixoju","slide":3,"bbox":[915,373,15,94]}
+{"kind":"shape","id":"sh/axsji9k7","slide":3,"bbox":[915,373,15,94]}
+{"kind":"textbox","id":"sh/bi10re1s","slide":3,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[927.08,405.16,48,32]}
+{"kind":"textbox","id":"sh/cja1kj2d","slide":3,"text":"оценка","textPreview":"оценка","textChars":6,"textLines":1,"bbox":[1005,324,105,52]}
+{"kind":"shape","id":"sh/xkjitojy","slide":3,"bbox":[938,350,67,0]}
+{"kind":"textbox","id":"sh/utwjudkr","slide":3,"text":"residual","textPreview":"residual","textChars":8,"textLines":1,"bbox":[880,540,120,38]}
+{"kind":"shape","id":"sh/ve5k3i1w","slide":3,"bbox":[1000,376,57.5,183]}
+{"kind":"textbox","id":"sh/f6lwza5c","slide":3,"text":"Пондерирање научено за конкретното прашање","textPreview":"Пондерирање научено за конкретното прашање","textChars":42,"textLines":1,"bbox":[705,600,450,38]}
+{"kind":"notes","id":"nt/y8d63d","slide":3,"text":""}
+{"kind":"slide","id":"sl/r33pi1","slide":4,"title":"R-GCN","textShapes":16}
+{"kind":"textbox","id":"sh/cb2xs3qt","slide":4,"text":"R-GCN","textPreview":"R-GCN","textChars":5,"textLines":1,"bbox":[145,45,420,42]}
+{"kind":"textbox","id":"sh/batwzyp8","slide":4,"text":"HGT","textPreview":"HGT","textChars":3,"textLines":1,"bbox":[730,45,420,42]}
+{"kind":"shape","id":"sh/a9kfqt8n","slide":4,"bbox":[638,55,2,585]}
+{"kind":"shape","id":"sh/p8bexo72","slide":4,"bbox":[461,311,48,48]}
+{"kind":"shape","id":"sh/o72xojqh","slide":4,"bbox":[182,207,36,36]}
+{"kind":"textbox","id":"sh/n6twvepw","slide":4,"text":"Wᵣ₁","textPreview":"Wᵣ₁","textChars":3,"textLines":1,"bbox":[340,249,74,42]}
+{"kind":"shape","id":"sh/25kfm98r","slide":4,"bbox":[218,225,122,45]}
+{"kind":"shape","id":"sh/94fy9876","slide":4,"bbox":[414,270,54.03,48.03]}
+{"kind":"textbox","id":"sh/83mx0n61","slide":4,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[236,195.36,48,32]}
+{"kind":"shape","id":"sh/m58ne5gb","slide":4,"bbox":[162,342,36,36]}
+{"kind":"textbox","id":"sh/76honqhw","slide":4,"text":"Wᵣ₂","textPreview":"Wᵣ₂","textChars":3,"textLines":1,"bbox":[340,331,74,42]}
+{"kind":"shape","id":"sh/87q5gvyh","slide":4,"bbox":[198,352,142,8]}
+{"kind":"shape","id":"sh/98j6p0z2","slide":4,"bbox":[414,335,47,17]}
+{"kind":"textbox","id":"sh/y18nalgf","slide":4,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[216.24,369.58,48,32]}
+{"kind":"shape","id":"sh/z2h4jqh0","slide":4,"bbox":[252,467,36,36]}
+{"kind":"textbox","id":"sh/k3q5cvyl","slide":4,"text":"Wᵣ₃","textPreview":"Wᵣ₃","textChars":3,"textLines":1,"bbox":[340,413,74,42]}
+{"kind":"shape","id":"sh/l4zml0z6","slide":4,"bbox":[282.73,434,57.27,38.27]}
+{"kind":"shape","id":"sh/ixsnmpgj","slide":4,"bbox":[414,351.97,54.03,82.03]}
+{"kind":"textbox","id":"sh/3y1ovah4","slide":4,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[290.15,478.98,48,32]}
+{"kind":"shape","id":"sh/fidk7mxg","slide":4,"bbox":[1011,311,48,48]}
+{"kind":"shape","id":"sh/eh4jehwb","slide":4,"bbox":[762,202,36,36]}
+{"kind":"shape","id":"sh/1kv29cfm","slide":4,"bbox":[798,220,220.03,98.03]}
+{"kind":"textbox","id":"sh/0jmlg7e1","slide":4,"text":"r₁","textPreview":"r₁","textChars":2,"textLines":1,"bbox":[836.28,202.91,48,32]}
+{"kind":"textbox","id":"sh/n6dkbmxs","slide":4,"text":"α₁","textPreview":"α₁","textChars":2,"textLines":1,"bbox":[889.5,242.5,46,28]}
+{"kind":"shape","id":"sh/2l43ihw7","slide":4,"bbox":[742,347,36,36]}
+{"kind":"shape","id":"sh/p8v2dwfy","slide":4,"bbox":[778,335,233,30]}
+{"kind":"textbox","id":"sh/o7mlkred","slide":4,"text":"r₂","textPreview":"r₂","textChars":2,"textLines":1,"bbox":[810.54,369.03,48,32]}
+{"kind":"textbox","id":"sh/baxkf6xo","slide":4,"text":"α₂","textPreview":"α₂","textChars":2,"textLines":1,"bbox":[879.5,315,46,28]}
+{"kind":"shape","id":"sh/a9o3m1w3","slide":4,"bbox":[837,467,36,36]}
+{"kind":"shape","id":"sh/8f61cbuh","slide":4,"bbox":[867.73,351.97,150.3,120.3]}
+{"kind":"textbox","id":"sh/9gz25wb2","slide":4,"text":"r₃","textPreview":"r₃","textChars":2,"textLines":1,"bbox":[897.01,453.05,48,32]}
+{"kind":"textbox","id":"sh/mdoja1cb","slide":4,"text":"α₃","textPreview":"α₃","textChars":2,"textLines":1,"bbox":[927,375,46,28]}
+{"kind":"textbox","id":"sh/7exk36tw","slide":4,"text":"Трансформација според типот на релацијата","textPreview":"Трансформација според типот на релацијата","textChars":41,"textLines":1,"bbox":[110,610,460,40]}
+{"kind":"textbox","id":"sh/kb618rul","slide":4,"text":"Релациски зависен attention","textPreview":"Релациски зависен attention","textChars":27,"textLines":1,"bbox":[705,610,465,40]}
+{"kind":"notes","id":"nt/r33pi1","slide":4,"text":""}
+{"kind":"slide","id":"sl/vrv1ph","slide":5,"title":"Прашање","textShapes":8}
+{"kind":"textbox","id":"sh/1g76903m","slide":5,"text":"Прашање","textPreview":"Прашање","textChars":7,"textLines":1,"bbox":[70,302.5,165,70]}
+{"kind":"textbox","id":"sh/edgny5kb","slide":5,"text":"Инструкции\ni₁   i₂   i₃","textPreview":"Инструкции | i₁   i₂   i₃","textChars":23,"textLines":2,"bbox":[320,100,220,105]}
+{"kind":"textbox","id":"sh/fep47alw","slide":5,"text":"Расудување\nнад графот","textPreview":"Расудување | над графот","textChars":21,"textLines":2,"bbox":[535,285,220,105]}
+{"kind":"textbox","id":"sh/sbe5wvm5","slide":5,"text":"Собрана\nинформација","textPreview":"Собрана | информација","textChars":19,"textLines":2,"bbox":[820,465,210,100]}
+{"kind":"textbox","id":"sh/tc7m503q","slide":5,"text":"Ревизија на\nинструкциите","textPreview":"Ревизија на | инструкциите","textChars":24,"textLines":2,"bbox":[990,100,220,105]}
+{"kind":"shape","id":"sh/69wnul4z","slide":5,"bbox":[235,152.5,85,185]}
+{"kind":"shape","id":"sh/ra543qlk","slide":5,"bbox":[430,205,105,132.5]}
+{"kind":"shape","id":"sh/47e5sbm9","slide":5,"bbox":[645,390,175,125]}
+{"kind":"shape","id":"sh/58nm1g3e","slide":5,"bbox":[1030,205,70,310]}
+{"kind":"shape","id":"sh/18vexc72","slide":5,"bbox":[540,152.5,450,0]}
+{"kind":"shape","id":"sh/07mdo7qh","slide":5,"bbox":[485,520,30,30]}
+{"kind":"shape","id":"sh/f6dwv2pw","slide":5,"bbox":[567,552,26,26]}
+{"kind":"shape","id":"sh/el4vmx8b","slide":5,"bbox":[645,505,30,30]}
+{"kind":"shape","id":"sh/dkvets7q","slide":5,"bbox":[636,496,48,48]}
+{"kind":"shape","id":"sh/sj2dk7q5","slide":5,"bbox":[515,535,55.81,20.81]}
+{"kind":"shape","id":"sh/ritwr2p0","slide":5,"bbox":[589.19,530.61,60.2,25.2]}
+{"kind":"textbox","id":"sh/qhkvix8f","slide":5,"text":"итерација  t","textPreview":"итерација  t","textChars":12,"textLines":1,"bbox":[500,455,160,32]}
+{"kind":"textbox","id":"sh/5gbeps7u","slide":5,"text":"следна итерација","textPreview":"следна итерација","textChars":16,"textLines":1,"bbox":[670,105,190,34]}
+{"kind":"textbox","id":"sh/4f2dgnq9","slide":5,"text":"Инструкциите се менуваат според информацијата откриена во графот","textPreview":"Инструкциите се менуваат според информацијата откриена во графот","textChars":64,"textLines":1,"bbox":[225,635,830,38]}
+{"kind":"notes","id":"nt/vrv1ph","slide":5,"text":""}
+{"kind":"slide","id":"sl/ptg3ih","slide":6,"title":"l = 0","textShapes":15}
+{"kind":"textbox","id":"sh/bi9svmhw","slide":6,"text":"l = 0","textPreview":"l = 0","textChars":5,"textLines":1,"bbox":[65,55,170,36]}
+{"kind":"textbox","id":"sh/cjit4ryh","slide":6,"text":"l = 1","textPreview":"l = 1","textChars":5,"textLines":1,"bbox":[345,55,170,36]}
+{"kind":"textbox","id":"sh/dkbaxwz2","slide":6,"text":"l = 2","textPreview":"l = 2","textChars":5,"textLines":1,"bbox":[625,55,170,36]}
+{"kind":"textbox","id":"sh/ylkb61gn","slide":6,"text":"Оценки","textPreview":"Оценки","textChars":6,"textLines":1,"bbox":[905,55,170,36]}
+{"kind":"shape","id":"sh/zmtcz6hs","slide":6,"bbox":[125,315,50,50]}
+{"kind":"textbox","id":"sh/072t8byd","slide":6,"text":"почетен ентитет","textPreview":"почетен ентитет","textChars":15,"textLines":1,"bbox":[55,372,190,36]}
+{"kind":"textbox","id":"sh/l8bu1gzy","slide":6,"text":"q","textPreview":"q","textChars":1,"textLines":1,"bbox":[95,170,110,60]}
+{"kind":"textbox","id":"sh/m9kbalgj","slide":6,"text":"иницијализација","textPreview":"иницијализација","textChars":15,"textLines":1,"bbox":[75,235,150,32]}
+{"kind":"shape","id":"sh/natc36h4","slide":6,"bbox":[412,217,36,36]}
+{"kind":"shape","id":"sh/j2xkzito","slide":6,"bbox":[412,427,36,36]}
+{"kind":"shape","id":"sh/i1o3qdc3","slide":6,"bbox":[692,267,36,36]}
+{"kind":"shape","id":"sh/54zm18bu","slide":6,"bbox":[692,452,36,36]}
+{"kind":"shape","id":"sh/k36lsnu9","slide":6,"bbox":[965,235,50,50]}
+{"kind":"shape","id":"sh/vyxkvyts","slide":6,"bbox":[956,226,68,68]}
+{"kind":"textbox","id":"sh/axo3mtc7","slide":6,"text":"точен одговор","textPreview":"точен одговор","textChars":13,"textLines":1,"bbox":[905,292,170,36]}
+{"kind":"shape","id":"sh/x0f2x8bi","slide":6,"bbox":[967,447,46,46]}
+{"kind":"textbox","id":"sh/wz6lo3ux","slide":6,"text":"друг кандидат","textPreview":"друг кандидат","textChars":13,"textLines":1,"bbox":[905,500,170,36]}
+{"kind":"shape","id":"sh/fuh472tw","slide":6,"bbox":[175,235,237,105]}
+{"kind":"shape","id":"sh/ut83yxcb","slide":6,"bbox":[448,235,244,50]}
+{"kind":"shape","id":"sh/qpcnq1wj","slide":6,"bbox":[728,260,237,25]}
+{"kind":"shape","id":"sh/rqloz6d4","slide":6,"bbox":[175,340,237,105]}
+{"kind":"shape","id":"sh/cru5sbep","slide":6,"bbox":[448,445,244,25]}
+{"kind":"shape","id":"sh/ds361wva","slide":6,"bbox":[728,470,239,0]}
+{"kind":"shape","id":"sh/etc7u1wv","slide":6,"bbox":[442.73,247.73,254.54,209.54]}
+{"kind":"textbox","id":"sh/zulo36d0","slide":6,"text":"wᵣ₁(q)","textPreview":"wᵣ₁(q)","textChars":6,"textLines":1,"bbox":[255,225,120,28]}
+{"kind":"textbox","id":"sh/0vepwbel","slide":6,"text":"wᵣ₂(q)","textPreview":"wᵣ₂(q)","textChars":6,"textLines":1,"bbox":[535,205,120,28]}
+{"kind":"textbox","id":"sh/1gn65gv6","slide":6,"text":"wᵣ₃(q)","textPreview":"wᵣ₃(q)","textChars":6,"textLines":1,"bbox":[815,190,120,28]}
+{"kind":"textbox","id":"sh/uxsnihwb","slide":6,"text":"висока","textPreview":"висока","textChars":6,"textLines":1,"bbox":[1070,230,130,50]}
+{"kind":"textbox","id":"sh/fy1ormdw","slide":6,"text":"ниска","textPreview":"ниска","textChars":5,"textLines":1,"bbox":[1070,440,130,50]}
+{"kind":"textbox","id":"sh/xc7qxkfe","slide":6,"text":"Патеките и релациите се условени од прашањето","textPreview":"Патеките и релациите се условени од прашањето","textChars":45,"textLines":1,"bbox":[260,625,760,40]}
+{"kind":"notes","id":"nt/ptg3ih","slide":6,"text":""}
+{"kind":"slide","id":"sl/49x07f","slide":7,"title":"Унија на најкратки патеки","textShapes":6}
+{"kind":"textbox","id":"sh/krmxgr6t","slide":7,"text":"Унија на најкратки патеки","textPreview":"Унија на најкратки патеки","textChars":25,"textLines":1,"bbox":[75,48,500,42]}
+{"kind":"textbox","id":"sh/jqdgnm5o","slide":7,"text":"PCST","textPreview":"PCST","textChars":4,"textLines":1,"bbox":[760,48,420,42]}
+{"kind":"shape","id":"sh/ip4feho3","slide":7,"bbox":[638,55,2,585]}
+{"kind":"shape","id":"sh/xovylwni","slide":7,"bbox":[63,338,34,34]}
+{"kind":"shape","id":"sh/wnmxcr6x","slide":7,"bbox":[178,218,34,34]}
+{"kind":"shape","id":"sh/bmdgjm5c","slide":7,"bbox":[293,313,34,34]}
+{"kind":"shape","id":"sh/alkfahor","slide":7,"bbox":[413,188,34,34]}
+{"kind":"shape","id":"sh/9kbyhcn6","slide":7,"bbox":[523,303,34,34]}
+{"kind":"shape","id":"sh/oj2x8761","slide":7,"bbox":[514,294,52,52]}
+{"kind":"shape","id":"sh/ytobm9s3","slide":7,"bbox":[388,468,34,34]}
+{"kind":"shape","id":"sh/zexsveto","slide":7,"bbox":[178,483,34,34]}
+{"kind":"shape","id":"sh/0f6toja9","slide":7,"bbox":[92.02,247.02,90.96,95.96]}
+{"kind":"shape","id":"sh/lgfaxobu","slide":7,"bbox":[207.02,247.02,90.96,70.96]}
+{"kind":"shape","id":"sh/qp4bi9s7","slide":7,"bbox":[322.02,217.02,95.96,100.96]}
+{"kind":"shape","id":"sh/bqdsretc","slide":7,"bbox":[442.02,217.02,85.96,90.96]}
+{"kind":"shape","id":"sh/crmtkjax","slide":7,"bbox":[322.02,342.02,70.96,130.96]}
+{"kind":"shape","id":"sh/dsfatobi","slide":7,"bbox":[212,485,176,15]}
+{"kind":"shape","id":"sh/2l4bepsv","slide":7,"bbox":[195,252,0,231]}
+{"kind":"shape","id":"sh/3mdsnutg","slide":7,"bbox":[708,338,34,34]}
+{"kind":"shape","id":"sh/7epgz65w","slide":7,"bbox":[823,218,34,34]}
+{"kind":"shape","id":"sh/6dgz614b","slide":7,"bbox":[938,313,34,34]}
+{"kind":"shape","id":"sh/tgry1gn2","slide":7,"bbox":[1058,188,34,34]}
+{"kind":"shape","id":"sh/sfyh8bmh","slide":7,"bbox":[1168,303,34,34]}
+{"kind":"shape","id":"sh/fi903658","slide":7,"bbox":[1159,294,52,52]}
+{"kind":"shape","id":"sh/uh0zal4n","slide":7,"bbox":[1033,468,34,34]}
+{"kind":"shape","id":"sh/hkri5gny","slide":7,"bbox":[823,483,34,34]}
+{"kind":"shape","id":"sh/gjihcbmt","slide":7,"bbox":[737.02,247.02,90.96,95.96]}
+{"kind":"shape","id":"sh/bm5grm5o","slide":7,"bbox":[852.02,247.02,90.96,70.96]}
+{"kind":"shape","id":"sh/alwzyho3","slide":7,"bbox":[967.02,217.02,95.96,100.96]}
+{"kind":"shape","id":"sh/0rudsn21","slide":7,"bbox":[1087.02,217.02,85.96,90.96]}
+{"kind":"shape","id":"sh/1s3e1s3m","slide":7,"bbox":[967.02,342.02,70.96,130.96]}
+{"kind":"shape","id":"sh/epcvqdkv","slide":7,"bbox":[857,485,176,15]}
+{"kind":"shape","id":"sh/zqlwzilg","slide":7,"bbox":[840,252,0,231]}
+{"kind":"textbox","id":"sh/c3ado3m5","slide":7,"text":"Се задржува патека до секој достижен кандидат","textPreview":"Се задржува патека до секој достижен кандидат","textChars":45,"textLines":1,"bbox":[80,575,500,55]}
+{"kind":"textbox","id":"sh/dojex83q","slide":7,"text":"Наградите на јазлите се споредуваат со трошоците на рабовите","textPreview":"Наградите на јазлите се споредуваат со трошоците на рабовите","textChars":60,"textLines":1,"bbox":[700,565,520,70]}
+{"kind":"textbox","id":"sh/q1svmd4z","slide":7,"text":"повеќе тројки","textPreview":"повеќе тројки","textChars":13,"textLines":1,"bbox":[205,645,230,42]}
+{"kind":"textbox","id":"sh/r21wvylk","slide":7,"text":"компактен подграф","textPreview":"компактен подграф","textChars":17,"textLines":1,"bbox":[840,645,265,42]}
+{"kind":"notes","id":"nt/49x07f","slide":7,"text":""}
+{"kind":"slide","id":"sl/3cam0n","slide":8,"title":"Локален граф","textShapes":8}
+{"kind":"textbox","id":"sh/o3ehovqh","slide":8,"text":"Локален граф","textPreview":"Локален граф","textChars":12,"textLines":1,"bbox":[40,60,250,70]}
+{"kind":"textbox","id":"sh/n2lgfq9w","slide":8,"text":"Пребарани\nентитети-кандидати","textPreview":"Пребарани | ентитети-кандидати","textChars":28,"textLines":2,"bbox":[345,60,250,70]}
+{"kind":"textbox","id":"sh/21czml8b","slide":8,"text":"Доказен контекст","textPreview":"Доказен контекст","textChars":16,"textLines":1,"bbox":[660,60,250,70]}
+{"kind":"textbox","id":"sh/1g3ydgrq","slide":8,"text":"Одговор од LLM","textPreview":"Одговор од LLM","textChars":14,"textLines":1,"bbox":[965,60,250,70]}
+{"kind":"shape","id":"sh/0fuhkbq5","slide":8,"bbox":[160,168,10,10]}
+{"kind":"shape","id":"sh/felgb69k","slide":8,"bbox":[465,168,10,10]}
+{"kind":"shape","id":"sh/edczi18z","slide":8,"bbox":[780,168,10,10]}
+{"kind":"shape","id":"sh/lc7ipkru","slide":8,"bbox":[1085,168,10,10]}
+{"kind":"shape","id":"sh/kbyhwfq9","slide":8,"bbox":[170,173,295,0]}
+{"kind":"shape","id":"sh/mpkzmxcb","slide":8,"bbox":[475,173,305,0]}
+{"kind":"shape","id":"sh/nqtgf2tw","slide":8,"bbox":[790,173,295,0]}
+{"kind":"shape","id":"sh/or2ho7uh","slide":8,"bbox":[73,318,24,24]}
+{"kind":"shape","id":"sh/9sbyhcb2","slide":8,"bbox":[138,263,24,24]}
+{"kind":"shape","id":"sh/el0zixcf","slide":8,"bbox":[208,308,24,24]}
+{"kind":"shape","id":"sh/zm9gb2t0","slide":8,"bbox":[253,373,24,24]}
+{"kind":"shape","id":"sh/0nihknul","slide":8,"bbox":[244,364,42,42]}
+{"kind":"shape","id":"sh/1obydsbq","slide":8,"bbox":[153,393,24,24]}
+{"kind":"shape","id":"sh/yh4zuhcj","slide":8,"bbox":[93.49,283.49,48.03,38.03]}
+{"kind":"shape","id":"sh/jid0nmt4","slide":8,"bbox":[158.49,283.49,53.03,28.03]}
+{"kind":"shape","id":"sh/v25wfe9g","slide":8,"bbox":[228.49,328.49,28.03,48.03]}
+{"kind":"shape","id":"sh/u1wvm9sv","slide":8,"bbox":[173.49,328.49,38.03,68.03]}
+{"kind":"shape","id":"sh/h4nehorm","slide":8,"bbox":[93.49,338.49,63.03,58.03]}
+{"kind":"shape","id":"sh/g3edoja1","slide":8,"bbox":[394,245,26,26]}
+{"kind":"shape","id":"sh/36pwjy9s","slide":8,"bbox":[440,247,125,22]}
+{"kind":"shape","id":"sh/i5gvqts7","slide":8,"bbox":[394,313,26,26]}
+{"kind":"shape","id":"sh/5s7elori","slide":8,"bbox":[385,304,44,44]}
+{"kind":"shape","id":"sh/4ryds3ad","slide":8,"bbox":[440,315,107,22]}
+{"kind":"shape","id":"sh/rupwny9o","slide":8,"bbox":[394,381,26,26]}
+{"kind":"shape","id":"sh/qtgvuts3","slide":8,"bbox":[440,383,89,22]}
+{"kind":"shape","id":"sh/ozidk36h","slide":8,"bbox":[682,357,26,26]}
+{"kind":"shape","id":"sh/90rud872","slide":8,"bbox":[773,293,24,24]}
+{"kind":"shape","id":"sh/2x0vit8b","slide":8,"bbox":[862,342,26,26]}
+{"kind":"shape","id":"sh/ny9cbypw","slide":8,"bbox":[853,333,44,44]}
+{"kind":"shape","id":"sh/0vydg3q5","slide":8,"bbox":[704.19,313.49,72.32,47.32]}
+{"kind":"shape","id":"sh/1wru987q","slide":8,"bbox":[793.49,313.49,72.32,32.32]}
+{"kind":"shape","id":"sh/etgvet8f","slide":8,"bbox":[1066,301,48,48]}
+{"kind":"textbox","id":"sh/fupc7ypk","slide":8,"text":"вратен одговор","textPreview":"вратен одговор","textChars":14,"textLines":1,"bbox":[995,356,190,36]}
+{"kind":"textbox","id":"sh/s7ydcjq9","slide":8,"text":"точниот ентитет е присутен","textPreview":"точниот ентитет е присутен","textChars":26,"textLines":1,"bbox":[640,500,290,42]}
+{"kind":"textbox","id":"sh/d87u5o7u","slide":8,"text":"но не е вратен","textPreview":"но не е вратен","textChars":14,"textLines":1,"bbox":[980,500,220,42]}
+{"kind":"textbox","id":"sh/hcnadknm","slide":8,"text":"Загубата може да настане и по пребарувањето","textPreview":"Загубата може да настане и по пребарувањето","textChars":43,"textLines":1,"bbox":[290,620,700,42]}
+{"kind":"notes","id":"nt/3cam0n","slide":8,"text":""}
