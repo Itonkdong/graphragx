@@ -581,7 +581,7 @@ function rearevCycle(slide) {
     bold: true,
     color: C.teal,
   });
-  const revision = box(slide, "Ревизија на\nинструкциите", 990, 120, 220, 105, {
+  const revision = box(slide, "Ревизија на\nинструкциите", 990, 100, 220, 105, {
     fill: C.purpleLight,
     stroke: C.purple,
     size: 22,
@@ -590,18 +590,18 @@ function rearevCycle(slide) {
   });
 
   arrowBetween(slide, question, instructions, { fromSide: "right", toSide: "left", kind: "elbow", color: C.blue });
-  arrowBetween(slide, instructions, reasoning, { fromSide: "bottom", toSide: "top", kind: "elbow", color: C.purple });
-  arrowBetween(slide, reasoning, collected, { fromSide: "right", toSide: "left", kind: "elbow", color: C.retrieval });
-  arrowBetween(slide, collected, revision, { fromSide: "top", toSide: "bottom", kind: "elbow", color: C.teal });
-  arrowBetween(slide, revision, instructions, { fromSide: "left", toSide: "right", kind: "elbow", color: C.purple });
+  arrowBetween(slide, instructions, reasoning, { fromSide: "bottom", toSide: "left", kind: "elbow", color: C.purple });
+  arrowBetween(slide, reasoning, collected, { fromSide: "bottom", toSide: "left", kind: "elbow", color: C.retrieval });
+  arrowBetween(slide, collected, revision, { fromSide: "right", toSide: "bottom", kind: "elbow", color: C.teal });
+  arrowBetween(slide, revision, instructions, { fromSide: "left", toSide: "right", color: C.purple });
 
-  const seed = node(slide, 585, 515, { radius: 15, fill: C.blueLight, stroke: C.blue });
-  const mid = node(slide, 665, 545, { radius: 13, fill: C.white, stroke: C.muted });
-  const gold = node(slide, 745, 500, { radius: 15, fill: C.goldLight, stroke: C.gold, gold: true });
+  const seed = node(slide, 500, 535, { radius: 15, fill: C.blueLight, stroke: C.blue });
+  const mid = node(slide, 580, 565, { radius: 13, fill: C.white, stroke: C.muted });
+  const gold = node(slide, 660, 520, { radius: 15, fill: C.goldLight, stroke: C.gold, gold: true });
   link(slide, seed, mid, { color: C.ink, width: 2.5 });
   link(slide, mid, gold, { color: C.ink, width: 2.5 });
-  text(slide, "итерација  t", 570, 425, 160, 32, { size: 18, bold: true, color: C.retrieval });
-  text(slide, "следна итерација", 550, 52, 185, 34, { size: 18, bold: true, color: C.purple });
+  text(slide, "итерација  t", 500, 455, 160, 32, { size: 18, bold: true, color: C.retrieval });
+  text(slide, "следна итерација", 670, 105, 190, 34, { size: 18, bold: true, color: C.purple });
   text(slide, "Инструкциите се менуваат според информацијата откриена во графот", 225, 635, 830, 38, {
     size: 24,
     bold: true,

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "presentation-finalization.v1",
-  "finalSha256": "10957a4929393847501a4c27c47172537f606cb99c6f9146bc86c7447d06a823",
-  "byteCount": 45656,
+  "finalSha256": "c12199cc802e2a99b10c5168632ff5265c7d4f0cef021058363ca8abe0840812",
+  "byteCount": 45669,
   "packageIntegrity": {
     "chart_count": 0,
     "claim_boundary": "Structural package checks only; no slide text, notes, formulas, chart values, or native PowerPoint execution were inspected.",
@@ -84,7 +84,7 @@
     "performed": true,
     "passed": true,
     "slideCount": 8,
-    "sha256": "10957a4929393847501a4c27c47172537f606cb99c6f9146bc86c7447d06a823",
+    "sha256": "c12199cc802e2a99b10c5168632ff5265c7d4f0cef021058363ca8abe0840812",
     "runtimeNodeModules": "/Users/itonkdong/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
     "nodeExecutable": "/Users/itonkdong/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
   },
@@ -112,7 +112,7 @@
     "native_chart_count": 0,
     "native_powerpoint_verified": false,
     "passed": true,
-    "presentation_sha256": "10957a4929393847501a4c27c47172537f606cb99c6f9146bc86c7447d06a823",
+    "presentation_sha256": "c12199cc802e2a99b10c5168632ff5265c7d4f0cef021058363ca8abe0840812",
     "schema_version": "presentation-native-chart-titles.v1",
     "slide_count": 8,
     "source_text_emitted": false,
