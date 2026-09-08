@@ -179,7 +179,7 @@ ReaRev · NBFNet
 
 ## Слајд 8: GraphSAGE и Advance GraphSAGE
 
-**Кратка визуелна насока:** Ист мал граф со фиксно пондерирање кај GraphSAGE и научена порта кај Advance GraphSAGE.
+**Кратка визуелна насока:** Ист мал граф со фиксно пондерирање кај GraphSAGE и научен gate кај Advance GraphSAGE.
 
 **GraphSAGE**
 

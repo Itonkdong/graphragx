@@ -403,10 +403,20 @@ function aggregationGraph(slide, cx, cy, advanced = false) {
         arrow: true,
       });
     }
-    relationLabel(slide, label, (x + cx) / 2 - 20, (y + cy) / 2 - 28, 40, {
+    const labelPositions = [
+      [x + 40, y - 32],
+      [x + 55, y + 10],
+      [x + 26, y - 82],
+    ];
+    const [labelX, labelY] = labelPositions[index];
+    box(slide, label, labelX, labelY, 48, 30, {
+      fill: C.white,
+      stroke: "none",
+      lineWidth: 0,
       size: 17,
       bold: true,
       color,
+      radius: 4,
     });
   });
   const score = box(slide, "оценка", cx + 90, cy - 26, 105, 52, {
@@ -428,17 +438,17 @@ function aggregationGraph(slide, cx, cy, advanced = false) {
 }
 
 function graphsageComparison(slide) {
-  sectionLabel(slide, "GraphSAGE", 140, 45, 420, C.blue);
-  sectionLabel(slide, "Advance GraphSAGE", 720, 45, 420, C.retrieval);
+  sectionLabel(slide, "GraphSAGE", 130, 45, 420, C.blue);
+  sectionLabel(slide, "Advance GraphSAGE", 705, 45, 420, C.retrieval);
   shape(slide, "line", 638, 55, 2, 585, "none", C.inactive, 2);
 
-  const q1 = box(slide, "прашање  q", 205, 105, 180, 52, {
+  const q1 = box(slide, "прашање  q", 165, 105, 180, 52, {
     fill: C.blueLight,
     stroke: C.blue,
     size: 20,
     bold: true,
   });
-  const cos = box(slide, "cos(q, r)", 405, 105, 150, 52, {
+  const cos = box(slide, "cos(q, r)", 365, 105, 150, 52, {
     fill: C.light,
     stroke: C.line,
     size: 20,
@@ -452,13 +462,13 @@ function graphsageComparison(slide) {
     color: C.blue,
   });
 
-  const q2 = box(slide, "прашање  q", 760, 105, 180, 52, {
+  const q2 = box(slide, "прашање  q", 703, 105, 180, 52, {
     fill: C.blueLight,
     stroke: C.blue,
     size: 20,
     bold: true,
   });
-  const gate = box(slide, "научена порта  α(q, r)", 955, 105, 230, 52, {
+  const gate = box(slide, "научен gate  α(q, r)", 898, 105, 230, 52, {
     fill: C.retrievalLight,
     stroke: C.retrieval,
     size: 19,
