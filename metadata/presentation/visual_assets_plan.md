@@ -52,25 +52,22 @@ The corresponding generation code should be placed under `scripts/results/` and 
 
 ## Figures to create
 
-### 1. Two-hop question-answering example
+### 1. Multi-hop question-answering example
 
 **Presentation slide:** 2, „Од прашање до одговор“
 
 **Files:** `problem/two_hop_example.pdf` and `problem/two_hop_example.png`
 
-**Purpose:** Introduce the task through a concrete WebQSP question that can be understood before the system architecture is discussed.
+**Purpose:** Introduce the task through a simple illustrative question that can be understood before the system architecture is discussed.
 
 **Content:**
 
-- question: “Who did Viggo Mortensen play in Lord of the Rings?”;
-- seed entity: Viggo Mortensen;
-- intermediate performance or role node;
-- correct answer: Aragorn;
-- two-hop answer path:
-  - `film.actor.film`;
-  - `film.performance.character`;
-- constraint connecting the intermediate node to *The Lord of the Rings* through `film.performance.film`;
-- a small number of faded distractor entities and edges to show that the answer appears inside a larger local graph.
+- question: „На кој континент се наоѓа Колосеумот?“;
+- seed entity: Колосеум;
+- intermediary entities: Рим and Италија;
+- correct answer: Европа;
+- main path: Колосеум → Рим → Италија → Европа;
+- secondary branch: Италија → Италијански јазик, showing that the structure is a graph rather than a chain.
 
 **Main visual message:** The system must find the answer entity and preserve the relational evidence that connects it to the question.
 
@@ -260,7 +257,7 @@ These slides should use native presentation text, formulas, compact tables, or s
 ## Recommended generation order
 
 1. Create the common graph primitives and shared diagram helpers.
-2. Generate the two-hop example.
+2. Generate the multi-hop example.
 3. Generate the architecture overview.
 4. Generate the four architecture-specific figures.
 5. Generate the shortest-path and PCST comparison.

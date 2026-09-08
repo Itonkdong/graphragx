@@ -1,7 +1,7 @@
 {
   "schemaVersion": "presentation-finalization.v1",
-  "finalSha256": "4767f1ca59a1709787cb36588396fdc9ce43ee354884e1c40901cf28a9bad301",
-  "byteCount": 45502,
+  "finalSha256": "46d088b46763020c7debe8c1247d8d09c5006328889c86901278831e057af581",
+  "byteCount": 45311,
   "packageIntegrity": {
     "chart_count": 0,
     "claim_boundary": "Structural package checks only; no slide text, notes, formulas, chart values, or native PowerPoint execution were inspected.",
@@ -19,13 +19,13 @@
     "finding_count": 0,
     "findings": [],
     "font_policy": {
-      "checked_text_script_count": 102,
+      "checked_text_script_count": 104,
       "native_font_rendering_verified": false,
       "observed_font_families": [
         "Arial"
       ],
       "observed_font_use_counts": {
-        "Arial": 102
+        "Arial": 104
       },
       "passed": true,
       "performed": true
@@ -38,24 +38,24 @@
     "warning_count": 1,
     "warnings": [
       {
-        "connector_id": "50",
-        "connector_z": 23,
+        "connector_id": "41",
+        "connector_z": 18,
         "kind": "connector_over_text",
         "slide": 1,
-        "text_object_id": "14",
-        "text_z": 15
+        "text_object_id": "8",
+        "text_z": 9
       }
     ],
     "exitCode": 0,
     "findingCount": 0,
     "fontPolicy": {
-      "checked_text_script_count": 102,
+      "checked_text_script_count": 104,
       "native_font_rendering_verified": false,
       "observed_font_families": [
         "Arial"
       ],
       "observed_font_use_counts": {
-        "Arial": 102
+        "Arial": 104
       },
       "passed": true,
       "performed": true
@@ -69,13 +69,13 @@
     "scriptFonts": {},
     "referenceSha256": null,
     "referenceFontsVerifiedInEncodedText": false,
-    "checked_text_script_count": 102,
+    "checked_text_script_count": 104,
     "native_font_rendering_verified": false,
     "observed_font_families": [
       "Arial"
     ],
     "observed_font_use_counts": {
-      "Arial": 102
+      "Arial": 104
     },
     "passed": true,
     "performed": true
@@ -84,7 +84,7 @@
     "performed": true,
     "passed": true,
     "slideCount": 8,
-    "sha256": "4767f1ca59a1709787cb36588396fdc9ce43ee354884e1c40901cf28a9bad301",
+    "sha256": "46d088b46763020c7debe8c1247d8d09c5006328889c86901278831e057af581",
     "runtimeNodeModules": "/Users/itonkdong/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
     "nodeExecutable": "/Users/itonkdong/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
   },
@@ -112,7 +112,7 @@
     "native_chart_count": 0,
     "native_powerpoint_verified": false,
     "passed": true,
-    "presentation_sha256": "4767f1ca59a1709787cb36588396fdc9ce43ee354884e1c40901cf28a9bad301",
+    "presentation_sha256": "46d088b46763020c7debe8c1247d8d09c5006328889c86901278831e057af581",
     "schema_version": "presentation-native-chart-titles.v1",
     "slide_count": 8,
     "source_text_emitted": false,

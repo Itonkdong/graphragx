@@ -248,74 +248,105 @@ function addFadedDistractorGraph(slide) {
 }
 
 function twoHopExample(slide) {
-  addFadedDistractorGraph(slide);
-
   const q = box(
     slide,
-    "Who did Viggo Mortensen play in The Lord of the Rings?",
+    "На кој континент се наоѓа Колосеумот?",
     150,
     42,
     980,
     82,
     { fill: C.blueLight, stroke: C.blue, size: 25, bold: true, radius: 18 },
   );
-  text(slide, "Прашање од WebQSP", 450, 8, 380, 30, {
+  text(slide, "Прашање", 450, 8, 380, 30, {
     size: 16,
     bold: true,
     color: C.blue,
   });
 
-  const seed = node(slide, 250, 340, {
+  const seed = node(slide, 155, 335, {
     radius: 27,
     fill: C.blueLight,
     stroke: C.blue,
-    label: "Viggo Mortensen",
-    labelWidth: 210,
+    label: "Колосеум",
+    labelWidth: 170,
     labelSize: 21,
   });
-  const middle = node(slide, 620, 340, {
+  const city = node(slide, 440, 335, {
     radius: 24,
     fill: C.white,
     stroke: C.muted,
-    label: "настап / улога",
-    labelWidth: 180,
+    label: "Рим",
+    labelWidth: 130,
     labelSize: 20,
   });
-  const answer = node(slide, 1000, 340, {
+  const country = node(slide, 725, 335, {
+    radius: 24,
+    fill: C.white,
+    stroke: C.muted,
+    label: "Италија",
+    labelWidth: 150,
+    labelSize: 20,
+  });
+  const answer = node(slide, 1030, 335, {
     radius: 27,
     fill: C.goldLight,
     stroke: C.gold,
     gold: true,
-    label: "Aragorn",
+    label: "Европа",
     labelWidth: 140,
     labelSize: 22,
     labelColor: C.gold,
   });
-  const film = node(slide, 620, 570, {
+  const language = node(slide, 725, 540, {
     radius: 22,
-    fill: C.light,
+    fill: C.white,
     stroke: C.muted,
-    label: "The Lord of the Rings",
-    labelWidth: 250,
+    label: "Италијански јазик",
+    labelWidth: 220,
     labelSize: 20,
   });
 
-  link(slide, seed, middle, { color: C.ink, width: 3 });
-  link(slide, middle, answer, { color: C.ink, width: 3 });
-  link(slide, middle, film, {
+  link(slide, seed, city, { color: C.ink, width: 3 });
+  link(slide, city, country, { color: C.ink, width: 3 });
+  link(slide, country, answer, { color: C.ink, width: 3 });
+  link(slide, country, language, {
     color: C.teal,
     width: 2.5,
     fromSide: "bottom",
     toSide: "top",
   });
-  relationLabel(slide, "film.actor.film", 350, 274, 180, { color: C.ink, size: 18 });
-  relationLabel(slide, "film.performance.character", 716, 274, 265, { color: C.ink, size: 18 });
-  relationLabel(slide, "film.performance.film", 645, 455, 230, { color: C.teal, size: 17 });
 
-  text(slide, "почетен ентитет", 155, 415, 190, 30, { size: 16, color: C.blue });
-  text(slide, "точен одговор", 910, 415, 180, 30, { size: 16, color: C.gold });
-  text(slide, "две последователни релации", 445, 655, 350, 34, {
-    size: 21,
+  relationTagNearLink(slide, "се наоѓа во", 155, 335, 440, 335, {
+    t: 0.5,
+    side: -1,
+    offset: 28,
+    width: 150,
+    color: C.ink,
+  });
+  relationTagNearLink(slide, "дел од", 440, 335, 725, 335, {
+    t: 0.5,
+    side: -1,
+    offset: 28,
+    width: 105,
+    color: C.ink,
+  });
+  relationTagNearLink(slide, "континент", 725, 335, 1030, 335, {
+    t: 0.5,
+    side: -1,
+    offset: 28,
+    width: 125,
+    color: C.ink,
+  });
+  relationLabel(slide, "службен јазик", 750, 420, 185, {
+    color: C.teal,
+    size: 19,
+    bold: true,
+  });
+
+  text(slide, "почетен ентитет", 60, 415, 190, 30, { size: 16, color: C.blue });
+  text(slide, "точен одговор", 940, 415, 180, 30, { size: 16, color: C.gold });
+  text(slide, "Два посредни ентитети го поврзуваат прашањето со одговорот", 335, 650, 610, 34, {
+    size: 20,
     bold: true,
     color: C.ink,
   });

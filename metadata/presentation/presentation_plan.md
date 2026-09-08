@@ -41,7 +41,7 @@ The research questions are introduced near the beginning and answered directly n
 - The expected answer entity
 - A visual indication that the answer must be found together with the facts connecting it to the question
 
-**Example requirement:** Use a verified WebQSP example in which the correct answer is exactly two hops away from the seed entity. Show both relations and the intermediate entity clearly. Select the exact question and path from the experiment artifacts when preparing the slide so that the example corresponds to an actual evaluated instance.
+**Example:** Use the illustrative question „На кој континент се наоѓа Колосеумот?“. Show the path Колосеум → Рим → Италија → Европа, together with a secondary branch from Италија to Италијански јазик. The path contains two intermediary entities, while the branch makes it clear that the structure is a graph rather than a simple chain.
 
 **Main message:** The system must identify the answer among many graph entities and preserve enough relational evidence to justify it.
 

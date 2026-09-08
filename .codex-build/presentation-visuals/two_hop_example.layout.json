@@ -2,13 +2,13 @@
   "schema": "openai.presentation.layout/v4",
   "unit": "px",
   "slide": {
-    "aid": "sl/8wz8of",
-    "id": "8wz8of",
+    "aid": "sl/nyo0wb",
+    "id": "nyo0wb",
     "slide": 1,
-    "layoutId": "f5186981-081e-4fb3-b4cc-bac259ed4a09",
+    "layoutId": "c63107e9-03ac-4b41-a4e2-ac2e2a85c1f1",
     "layoutName": "Title Slide",
     "layoutType": "title",
-    "masterLayoutId": "51b30ed0-a35a-4846-8c4c-24b18cb59191",
+    "masterLayoutId": "fa3482c9-7983-4b79-b676-1e44aa7a008e",
     "masterLayoutName": "Master",
     "backgroundColor": "#FFFFFF",
     "frame": {
@@ -45,15 +45,15 @@
   "inheritedLayers": [
     {
       "scope": "layout",
-      "id": "f5186981-081e-4fb3-b4cc-bac259ed4a09",
+      "id": "c63107e9-03ac-4b41-a4e2-ac2e2a85c1f1",
       "name": "Title Slide",
       "type": "title",
-      "parentLayoutId": "51b30ed0-a35a-4846-8c4c-24b18cb59191",
+      "parentLayoutId": "fa3482c9-7983-4b79-b676-1e44aa7a008e",
       "elements": []
     },
     {
       "scope": "master",
-      "id": "51b30ed0-a35a-4846-8c4c-24b18cb59191",
+      "id": "fa3482c9-7983-4b79-b676-1e44aa7a008e",
       "name": "Master",
       "type": "master",
       "elements": []
@@ -64,142 +64,8 @@
       "order": 1,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/kfa1gvi1",
+      "aid": "sh/vyho3q9w",
       "id": "1",
-      "bbox": [
-        92,
-        372,
-        26,
-        26
-      ],
-      "geometry": "ellipse",
-      "fillColor": "#F7F9FB",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 2.5
-    },
-    {
-      "order": 2,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/je10nqhg",
-      "id": "2",
-      "bbox": [
-        142,
-        487,
-        26,
-        26
-      ],
-      "geometry": "ellipse",
-      "fillColor": "#F7F9FB",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 2.5
-    },
-    {
-      "order": 3,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/yd8ze50v",
-      "id": "3",
-      "bbox": [
-        322,
-        532,
-        26,
-        26
-      ],
-      "geometry": "ellipse",
-      "fillColor": "#F7F9FB",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 2.5
-    },
-    {
-      "order": 4,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/xczil0za",
-      "id": "4",
-      "bbox": [
-        1067,
-        457,
-        26,
-        26
-      ],
-      "geometry": "ellipse",
-      "fillColor": "#F7F9FB",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 2.5
-    },
-    {
-      "order": 5,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/wbqhcvip",
-      "id": "5",
-      "bbox": [
-        1152,
-        367,
-        26,
-        26
-      ],
-      "geometry": "ellipse",
-      "fillColor": "#F7F9FB",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 2.5
-    },
-    {
-      "order": 6,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/bah0jqhk",
-      "id": "6",
-      "bbox": [
-        105,
-        398,
-        40.81,
-        92.81
-      ],
-      "geometry": "straightConnector1",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 1.5
-    },
-    {
-      "order": 7,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/a98zal0z",
-      "id": "7",
-      "bbox": [
-        168,
-        500,
-        154,
-        45
-      ],
-      "geometry": "straightConnector1",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 1.5
-    },
-    {
-      "order": 8,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/98zihgze",
-      "id": "8",
-      "bbox": [
-        1089.19,
-        389.19,
-        66.62,
-        71.62
-      ],
-      "verticalFlip": true,
-      "geometry": "straightConnector1",
-      "lineColor": "#DDE3E8",
-      "lineWidth": 1.5
-    },
-    {
-      "order": 9,
-      "kind": "shape",
-      "scope": "slide",
-      "aid": "sh/onqh8bit",
-      "id": "9",
       "bbox": [
         150,
         42,
@@ -207,8 +73,8 @@
         82
       ],
       "geometry": "roundRect",
-      "text": "Who did Viggo Mortensen play in The Lord of the Rings?",
-      "textPreview": "Who did Viggo Mortensen play in The Lord of the Rings?",
+      "text": "На кој континент се наоѓа Колосеумот?",
+      "textPreview": "На кој континент се наоѓа Колосеумот?",
       "resolvedFontSize": 25,
       "resolvedTextStyle": {
         "anchor": 2,
@@ -232,14 +98,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "Who did Viggo Mortensen play in The Lord of the Rings?"
+            "text": "На кој континент се наоѓа Колосеумот?"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "Who did Viggo Mortensen play in The Lord of the Rings?",
+          "text": "На кој континент се наоѓа Колосеумот?",
           "resolvedTextStyle": {
             "fontSize": 25,
             "typeface": "Arial",
@@ -250,7 +116,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "Who did Viggo Mortensen play in The Lord of the Rings?",
+              "text": "На кој континент се наоѓа Колосеумот?",
               "fontSize": 25,
               "typeface": "Arial",
               "color": "#263746",
@@ -266,11 +132,11 @@
       "lineWidth": 2
     },
     {
-      "order": 10,
+      "order": 2,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/y1gfqhcj",
-      "id": "10",
+      "aid": "sh/gzapcvah",
+      "id": "2",
       "bbox": [
         450,
         8,
@@ -278,8 +144,8 @@
         30
       ],
       "geometry": "rect",
-      "text": "Прашање од WebQSP",
-      "textPreview": "Прашање од WebQSP",
+      "text": "Прашање",
+      "textPreview": "Прашање",
       "resolvedFontSize": 16,
       "resolvedTextStyle": {
         "anchor": 2,
@@ -304,14 +170,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "Прашање од WebQSP"
+            "text": "Прашање"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "Прашање од WebQSP",
+          "text": "Прашање",
           "resolvedTextStyle": {
             "fontSize": 16,
             "typeface": "Arial",
@@ -322,7 +188,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "Прашање од WebQSP",
+              "text": "Прашање",
               "fontSize": 16,
               "typeface": "Arial",
               "color": "#4F86C6",
@@ -336,14 +202,14 @@
       "lineWidth": 0
     },
     {
-      "order": 11,
+      "order": 3,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/z2pwjmto",
-      "id": "11",
+      "aid": "sh/h0j650r2",
+      "id": "3",
       "bbox": [
-        223,
-        313,
+        128,
+        308,
         54,
         54
       ],
@@ -353,20 +219,20 @@
       "lineWidth": 2.5
     },
     {
-      "order": 12,
+      "order": 4,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/k3yxsru9",
-      "id": "12",
+      "aid": "sh/69876lsf",
+      "id": "4",
       "bbox": [
-        145,
-        374,
-        210,
+        70,
+        369,
+        170,
         36
       ],
       "geometry": "rect",
-      "text": "Viggo Mortensen",
-      "textPreview": "Viggo Mortensen",
+      "text": "Колосеум",
+      "textPreview": "Колосеум",
       "resolvedFontSize": 21,
       "resolvedTextStyle": {
         "anchor": 2,
@@ -390,14 +256,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "Viggo Mortensen"
+            "text": "Колосеум"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "Viggo Mortensen",
+          "text": "Колосеум",
           "resolvedTextStyle": {
             "fontSize": 21,
             "typeface": "Arial",
@@ -407,7 +273,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "Viggo Mortensen",
+              "text": "Колосеум",
               "fontSize": 21,
               "typeface": "Arial",
               "color": "#263746",
@@ -420,14 +286,14 @@
       "lineWidth": 0
     },
     {
-      "order": 13,
+      "order": 5,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/l47ylwbu",
-      "id": "13",
+      "aid": "sh/7ahoz690",
+      "id": "5",
       "bbox": [
-        596,
-        316,
+        416,
+        311,
         48,
         48
       ],
@@ -437,20 +303,20 @@
       "lineWidth": 2.5
     },
     {
-      "order": 14,
+      "order": 6,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/axwfmhc7",
-      "id": "14",
+      "aid": "sh/8bqp8bal",
+      "id": "6",
       "bbox": [
-        530,
-        371,
-        180,
+        375,
+        366,
+        130,
         36
       ],
       "geometry": "rect",
-      "text": "настап / улога",
-      "textPreview": "настап / улога",
+      "text": "Рим",
+      "textPreview": "Рим",
       "resolvedFontSize": 20,
       "resolvedTextStyle": {
         "anchor": 2,
@@ -474,14 +340,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "настап / улога"
+            "text": "Рим"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "настап / улога",
+          "text": "Рим",
           "resolvedTextStyle": {
             "fontSize": 20,
             "typeface": "Arial",
@@ -491,7 +357,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "настап / улога",
+              "text": "Рим",
               "fontSize": 20,
               "typeface": "Arial",
               "color": "#263746",
@@ -504,14 +370,98 @@
       "lineWidth": 0
     },
     {
-      "order": 15,
+      "order": 7,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/by5wfmts",
-      "id": "15",
+      "aid": "sh/twz61gr6",
+      "id": "7",
       "bbox": [
-        973,
-        313,
+        701,
+        311,
+        48,
+        48
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/q5s7i5sj",
+      "id": "8",
+      "bbox": [
+        650,
+        366,
+        150,
+        36
+      ],
+      "geometry": "rect",
+      "text": "Италија",
+      "textPreview": "Италија",
+      "resolvedFontSize": 20,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 20,
+        "typeface": "Arial",
+        "color": "#263746",
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Италија"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Италија",
+          "resolvedTextStyle": {
+            "fontSize": 20,
+            "typeface": "Arial",
+            "color": "#263746",
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Италија",
+              "fontSize": 20,
+              "typeface": "Arial",
+              "color": "#263746",
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/r6l8ba94",
+      "id": "9",
+      "bbox": [
+        1003,
+        308,
         54,
         54
       ],
@@ -521,14 +471,14 @@
       "lineWidth": 2.5
     },
     {
-      "order": 16,
+      "order": 10,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/czexorud",
-      "id": "16",
+      "aid": "sh/nal8rqt0",
+      "id": "10",
       "bbox": [
-        964,
-        304,
+        994,
+        299,
         72,
         72
       ],
@@ -537,20 +487,20 @@
       "lineWidth": 2.5
     },
     {
-      "order": 17,
+      "order": 11,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/x0nehwby",
-      "id": "17",
+      "aid": "sh/m9cry5sf",
+      "id": "11",
       "bbox": [
-        930,
-        374,
+        960,
+        369,
         140,
         36
       ],
       "geometry": "rect",
-      "text": "Aragorn",
-      "textPreview": "Aragorn",
+      "text": "Европа",
+      "textPreview": "Европа",
       "resolvedFontSize": 22,
       "resolvedTextStyle": {
         "anchor": 2,
@@ -574,14 +524,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "Aragorn"
+            "text": "Европа"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "Aragorn",
+          "text": "Европа",
           "resolvedTextStyle": {
             "fontSize": 22,
             "typeface": "Arial",
@@ -591,7 +541,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "Aragorn",
+              "text": "Европа",
               "fontSize": 22,
               "typeface": "Arial",
               "color": "#4E9B69",
@@ -604,37 +554,37 @@
       "lineWidth": 0
     },
     {
-      "order": 18,
+      "order": 12,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/29cfixcb",
-      "id": "18",
+      "aid": "sh/9c3qt0b6",
+      "id": "12",
       "bbox": [
-        598,
-        548,
+        703,
+        518,
         44,
         44
       ],
       "geometry": "ellipse",
-      "fillColor": "#F7F9FB",
+      "fillColor": "#FFFFFF",
       "lineColor": "#617080",
       "lineWidth": 2.5
     },
     {
-      "order": 19,
+      "order": 13,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/na5wb2tw",
-      "id": "19",
+      "aid": "sh/8bu90val",
+      "id": "13",
       "bbox": [
-        495,
-        599,
-        250,
+        615,
+        569,
+        220,
         36
       ],
       "geometry": "rect",
-      "text": "The Lord of the Rings",
-      "textPreview": "The Lord of the Rings",
+      "text": "Италијански јазик",
+      "textPreview": "Италијански јазик",
       "resolvedFontSize": 20,
       "resolvedTextStyle": {
         "anchor": 2,
@@ -658,14 +608,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "The Lord of the Rings"
+            "text": "Италијански јазик"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "The Lord of the Rings",
+          "text": "Италијански јазик",
           "resolvedTextStyle": {
             "fontSize": 20,
             "typeface": "Arial",
@@ -675,7 +625,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "The Lord of the Rings",
+              "text": "Италијански јазик",
               "fontSize": 20,
               "typeface": "Arial",
               "color": "#263746",
@@ -688,15 +638,15 @@
       "lineWidth": 0
     },
     {
-      "order": 20,
+      "order": 14,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/re1cjy9o",
-      "id": "20",
+      "aid": "sh/vyl8vatw",
+      "id": "14",
       "bbox": [
-        277,
-        340,
-        319,
+        182,
+        335,
+        234,
         0
       ],
       "geometry": "straightConnector1",
@@ -704,15 +654,15 @@
       "lineWidth": 3
     },
     {
-      "order": 21,
+      "order": 15,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/qdsbqts3",
-      "id": "21",
+      "aid": "sh/udcr25sr",
+      "id": "15",
       "bbox": [
-        644,
-        340,
-        329,
+        464,
+        335,
+        237,
         0
       ],
       "geometry": "straightConnector1",
@@ -720,52 +670,68 @@
       "lineWidth": 3
     },
     {
-      "order": 22,
+      "order": 16,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/dgjul8re",
-      "id": "22",
+      "aid": "sh/h0nqxkb2",
+      "id": "16",
       "bbox": [
-        620,
-        364,
+        749,
+        335,
+        254,
+        0
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 3
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wzu94fah",
+      "id": "17",
+      "bbox": [
+        725,
+        359,
         0,
-        184
+        159
       ],
       "geometry": "straightConnector1",
       "lineColor": "#398D84",
       "lineWidth": 2.5
     },
     {
-      "order": 23,
+      "order": 18,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/sfats3at",
-      "id": "23",
+      "aid": "sh/j25szat8",
+      "id": "18",
       "bbox": [
-        350,
-        274,
-        180,
-        28
+        222.5,
+        291,
+        150,
+        32
       ],
-      "geometry": "rect",
-      "text": "film.actor.film",
-      "textPreview": "film.actor.film",
-      "resolvedFontSize": 18,
+      "geometry": "roundRect",
+      "text": "се наоѓа во",
+      "textPreview": "се наоѓа во",
+      "resolvedFontSize": 16.87,
       "resolvedTextStyle": {
         "anchor": 2,
-        "fontSize": 18,
+        "fontSize": 20,
         "typeface": "Arial",
         "color": "#263746",
+        "bold": true,
         "alignment": "center",
         "verticalAlignment": "middle",
-        "wrap": "square",
         "autoFit": "shrinkText",
-        "autoFitScale": 1,
+        "autoFitScale": 0.84,
         "insets": {
-          "top": 2,
-          "right": 4,
-          "bottom": 2,
-          "left": 4
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
         }
       },
       "textLayout": {
@@ -773,66 +739,69 @@
         "lines": [
           {
             "index": 1,
-            "text": "film.actor.film"
+            "text": "се наоѓа во"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "film.actor.film",
+          "text": "се наоѓа во",
           "resolvedTextStyle": {
-            "fontSize": 18,
+            "fontSize": 20,
             "typeface": "Arial",
             "color": "#263746",
+            "bold": true,
             "alignment": "center"
           },
           "runs": [
             {
               "index": 1,
-              "text": "film.actor.film",
-              "fontSize": 18,
+              "text": "се наоѓа во",
+              "fontSize": 20,
               "typeface": "Arial",
               "color": "#263746",
+              "bold": true,
               "alignment": "center"
             }
           ],
           "marginLeft": 0
         }
       ],
+      "fillColor": "#FFFFFF",
       "lineWidth": 0
     },
     {
-      "order": 24,
+      "order": 19,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/f2lcni9k",
-      "id": "24",
+      "aid": "sh/i1wr6psn",
+      "id": "19",
       "bbox": [
-        716,
-        274,
-        265,
-        28
+        530,
+        291,
+        105,
+        32
       ],
-      "geometry": "rect",
-      "text": "film.performance.character",
-      "textPreview": "film.performance.character",
-      "resolvedFontSize": 18,
+      "geometry": "roundRect",
+      "text": "дел од",
+      "textPreview": "дел од",
+      "resolvedFontSize": 16.87,
       "resolvedTextStyle": {
         "anchor": 2,
-        "fontSize": 18,
+        "fontSize": 20,
         "typeface": "Arial",
         "color": "#263746",
+        "bold": true,
         "alignment": "center",
         "verticalAlignment": "middle",
-        "wrap": "square",
         "autoFit": "shrinkText",
-        "autoFitScale": 1,
+        "autoFitScale": 0.84,
         "insets": {
-          "top": 2,
-          "right": 4,
-          "bottom": 2,
-          "left": 4
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
         }
       },
       "textLayout": {
@@ -840,56 +809,130 @@
         "lines": [
           {
             "index": 1,
-            "text": "film.performance.character"
+            "text": "дел од"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "film.performance.character",
+          "text": "дел од",
           "resolvedTextStyle": {
-            "fontSize": 18,
+            "fontSize": 20,
             "typeface": "Arial",
             "color": "#263746",
+            "bold": true,
             "alignment": "center"
           },
           "runs": [
             {
               "index": 1,
-              "text": "film.performance.character",
-              "fontSize": 18,
+              "text": "дел од",
+              "fontSize": 20,
               "typeface": "Arial",
               "color": "#263746",
+              "bold": true,
               "alignment": "center"
             }
           ],
           "marginLeft": 0
         }
       ],
+      "fillColor": "#FFFFFF",
       "lineWidth": 0
     },
     {
-      "order": 25,
+      "order": 20,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ehsvudsz",
-      "id": "25",
+      "aid": "sh/e903edg7",
+      "id": "20",
       "bbox": [
-        645,
-        455,
-        230,
+        815,
+        291,
+        125,
+        32
+      ],
+      "geometry": "roundRect",
+      "text": "континент",
+      "textPreview": "континент",
+      "resolvedFontSize": 16.87,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 20,
+        "typeface": "Arial",
+        "color": "#263746",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "autoFit": "shrinkText",
+        "autoFitScale": 0.84,
+        "insets": {
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "континент"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "континент",
+          "resolvedTextStyle": {
+            "fontSize": 20,
+            "typeface": "Arial",
+            "color": "#263746",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "континент",
+              "fontSize": 20,
+              "typeface": "Arial",
+              "color": "#263746",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fa9knihs",
+      "id": "21",
+      "bbox": [
+        750,
+        420,
+        185,
         28
       ],
       "geometry": "rect",
-      "text": "film.performance.film",
-      "textPreview": "film.performance.film",
-      "resolvedFontSize": 17,
+      "text": "службен јазик",
+      "textPreview": "службен јазик",
+      "resolvedFontSize": 19,
       "resolvedTextStyle": {
         "anchor": 2,
-        "fontSize": 17,
+        "fontSize": 19,
         "typeface": "Arial",
         "color": "#398D84",
+        "bold": true,
         "alignment": "center",
         "verticalAlignment": "middle",
         "wrap": "square",
@@ -907,27 +950,29 @@
         "lines": [
           {
             "index": 1,
-            "text": "film.performance.film"
+            "text": "службен јазик"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "film.performance.film",
+          "text": "службен јазик",
           "resolvedTextStyle": {
-            "fontSize": 17,
+            "fontSize": 19,
             "typeface": "Arial",
             "color": "#398D84",
+            "bold": true,
             "alignment": "center"
           },
           "runs": [
             {
               "index": 1,
-              "text": "film.performance.film",
-              "fontSize": 17,
+              "text": "службен јазик",
+              "fontSize": 19,
               "typeface": "Arial",
               "color": "#398D84",
+              "bold": true,
               "alignment": "center"
             }
           ],
@@ -937,13 +982,13 @@
       "lineWidth": 0
     },
     {
-      "order": 26,
+      "order": 22,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/143upsrq",
-      "id": "26",
+      "aid": "sh/0bilgnyx",
+      "id": "22",
       "bbox": [
-        155,
+        60,
         415,
         190,
         30
@@ -1004,13 +1049,13 @@
       "lineWidth": 0
     },
     {
-      "order": 27,
+      "order": 23,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/03udwna5",
-      "id": "27",
+      "aid": "sh/1cb2pszi",
+      "id": "23",
       "bbox": [
-        910,
+        940,
         415,
         180,
         30
@@ -1071,24 +1116,24 @@
       "lineWidth": 0
     },
     {
-      "order": 28,
+      "order": 24,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/v6hcbe9g",
-      "id": "28",
+      "aid": "sh/q503adgv",
+      "id": "24",
       "bbox": [
-        445,
-        655,
-        350,
+        335,
+        650,
+        610,
         34
       ],
       "geometry": "rect",
-      "text": "две последователни релации",
-      "textPreview": "две последователни релации",
-      "resolvedFontSize": 21,
+      "text": "Два посредни ентитети го поврзуваат прашањето со одговорот",
+      "textPreview": "Два посредни ентитети го поврзуваат прашањето со одговорот",
+      "resolvedFontSize": 18.98,
       "resolvedTextStyle": {
         "anchor": 2,
-        "fontSize": 21,
+        "fontSize": 20,
         "typeface": "Arial",
         "color": "#263746",
         "bold": true,
@@ -1096,7 +1141,7 @@
         "verticalAlignment": "middle",
         "wrap": "square",
         "autoFit": "shrinkText",
-        "autoFitScale": 1,
+        "autoFitScale": 0.95,
         "insets": {
           "top": 2,
           "right": 4,
@@ -1109,16 +1154,16 @@
         "lines": [
           {
             "index": 1,
-            "text": "две последователни релации"
+            "text": "Два посредни ентитети го поврзуваат прашањето со одговорот"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "две последователни релации",
+          "text": "Два посредни ентитети го поврзуваат прашањето со одговорот",
           "resolvedTextStyle": {
-            "fontSize": 21,
+            "fontSize": 20,
             "typeface": "Arial",
             "color": "#263746",
             "bold": true,
@@ -1127,8 +1172,8 @@
           "runs": [
             {
               "index": 1,
-              "text": "две последователни релации",
-              "fontSize": 21,
+              "text": "Два посредни ентитети го поврзуваат прашањето со одговорот",
+              "fontSize": 20,
               "typeface": "Arial",
               "color": "#263746",
               "bold": true,
