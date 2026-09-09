@@ -1,0 +1,921 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/ou7vmm",
+    "id": "ou7vmm",
+    "slide": 5,
+    "layoutId": "c63107e9-03ac-4b41-a4e2-ac2e2a85c1f1",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "fa3482c9-7983-4b79-b676-1e44aa7a008e",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "c63107e9-03ac-4b41-a4e2-ac2e2a85c1f1",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "fa3482c9-7983-4b79-b676-1e44aa7a008e",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "fa3482c9-7983-4b79-b676-1e44aa7a008e",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rip03218",
+      "id": "1",
+      "bbox": [
+        70,
+        302.5,
+        165,
+        70
+      ],
+      "geometry": "roundRect",
+      "text": "Прашање",
+      "textPreview": "Прашање",
+      "resolvedFontSize": 23,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 23,
+        "typeface": "Arial",
+        "color": "#4F86C6",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Прашање"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Прашање",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "typeface": "Arial",
+            "color": "#4F86C6",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Прашање",
+              "fontSize": 23,
+              "typeface": "Arial",
+              "color": "#4F86C6",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "fillColor": "#EAF2FB",
+      "lineColor": "#4F86C6",
+      "lineWidth": 2
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/c3yhw72d",
+      "id": "2",
+      "bbox": [
+        320,
+        100,
+        220,
+        105
+      ],
+      "geometry": "roundRect",
+      "text": "Инструкции\ni₁   i₂   i₃",
+      "textPreview": "Инструкции | i₁   i₂   i₃",
+      "resolvedFontSize": 23,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 23,
+        "typeface": "Arial",
+        "color": "#8064A2",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Инструкции"
+          },
+          {
+            "index": 2,
+            "text": "i₁   i₂   i₃"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Инструкции",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "typeface": "Arial",
+            "color": "#8064A2",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Инструкции",
+              "fontSize": 23,
+              "typeface": "Arial",
+              "color": "#8064A2",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "i₁   i₂   i₃",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "typeface": "Arial",
+            "color": "#8064A2",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "i₁   i₂   i₃",
+              "fontSize": 23,
+              "typeface": "Arial",
+              "color": "#8064A2",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "fillColor": "#F1ECF7",
+      "lineColor": "#8064A2",
+      "lineWidth": 2
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/d47i5cjy",
+      "id": "3",
+      "bbox": [
+        535,
+        285,
+        220,
+        105
+      ],
+      "geometry": "roundRect",
+      "text": "Расудување\nнад графот",
+      "textPreview": "Расудување | над графот",
+      "resolvedFontSize": 23,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 23,
+        "typeface": "Arial",
+        "color": "#D97942",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Расудување"
+          },
+          {
+            "index": 2,
+            "text": "над графот"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Расудување",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "typeface": "Arial",
+            "color": "#D97942",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Расудување",
+              "fontSize": 23,
+              "typeface": "Arial",
+              "color": "#D97942",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "над графот",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "typeface": "Arial",
+            "color": "#D97942",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "над графот",
+              "fontSize": 23,
+              "typeface": "Arial",
+              "color": "#D97942",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "fillColor": "#FBEDE5",
+      "lineColor": "#D97942",
+      "lineWidth": 2
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2dwzqxkb",
+      "id": "4",
+      "bbox": [
+        820,
+        465,
+        210,
+        100
+      ],
+      "geometry": "roundRect",
+      "text": "Собрана\nинформација",
+      "textPreview": "Собрана | информација",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 22,
+        "typeface": "Arial",
+        "color": "#398D84",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Собрана"
+          },
+          {
+            "index": 2,
+            "text": "информација"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Собрана",
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Arial",
+            "color": "#398D84",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Собрана",
+              "fontSize": 22,
+              "typeface": "Arial",
+              "color": "#398D84",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "информација",
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Arial",
+            "color": "#398D84",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "информација",
+              "fontSize": 22,
+              "typeface": "Arial",
+              "color": "#398D84",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "fillColor": "#E8F5F3",
+      "lineColor": "#398D84",
+      "lineWidth": 2
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3e50z21w",
+      "id": "5",
+      "bbox": [
+        990,
+        100,
+        220,
+        105
+      ],
+      "geometry": "roundRect",
+      "text": "Ревизија на\nинструкциите",
+      "textPreview": "Ревизија на | инструкциите",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 22,
+        "typeface": "Arial",
+        "color": "#8064A2",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 5,
+          "right": 8,
+          "bottom": 5,
+          "left": 8
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Ревизија на"
+          },
+          {
+            "index": 2,
+            "text": "инструкциите"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Ревизија на",
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Arial",
+            "color": "#8064A2",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Ревизија на",
+              "fontSize": 22,
+              "typeface": "Arial",
+              "color": "#8064A2",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "инструкциите",
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Arial",
+            "color": "#8064A2",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "инструкциите",
+              "fontSize": 22,
+              "typeface": "Arial",
+              "color": "#8064A2",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "fillColor": "#F1ECF7",
+      "lineColor": "#8064A2",
+      "lineWidth": 2
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4fehs72h",
+      "id": "6",
+      "bbox": [
+        235,
+        152.5,
+        85,
+        185
+      ],
+      "verticalFlip": true,
+      "geometry": "bentConnector3",
+      "lineColor": "#4F86C6",
+      "lineWidth": 3
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pg7i1sj2",
+      "id": "7",
+      "bbox": [
+        430,
+        205,
+        105,
+        132.5
+      ],
+      "geometry": "bentConnector5",
+      "lineColor": "#8064A2",
+      "lineWidth": 3
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/m90j2hkv",
+      "id": "8",
+      "bbox": [
+        645,
+        390,
+        175,
+        125
+      ],
+      "geometry": "bentConnector5",
+      "lineColor": "#D97942",
+      "lineWidth": 3
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/na90bm10",
+      "id": "9",
+      "bbox": [
+        1030,
+        205,
+        70,
+        310
+      ],
+      "verticalFlip": true,
+      "geometry": "bentConnector2",
+      "lineColor": "#398D84",
+      "lineWidth": 3
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nqpcvid4",
+      "id": "10",
+      "bbox": [
+        540,
+        152.5,
+        450,
+        0
+      ],
+      "horizontalFlip": true,
+      "geometry": "straightConnector1",
+      "lineColor": "#8064A2",
+      "lineWidth": 3
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/mpgb2xcj",
+      "id": "11",
+      "bbox": [
+        485,
+        520,
+        30,
+        30
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF2FB",
+      "lineColor": "#4F86C6",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9s7uxsva",
+      "id": "12",
+      "bbox": [
+        567,
+        552,
+        26,
+        26
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#617080",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/8ryt4nup",
+      "id": "13",
+      "bbox": [
+        645,
+        505,
+        30,
+        30
+      ],
+      "geometry": "ellipse",
+      "fillColor": "#EAF6EE",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/vupcz2d0",
+      "id": "14",
+      "bbox": [
+        636,
+        496,
+        48,
+        48
+      ],
+      "geometry": "ellipse",
+      "lineColor": "#4E9B69",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/atgv6xcv",
+      "id": "15",
+      "bbox": [
+        515,
+        535,
+        55.81,
+        20.81
+      ],
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xgru1cv6",
+      "id": "16",
+      "bbox": [
+        589.19,
+        530.61,
+        60.2,
+        25.2
+      ],
+      "verticalFlip": true,
+      "geometry": "straightConnector1",
+      "lineColor": "#263746",
+      "lineWidth": 2.5
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wvyd87ul",
+      "id": "17",
+      "bbox": [
+        500,
+        455,
+        160,
+        32
+      ],
+      "geometry": "rect",
+      "text": "итерација  t",
+      "textPreview": "итерација  t",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#D97942",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "итерација  t"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "итерација  t",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#D97942",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "итерација  t",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#D97942",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ji9c3mdc",
+      "id": "18",
+      "bbox": [
+        670,
+        105,
+        190,
+        34
+      ],
+      "geometry": "rect",
+      "text": "следна итерација",
+      "textPreview": "следна итерација",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 18,
+        "typeface": "Arial",
+        "color": "#8064A2",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 1,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "следна итерација"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "следна итерација",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Arial",
+            "color": "#8064A2",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "следна итерација",
+              "fontSize": 18,
+              "typeface": "Arial",
+              "color": "#8064A2",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ih0vahcr",
+      "id": "19",
+      "bbox": [
+        225,
+        635,
+        830,
+        38
+      ],
+      "geometry": "rect",
+      "text": "Инструкциите се менуваат според информацијата откриена во графот",
+      "textPreview": "Инструкциите се менуваат според информацијата откриена во графот",
+      "resolvedFontSize": 23.4,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 24,
+        "typeface": "Arial",
+        "color": "#263746",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "wrap": "square",
+        "autoFit": "shrinkText",
+        "autoFitScale": 0.97,
+        "insets": {
+          "top": 2,
+          "right": 4,
+          "bottom": 2,
+          "left": 4
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Инструкциите се менуваат според информацијата откриена во графот"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Инструкциите се менуваат според информацијата откриена во графот",
+          "resolvedTextStyle": {
+            "fontSize": 24,
+            "typeface": "Arial",
+            "color": "#263746",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Инструкциите се менуваат според информацијата откриена во графот",
+              "fontSize": 24,
+              "typeface": "Arial",
+              "color": "#263746",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}
