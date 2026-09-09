@@ -77,6 +77,7 @@ wandb/*
 !wandb/.gitkeep
 qdrant_storage/
 qdrant_data_backup.tar.gz
-.experiment-runs/*
-!.experiment-runs/.gitkeep
-agents_metadata/
+experiment-runs/*
+!experiment-runs/.gitkeep
+agents-metadata/
+.codex-build/

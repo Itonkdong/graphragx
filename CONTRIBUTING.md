@@ -10,14 +10,10 @@ Read the main project documentation:
 
 - `README.md`
 - `docs/index.md`
-- `agents-metadata/guidlines/PROJECT_GUIDELINES.MD`
-- `agents-metadata/overview/pipeline_overview.md`
 
 The `docs/` folder contains the maintained software documentation. The
 `metadata/` folder contains generated figures, tables, provenance, and other
 research material.
-`agents-metadata/` contains instructions for AI coding agents and should be used
-as context when an agent contributes changes.
 
 ## Development Setup
 
@@ -34,7 +30,7 @@ uv run python main.py
 uv run pytest
 ```
 
-When dependencies change, update `pyproject.toml` and regenerate the lockfile with `uv lock`. Commit both files so local and remote development environments resolve the same package versions. `requirements.txt` remains available only for pip compatibility.
+When dependencies change, update `pyproject.toml` and regenerate the lockfile with `uv lock`. Commit both files so local and remote development environments resolve the same package versions.
 
 Create a local environment file:
 
@@ -51,18 +47,6 @@ Set the required API keys and optional W&B settings in `.env`.
 - Do not remove compatibility behavior unless the project explicitly decides to migrate old runs.
 - Keep documentation in sync when CLI flags, output files, or metric semantics change.
 
-## Working With Agents
-
-If you use an AI coding agent, give it the relevant files from
-`agents-metadata/` first. At minimum, include:
-
-- `agents-metadata/guidlines/PROJECT_GUIDELINES.MD`
-- `agents-metadata/guidlines/SERVICE_GUIDELINES.MD`
-- `agents-metadata/guidlines/error_handling_guildline.MD`
-- `agents-metadata/overview/pipeline_overview.md`
-
-The agent metadata explains the project architecture, conventions, error-handling expectations, and the intended pipeline flow. This helps agents make changes that match the existing codebase.
-
 ## Testing
 
 Run focused tests for the area you changed. For example:
@@ -77,7 +61,7 @@ For a broader sanity check around the current final pipeline behavior:
 uv run pytest tests/test_main.py tests/evaluation/test_final_results_evaluation.py tests/evaluation/test_wandb_final_results.py -q
 ```
 
-Some tests require optional heavy dependencies such as PyTorch. If a dependency is missing, install the project requirements or note clearly which tests could not be run.
+Some tests require optional heavy dependencies such as PyTorch. If a dependency is missing, run `uv sync --frozen` or note clearly which tests could not be run.
 
 ## Pull Request Checklist
 

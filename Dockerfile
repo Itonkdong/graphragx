@@ -27,12 +27,15 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen
 
 FROM python:3.11-slim-bookworm AS runtime
 
-ENV HOME=/tmp/graphragx-home \
+ARG GRAPHRAGX_UID=1000
+ARG GRAPHRAGX_GID=1000
+
+ENV HOME=/home/graphragx \
     HF_HOME=/cache/huggingface \
     PATH=/app/.venv/bin:$PATH \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    WANDB_DIR=/app/wandb
+    WANDB_DIR=/home/graphragx
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.32 /uv /uvx /bin/
 
@@ -44,6 +47,14 @@ RUN apt-get update \
         poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
+RUN groupadd --gid "${GRAPHRAGX_GID}" graphragx \
+    && useradd \
+        --uid "${GRAPHRAGX_UID}" \
+        --gid "${GRAPHRAGX_GID}" \
+        --create-home \
+        --shell /bin/bash \
+        graphragx
+
 WORKDIR /app
 COPY --from=builder /app /app
 
@@ -52,17 +63,17 @@ COPY --from=builder /app /app
 RUN mkdir -p \
         /app/data \
         /app/metadata \
-        /app/.experiment-runs \
-        /app/wandb \
+        /app/experiment-runs \
+        /home/graphragx/wandb \
         /cache/huggingface \
-        /tmp/graphragx-home \
-    && chmod -R a+rwX \
+    && chown -R graphragx:graphragx \
         /app/data \
         /app/metadata \
-        /app/.experiment-runs \
-        /app/wandb \
-        /cache/huggingface \
-        /tmp/graphragx-home
+        /app/experiment-runs \
+        /home/graphragx/wandb \
+        /cache/huggingface
+
+USER graphragx
 
 ENTRYPOINT ["python", "/app/docker/entrypoint.py"]
 CMD ["graphragx-experiments", "experiments/example.toml"]
