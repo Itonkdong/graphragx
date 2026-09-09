@@ -10,14 +10,10 @@ Read the main project documentation:
 
 - `README.md`
 - `docs/index.md`
-- `agents-metadata/guidlines/PROJECT_GUIDELINES.MD`
-- `agents-metadata/overview/pipeline_overview.md`
 
 The `docs/` folder contains the maintained software documentation. The
 `metadata/` folder contains generated figures, tables, provenance, and other
 research material.
-`agents-metadata/` contains instructions for AI coding agents and should be used
-as context when an agent contributes changes.
 
 ## Development Setup
 
@@ -50,18 +46,6 @@ Set the required API keys and optional W&B settings in `.env`.
 - Add or update tests for metric logic, storage behavior, W&B payloads, and pipeline composition when those areas change.
 - Do not remove compatibility behavior unless the project explicitly decides to migrate old runs.
 - Keep documentation in sync when CLI flags, output files, or metric semantics change.
-
-## Working With Agents
-
-If you use an AI coding agent, give it the relevant files from
-`agents-metadata/` first. At minimum, include:
-
-- `agents-metadata/guidlines/PROJECT_GUIDELINES.MD`
-- `agents-metadata/guidlines/SERVICE_GUIDELINES.MD`
-- `agents-metadata/guidlines/error_handling_guildline.MD`
-- `agents-metadata/overview/pipeline_overview.md`
-
-The agent metadata explains the project architecture, conventions, error-handling expectations, and the intended pipeline flow. This helps agents make changes that match the existing codebase.
 
 ## Testing
 
