@@ -30,7 +30,7 @@ uv run python main.py
 uv run pytest
 ```
 
-When dependencies change, update `pyproject.toml` and regenerate the lockfile with `uv lock`. Commit both files so local and remote development environments resolve the same package versions. `requirements.txt` remains available only for pip compatibility.
+When dependencies change, update `pyproject.toml` and regenerate the lockfile with `uv lock`. Commit both files so local and remote development environments resolve the same package versions.
 
 Create a local environment file:
 
@@ -61,7 +61,7 @@ For a broader sanity check around the current final pipeline behavior:
 uv run pytest tests/test_main.py tests/evaluation/test_final_results_evaluation.py tests/evaluation/test_wandb_final_results.py -q
 ```
 
-Some tests require optional heavy dependencies such as PyTorch. If a dependency is missing, install the project requirements or note clearly which tests could not be run.
+Some tests require optional heavy dependencies such as PyTorch. If a dependency is missing, run `uv sync --frozen` or note clearly which tests could not be run.
 
 ## Pull Request Checklist
 
