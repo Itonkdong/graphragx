@@ -243,7 +243,7 @@ def run_experiments(
 ) -> int:
     """Execute a manifest and return a shell-compatible exit status."""
     ordered = resolve_execution_order(manifest, selected_ids)
-    run_root = state_root or project_root / ".experiment-runs" / manifest.path.stem
+    run_root = state_root or project_root / "experiment-runs" / manifest.path.stem
     state_path = run_root / "state.json"
     log_root = run_root / "logs"
     state = _load_state(state_path)

@@ -26,13 +26,6 @@ uv run graphragx --help
 uv run python -m pytest -q
 ```
 
-`requirements.txt` remains available for pip or Conda environments. The
-compiled `pcst-fast` dependency should be installed with PEP 517 isolation:
-
-```bash
-conda run -n data-science python -m pip install --use-pep517 -r requirements.txt
-```
-
 The project intentionally pins NumPy below version 2 because
 `pcst-fast==1.0.10` is not reliable with NumPy 2 on Linux AMD64.
 

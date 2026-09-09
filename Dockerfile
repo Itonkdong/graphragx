@@ -63,13 +63,13 @@ COPY --from=builder /app /app
 RUN mkdir -p \
         /app/data \
         /app/metadata \
-        /app/.experiment-runs \
+        /app/experiment-runs \
         /home/graphragx/wandb \
         /cache/huggingface \
     && chown -R graphragx:graphragx \
         /app/data \
         /app/metadata \
-        /app/.experiment-runs \
+        /app/experiment-runs \
         /home/graphragx/wandb \
         /cache/huggingface
 
