@@ -1,6 +1,6 @@
 % Overleaf entry point. Compiler: pdfLaTeX. Bibliography: BibTeX.
 % The official TMLR style files are included and have not been modified.
-% Existing figures retain their original Macedonian labels; see README.md.
+% Paper figures are generated in English by scripts/results/generate_paper_figures.py.
 \documentclass[10pt]{article}
 \usepackage{tmlr}
 \usepackage[utf8]{inputenc}
@@ -76,7 +76,7 @@ Figure~\ref{fig:system-overview} shows the complete workflow. Each stage persist
 \begin{figure}[t]
  \centering
  \includegraphics[width=\textwidth]{figures/system_overview.pdf}
- \caption{System overview, from the question and local graph through GNN candidate retrieval, evidence construction, triple textualization, and answer generation. Blue marks a seed, orange marks candidate answers, and the green dotted ring identifies an illustrative gold answer. The gold annotation is explanatory and is not supplied to the system. The existing source figure retains Macedonian labels: the outer stages denote input, retrieval, evidence construction, and generation.}
+ \caption{System overview, from the question and local graph through GNN candidate retrieval, evidence construction, triple textualization, and answer generation. Blue marks a seed, orange marks candidate answers, and the green dotted ring identifies an illustrative gold answer. The gold annotation is explanatory and is not supplied to the system.}
  \label{fig:system-overview}
 \end{figure}
 
@@ -175,7 +175,7 @@ Figure~\ref{fig:pcst-sensitivity} shows the effect of PCST costs, with complete 
 \begin{figure}[t]
  \centering
  \includegraphics[width=0.86\textwidth]{figures/evidence_pcst_lambda_sensitivity.pdf}
- \caption{Sensitivity of evidence construction to the PCST cost scale. Constant and semantic costs use the same NBFNet retrievers and four values of $\lambda$. Error bars represent standard deviation across three seeds. The original plot retains Macedonian labels; the accompanying English table in Appendix~\ref{app:evidence-results} reports every configuration and metric.}
+ \caption{Sensitivity of evidence construction to the PCST cost scale. Constant and semantic costs use the same NBFNet retrievers and four values of $\lambda$. Error bars represent standard deviation across three seeds. The accompanying English table in Appendix~\ref{app:evidence-results} reports every configuration and metric.}
  \label{fig:pcst-sensitivity}
 \end{figure}
 
@@ -191,7 +191,7 @@ Figure~\ref{fig:quality-tokens} presents the answer-quality and token trade-off.
 \begin{figure}[t]
  \centering
  \includegraphics[width=\textwidth]{figures/end_to_end_llm_quality_tokens.pdf}
- \caption{Final Hit, micro F1, and total tokens for the two language models. Within each panel, configurations run from shortest paths to constant PCST ($\lambda=0.01,1$) and semantic PCST ($\lambda=0.01,1$). In the token panel, the main bar segment represents input tokens and the hatched segment output tokens. Values are means with standard deviations across three seed-associated runs; tokens are in millions. Original axis labels are retained.}
+ \caption{Final Hit, micro F1, and total tokens for the two language models. Within each panel, configurations run from shortest paths to constant PCST ($\lambda=0.01,1$) and semantic PCST ($\lambda=0.01,1$). In the token panel, the main bar segment represents input tokens and the hatched segment output tokens. Values are means with standard deviations across three seed-associated runs; tokens are in millions.}
  \label{fig:quality-tokens}
 \end{figure}
 
@@ -211,7 +211,7 @@ Figure~\ref{fig:context-outcomes} shows that answer omissions persist even with 
 \begin{figure}[t]
  \centering
  \includegraphics[width=0.88\textwidth]{figures/end_to_end_context_outcomes.pdf}
- \caption{Use of gold answers present in the evidence. The top panels show complete answers and omissions as fractions of all eligible questions; the bottom panel shows omissions conditional on full context coverage. Configuration order is the same as Figure~\ref{fig:quality-tokens}. Error bars indicate standard deviation across three runs. These measures test whether gold entities are returned, not whether the full set of predicted entities is exact. Original axis labels are retained.}
+ \caption{Use of gold answers present in the evidence. The top panels show complete answers and omissions as fractions of all eligible questions; the bottom panel shows omissions conditional on full context coverage. Configuration order is the same as Figure~\ref{fig:quality-tokens}. Error bars indicate standard deviation across three runs. These measures test whether gold entities are returned, not whether the full set of predicted entities is exact.}
  \label{fig:context-outcomes}
 \end{figure}
 

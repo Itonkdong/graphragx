@@ -1,14 +1,14 @@
 # Editorial notes for the first full draft
 
-These are author-facing notes and are not included in the paper or Overleaf ZIP.
+These are author-facing notes and are not included in the manuscript upload.
 
 ## Draft status
 
-The complete narrative, equations, bibliography, tables, and appendix are written. All four planned PDF figures are included. No local LaTeX compilation was performed at the author's request; the 10-page main/15-page total budget remains a target until Overleaf establishes the rendered length. If shortening is necessary, first reduce repeated discussion and move detailed protocol prose out of the appendix into supplementary documentation. Preserve the evaluation denominator, conditional metric definitions, and full reported results.
+The complete narrative, equations, bibliography, tables, appendix, and English paper figures are written. No local LaTeX compilation was performed at the author's request; the 10-page main/15-page total budget remains a target until Overleaf establishes the rendered length. If shortening is necessary, first reduce repeated discussion and move detailed protocol prose out of the appendix into supplementary documentation. Preserve the evaluation denominator, conditional metric definitions, and full reported results.
 
-## Figures still requiring preparation
+## Figures
 
-English-label versions of all four included PDF figures are needed before submitting an English paper. The original figures remain unchanged. Translation or redesign should use the academic-figure-creator skill in a later task. The current manuscript explains the original-language labels in its captions so the draft can be reviewed immediately.
+English-label versions of all four included PDF figures have been generated in `figures/`, together with matching PNG previews. `information_flow.pdf/png` is also available as an optional architecture figure. The original figures and the original results/presentation scripts remain unchanged.
 
 ## Verified clarifications relative to the plan
 

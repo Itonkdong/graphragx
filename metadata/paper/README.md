@@ -1,12 +1,12 @@
 # Paper draft
 
-This folder is a self-contained English LaTeX draft based on `paper_plan.md`, the completed thesis, and its existing result exports. It contains the full paper and appendix, not a section outline. No new experiment or figure was generated for this draft.
+This folder is a self-contained English LaTeX draft based on `paper_plan.md`, the completed thesis, and its existing result exports. It contains the full paper and appendix, not a section outline. The paper figures are generated in English by the separate paper-figure script described below; no new experiment was run.
 
 ## Upload to Overleaf
 
-Upload the contents of this folder, or use `paper_overleaf.zip`. Set `main.tex` as the main document and choose **pdfLaTeX**. The bibliography uses **BibTeX**, `references.bib`, and the included `tmlr.bst`; Overleaf normally runs the required bibliography passes automatically.
+Upload the contents of this folder to Overleaf. Set `main.tex` as the main document and choose **pdfLaTeX**. The bibliography uses **BibTeX**, `references.bib`, and the included `tmlr.bst`; Overleaf normally runs the required bibliography passes automatically.
 
-Required files are `main.tex`, `appendix.tex`, `references.bib`, `tmlr.sty`, `tmlr.bst`, `fancyhdr.sty`, and the `figures/` and `tables/` folders. The ZIP contains these plus the template license. Planning, provenance, and editorial notes do not need to be uploaded.
+Required files are `main.tex`, `appendix.tex`, `references.bib`, `tmlr.sty`, `tmlr.bst`, `fancyhdr.sty`, and the `figures/` and `tables/` folders. Planning, provenance, and editorial notes do not need to be uploaded.
 
 Local compilation was intentionally not performed, as requested. Source-level checks cover citations, labels, included files, table values, and balanced environments. The intended budget remains approximately 10 main-content pages and no more than 15 pages including references and appendices. Actual pagination, float placement, and table widths must be checked in Overleaf; they are not verified here.
 
@@ -19,12 +19,11 @@ references.bib             15 primary references
 tmlr.sty / tmlr.bst         Official TMLR template files, unmodified
 fancyhdr.sty                File distributed with the official template
 TMLR-LICENSE               Official template license
-figures/                   Four existing PDF figures, copied without modification
+figures/                   English paper figures in PDF and matching PNG form
 tables/                    Five separate English LaTeX table fragments
 sources/                   Snapshot of the three numerical summary CSVs
 paper_plan.md              Agreed writing plan
 editorial_notes.md          Items to review before submission
-paper_overleaf.zip          Uploadable LaTeX project
 ```
 
 The default template produces an anonymous manuscript. Author names, affiliations, acknowledgments, and identifying repository/tracking links have not been inserted. The template's “under review” heading is its standard formatting and does not mean a submission has been made.
@@ -33,16 +32,16 @@ The official template files were obtained from [JmlrOrg/tmlr-style-file](https:/
 
 ## Figures
 
-All four planned figures exist and are included. No figure path is missing. Their original Macedonian labels remain, and the English captions explain the panel order and terminology. **English-language editions of these figures are still needed for an English submission.** They have not been created because the current request explicitly asks to reuse available figures and report anything still needed.
+All four planned figures exist with English labels in both PDF and matching PNG form. An English `information_flow` figure is also available as an optional architecture figure. The PDFs are the manuscript assets; the PNGs are convenient for inspection or slides.
 
 | Included figure | Existing source |
 | --- | --- |
-| `figures/system_overview.pdf` | `../figures/system_architecture/system_overview.pdf` |
-| `figures/evidence_pcst_lambda_sensitivity.pdf` | `../figures/evidence_subgraphs/evidence_pcst_lambda_sensitivity.pdf` |
-| `figures/end_to_end_llm_quality_tokens.pdf` | `../figures/end_to_end_llm/end_to_end_llm_quality_tokens.pdf` |
-| `figures/end_to_end_context_outcomes.pdf` | `../figures/end_to_end_llm/end_to_end_context_outcomes.pdf` |
+| `figures/system_overview.pdf` | `scripts/results/generate_paper_figures.py` |
+| `figures/evidence_pcst_lambda_sensitivity.pdf` | `scripts/results/generate_paper_figures.py` |
+| `figures/end_to_end_llm_quality_tokens.pdf` | `scripts/results/generate_paper_figures.py` |
+| `figures/end_to_end_context_outcomes.pdf` | `scripts/results/generate_paper_figures.py` |
 
-After translating the figures, the temporary caption sentences about original labels should be removed. No additional conceptual diagram is required by the current paper.
+Run `scripts/results/generate_paper_figures.py` from the repository root to regenerate these figures from the persisted summary CSVs and the existing architecture primitives. The original results and presentation scripts are unchanged. No additional conceptual diagram is required by the current paper.
 
 ## Evidence and tables
 
