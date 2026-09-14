@@ -409,22 +409,22 @@ The final sentence should state that future GNN-guided question-answering system
 
 ### Main figures
 
-1. **System overview** — adapt the existing `metadata/figures/system_architecture/system_overview.pdf` into `metadata/paper/figures/system_overview.pdf` when the LaTeX project is created.
-2. **PCST sensitivity** — adapt `metadata/figures/evidence_subgraphs/evidence_pcst_lambda_sensitivity.pdf` for the evidence-construction results.
-3. **End-to-end quality and tokens** — adapt `metadata/figures/end_to_end_llm/end_to_end_llm_quality_tokens.pdf`.
-4. **Context utilization** — adapt `metadata/figures/end_to_end_llm/end_to_end_context_outcomes.pdf` or combine its essential outcome with the end-to-end figure if page pressure requires it.
+1. **System overview** — adapt the existing `../thesis/figures/system_architecture/system_overview.pdf` into `metadata/paper/figures/system_overview.pdf` when the LaTeX project is created.
+2. **PCST sensitivity** — adapt `../thesis/figures/evidence_subgraphs/evidence_pcst_lambda_sensitivity.pdf` for the evidence-construction results.
+3. **End-to-end quality and tokens** — adapt `../thesis/figures/end_to_end_llm/end_to_end_llm_quality_tokens.pdf`.
+4. **Context utilization** — adapt `../thesis/figures/end_to_end_llm/end_to_end_context_outcomes.pdf` or combine its essential outcome with the end-to-end figure if page pressure requires it.
 
 Use `$academic-figure-creator` for any material redesign, translation, combination, or layout adaptation. Do not recreate figures manually.
 
 ### Main tables
 
-1. **Architecture retrieval results** — adapt `metadata/tables/architecture_retrieval/architecture_primary_table.tex` into a compact main-paper table.
+1. **Architecture retrieval results** — adapt `../thesis/tables/architecture_retrieval/architecture_primary_table.tex` into a compact main-paper table.
 
 ### Appendix tables
 
 1. Architecture characteristics and detailed configurations.
-2. Complete evidence-subgraph results from `metadata/tables/evidence_subgraphs/evidence_primary_table.tex`.
-3. Complete end-to-end results from `metadata/tables/end_to_end_llm/end_to_end_llm_results.tex`.
+2. Complete evidence-subgraph results from `../thesis/tables/evidence_subgraphs/evidence_primary_table.tex`.
+3. Complete end-to-end results from `../thesis/tables/end_to_end_llm/end_to_end_llm_results.tex`.
 
 Avoid placing a figure and table with the same information in the main paper.
 

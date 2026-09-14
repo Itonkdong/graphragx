@@ -45,7 +45,7 @@ Run `scripts/results/generate_paper_figures.py` from the repository root to rege
 
 ## Evidence and tables
 
-Numbers come from the three saved summary CSVs in `sources/`, copied from `metadata/results_metadata/`. Their original per-run exports and provenance files remain in that directory. The thesis is `../thesis/thesis.pdf`. Methodological details were cross-checked against the experiment manifests, metric documentation, and implementation.
+Numbers come from the three saved summary CSVs in `sources/`, copied from `../thesis/results_metadata/`. Their original per-run exports and provenance files remain in that directory. The thesis is `../thesis/thesis.pdf`. Methodological details were cross-checked against the experiment manifests, metric documentation, and implementation.
 
 Table fragments contain no document preamble. Their captions and labels live at their insertion points in `main.tex` or `appendix.tex`. Short labels (RGC, RFGC, CGC, CFGC) keep the tables readable; the manuscript defines all of them.
 

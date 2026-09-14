@@ -35,9 +35,9 @@ English-label versions of all four included PDF figures have been generated in `
 
 - Narrative and original study: `metadata/thesis/thesis.pdf`.
 - Agreed frame: `metadata/paper/paper_plan.md`.
-- Retrieval numbers: `metadata/results_metadata/architecture_retrieval/architecture_summary.csv`.
-- Evidence numbers: `metadata/results_metadata/evidence_subgraphs/evidence_summary.csv`.
-- Final quality, tokens, and context outcomes: `metadata/results_metadata/end_to_end_llm/end_to_end_llm_summary.csv`.
+- Retrieval numbers: `../thesis/results_metadata/architecture_retrieval/architecture_summary.csv`.
+- Evidence numbers: `../thesis/results_metadata/evidence_subgraphs/evidence_summary.csv`.
+- Final quality, tokens, and context outcomes: `../thesis/results_metadata/end_to_end_llm/end_to_end_llm_summary.csv`.
 - Run counts and lineage: the `*_runs.csv` and `provenance.json` files beside each summary.
 - Configurations: `experiments/experiment_0_gnn_architectures.toml`, `experiment_1_evidence_subgraphs.toml`, `experiment_2_end_to_end.toml`.
 - Metrics: `docs/metrics/` and the retrieval/evidence/final-result services.
