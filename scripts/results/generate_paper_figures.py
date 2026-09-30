@@ -21,11 +21,10 @@ from scripts.results import generate_architecture_figures as architecture
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 OUTPUT_DIR = PROJECT_ROOT / "metadata/paper/figures"
 EVIDENCE_SUMMARY = (
-    PROJECT_ROOT / "metadata/results_metadata/evidence_subgraphs/evidence_summary.csv"
+    PROJECT_ROOT / "metadata/paper/sources/evidence_summary.csv"
 )
 END_TO_END_SUMMARY = (
-    PROJECT_ROOT
-    / "metadata/results_metadata/end_to_end_llm/end_to_end_llm_summary.csv"
+    PROJECT_ROOT / "metadata/paper/sources/end_to_end_llm_summary.csv"
 )
 
 MODEL_ORDER = ("deepseek-v4-flash", "gpt-5.6-luna")
@@ -405,10 +404,10 @@ def plot_evidence_sensitivity(rows: list[dict[str, str]], output_dir: Path) -> N
     shortest = next(row for row in rows if row["algorithm"] == "shortest_path")
     x = np.arange(len(lambda_values), dtype=float)
     plot_specs = (
-        ("average_subgraph_triples", "Average triples"),
-        ("candidate_reduction_percentage", "Candidate reduction [%]"),
-        ("context_gold_coverage", "Context gold coverage"),
-        ("context_full_gold_coverage", "Full context gold coverage"),
+        ("average_subgraph_triples", "AverageTriples"),
+        ("candidate_reduction_percentage", "CandidateReduction [%]"),
+        ("context_gold_coverage", "ContextGoldCoverage"),
+        ("context_full_gold_coverage", "FullContextGoldCoverage"),
     )
     colors = {"constant": "#4472C4", "semantic": "#ED7D31"}
     labels = {"constant": "PCST, constant cost", "semantic": "PCST, semantic cost"}
@@ -500,7 +499,7 @@ def plot_quality_tokens(rows: list[dict[str, str]], output_dir: Path) -> None:
             positions, completion, width, bottom=prompt,
             color=colors[model], alpha=0.42, hatch="//",
         )
-    axes[2].set_title("Total tokens")
+    axes[2].set_title("TotalTokens")
     axes[2].set_ylabel("Mean [millions]")
     axes[2].grid(axis="y", alpha=0.25)
     for axis in axes:
