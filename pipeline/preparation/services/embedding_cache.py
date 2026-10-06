@@ -411,7 +411,7 @@ class WebQSPEmbeddingCacheService(AbstractService):
         except ModuleNotFoundError as error:
             raise QdrantEmbeddingStoreException(
                 "qdrant-client is required for the embedding vector store. "
-                "Install dependencies from requirements.txt."
+                "Run 'uv sync --frozen' to install the locked project dependencies."
             ) from error
 
         self._qdrant_client = QdrantClient(

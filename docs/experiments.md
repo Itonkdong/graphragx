@@ -63,7 +63,7 @@ Execution is sequential, so only one training command occupies the GPU. Logs
 and resumable state are stored in:
 
 ```text
-.experiment-runs/<manifest-stem>/
+experiment-runs/<manifest-stem>/
 ├── state.json
 └── logs/<run-id>.log
 ```
