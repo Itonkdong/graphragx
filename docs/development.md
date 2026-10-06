@@ -55,8 +55,8 @@ registry can own the behavior.
 ## Generated and historical files
 
 - Runtime data under `data/webqsp/` and local W&B directories are generated.
-- Result scripts may write only under the matching `metadata/figures`,
-  `metadata/tables`, and `metadata/results_metadata` directory.
+- Result scripts may write only under the matching `../metadata/thesis/figures`,
+  `../metadata/thesis/tables`, and `../metadata/thesis/results_metadata` directory.
 - Result scripts must be read-only with respect to W&B and record exact run
   provenance.
 - One-time migrations belong under `scripts/one_time/`; they should require
