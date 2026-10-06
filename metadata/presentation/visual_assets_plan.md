@@ -228,12 +228,12 @@ The following assets already exist and should not be recreated unless their text
 
 | Slide | Existing asset |
 |---:|---|
-| 4 | `metadata/figures/system_architecture/system_overview.pdf` |
-| 13 | `metadata/figures/architecture_retrieval/architecture_primary_metrics_hits1_all_metrics.pdf` or the selected thesis variation |
-| 16 | `metadata/figures/evidence_subgraphs/evidence_pcst_lambda_sensitivity.pdf` |
-| 18 | `metadata/figures/end_to_end_llm/end_to_end_llm_quality_tokens.pdf` |
-| 17 or 19, if needed | `metadata/figures/end_to_end_llm/end_to_end_context_outcomes.pdf` |
-| 19 | `metadata/figures/system_architecture/information_flow.pdf` |
+| 4 | `../thesis/figures/system_architecture/system_overview.pdf` |
+| 13 | `../thesis/figures/architecture_retrieval/architecture_primary_metrics_hits1_all_metrics.pdf` or the selected thesis variation |
+| 16 | `../thesis/figures/evidence_subgraphs/evidence_pcst_lambda_sensitivity.pdf` |
+| 18 | `../thesis/figures/end_to_end_llm/end_to_end_llm_quality_tokens.pdf` |
+| 17 or 19, if needed | `../thesis/figures/end_to_end_llm/end_to_end_context_outcomes.pdf` |
+| 19 | `../thesis/figures/system_architecture/information_flow.pdf` |
 
 The selected result-figure variants should be confirmed during slide construction according to readability at presentation scale.
 

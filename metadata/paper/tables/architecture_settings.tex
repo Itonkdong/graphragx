@@ -1,0 +1,15 @@
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{@{}lccX@{}}
+\toprule
+Architecture & Width & Depth & Main configured characteristics \\
+\midrule
+GraphSAGE & 256 & 3 & Fixed cosine edge weights; MLP node classifier. \\
+\method{} & 256 & 3 & Learned edge MLP (width 256), reverse edges, residual normalization, question-aware classifier. \\
+R-GCN & 256 & 3 & 30 relation bases; categorical forward/reverse relations. \\
+HGT & 128 & $3^{\dagger}$ & 8 attention heads; one entity node type; relation-dependent attention. \\
+ReaRev & 50 & 3/3/3 & Frozen MiniLM; token instructions; adaptive revision. \\
+NBFNet & 32 & 3 & Question-conditioned boundary states; DistMult messages; PNA aggregation. \\
+\bottomrule
+\end{tabularx}
+\endgroup
